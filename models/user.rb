@@ -6,7 +6,7 @@ class LanguageValidator < ActiveModel::Validator
 	end
 end
 
-class User < ApplicationRecord
+class User < ActiveRecord::Base
 	validates :name, presence: true
 	validates :name, uniqueness: true
 	validates :lang, presence: true

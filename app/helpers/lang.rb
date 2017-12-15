@@ -1,10 +1,22 @@
 helpers do
 	def language
-		$lang[:current] || $lang[$lang[:default]]
+		if (u = current_user)
+			$lang[u.lang]
+		else
+			$lang[$lang[:default]]
+		end
 	end
 
 	def s(path)
-		language[path] || path
+		url = request.path_info
+		page = url.include?('?') ? url[1...url.index('?')] : url[1..-1]
+		page.gsub!(/\//, ':')
+		path = "#{page.empty? ? 'default' : page}:#{path}"
+		in_lang(path, language)
+	end
+
+	def in_lang(path, l)
+		l[path] || path
 	end
 end
 
@@ -26,7 +38,7 @@ module Language
 	def self.load
 		Dir.glob("#{$lang[:dir]}/*.json").each do |f|
 			data = JSON.parse(File.read(f))
-			id = f.match(/([a-z]+)\.json$/) { |m| m[1] }.to_sym
+			id = f.match(/([a-z]+)\.json$/) { |m| m[1] }
 			l = {}
 			Language::impl([], l, data)
 			$lang[id] = l

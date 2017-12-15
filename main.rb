@@ -9,5 +9,9 @@ require 'slim'
 $root_dir = File.realpath(File.dirname(__FILE__))
 set :root, $root_dir
 
+Dir.glob("#{$root_dir}/models/**/*.rb").each do |f|
+	require f
+end
+
 require_relative "config/config"
 

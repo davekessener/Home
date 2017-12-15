@@ -1,7 +1,11 @@
 {
-	"title" : {
-		"empty" : "This is an empty page!"
+	"login" : {
+		"title" : "Login",
+		"user" : "User"
 	},
-	"hello" : "Hello, World!"
+	"default" : {
+		"title" : "HOME Center",
+		"greet" : "Hello"
+	}
 }
 

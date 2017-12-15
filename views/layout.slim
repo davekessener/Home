@@ -1,0 +1,33 @@
+doctype html
+html lang="en"
+	head
+		title =s("title")
+		meta charset="utf-8"
+		meta name="viewport" content="width=device-width, initial-scale=1"
+		link rel="stylesheet" href="/css/bootstrap.min.css"
+		link rel="stylesheet" href="/css/main.css"
+		script src="/js/jquery.min.js"
+		script src="/js/popper.min.js"
+		script src="/js/bootstrap.min.js"
+	body style="padding-top: 70px;"
+		nav.navbar.navbar-default.navbar-fixed-top
+			.container-fluid
+				.navbar-header
+					a.navbar-brand href="/"
+						span.glyphicon.glyphicon-home
+						| HOME
+					button.navbar-toggle type="button" data-toggle="collapse" data-target="#MainNavbar"
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+				#MainNavbar.collapse.navbar-collapse
+					ul.nav.navbar-nav.navbar-right
+						- [].each do |service|
+							li class=("active" if service == $current_service)
+								a href="/#{service.id}"
+									span.glyphicon class="glyphicon-#{service.icon}"
+									=< service.name
+		.container
+			== yield
+
+
