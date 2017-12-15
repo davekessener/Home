@@ -6,7 +6,8 @@ require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'slim'
 
-set :root, File.realpath(File.dirname(__FILE__))
+$root_dir = File.realpath(File.dirname(__FILE__))
+set :root, $root_dir
 
 require_relative "config/config"
 

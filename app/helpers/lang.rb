@@ -1,6 +1,6 @@
 helpers do
 	def language
-		settings.language[@lang || settings.default_lang]
+		$lang[:current] || $lang[$lang[:default]]
 	end
 
 	def s(path)
@@ -23,18 +23,16 @@ module Language
 		end
 	end
 
-	def self.load(d)
-		langs = {}
-		Dir.glob("#{d}/*.json").each do |f|
+	def self.load
+		Dir.glob("#{$lang[:dir]}/*.json").each do |f|
 			data = JSON.parse(File.read(f))
 			id = f.match(/([a-z]+)\.json$/) { |m| m[1] }.to_sym
 			l = {}
 			Language::impl([], l, data)
-			langs[id] = l
+			$lang[id] = l
 		end
-		langs
 	end
 end
 
-set :language, Language::load(settings.lang_dir)
+Language::load
 

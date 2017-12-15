@@ -1,3 +1,5 @@
-set :lang_dir, File.join(settings.root, "lang")
-set :default_lang, :en
+$lang = {
+	dir: File.join($root_dir, "lang"),
+	default: 'en'
+}
 
