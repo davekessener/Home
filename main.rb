@@ -6,9 +6,7 @@ require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'slim'
 
-enable :sessions
-set :port, 4567
-set :bind, '0.0.0.0'
-set :database_file, 'config/database.yml'
+set :root, File.realpath(File.dirname(__FILE__))
 
-require_relative 'app/routes'
+require_relative "config/config"
+
