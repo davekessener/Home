@@ -1,5 +1,8 @@
 before do
-	redirect '/login' unless request.path_info == '/login' or logged_in?
+	unless request.path_info == '/login' or logged_in?
+		session[:return_to] = request.path_info
+		redirect '/login' 
+	end
 end
 
 get '/' do
@@ -10,7 +13,7 @@ get '/login' do
 	uid = params['user_id']
 	if uid and User.find_by(id: uid)
 		session[:user_id] = uid
-		redirect '/'
+		redirect (session[:return_to] || request.referer)
 	else
 		slim :login
 	end

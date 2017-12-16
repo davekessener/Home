@@ -1,6 +1,6 @@
 .dropdown
 	button.btn.btn-primary.dropdown-toggle type="button" data-toggle="dropdown"
-		=>s('users')
+		=>in_lang('users', language)
 		span.caret
 	ul.dropdown-menu
 		- User.all.each do |user|

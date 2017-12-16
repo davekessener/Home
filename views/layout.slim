@@ -22,11 +22,22 @@ html lang="en"
 						span.icon-bar
 				#MainNavbar.collapse.navbar-collapse
 					ul.nav.navbar-nav.navbar-right
-						- [].each do |service|
-							li class=("active" if service == $current_service)
-								a href="/#{service.id}"
-									span.glyphicon class="glyphicon-#{service.icon}"
-									=< service.name
+						- if logged_in?
+							- [].each do |service|
+								li class=("active" if service == $current_service)
+									a href="/#{service.id}"
+										span.glyphicon class="glyphicon-#{service.icon}"
+										=< service.name
+							li.dropdown
+								a.dropdown-toggle data-toggle="dropdown" href="#"
+									span.glyphicon.glyphicon-user
+									=<>in_lang('default:login', language)
+									span.caret
+								ul.dropdown-menu
+									- User.all.each do |user|
+										li class=('active' if user.id == current_user.id)
+											a href="/login?user_id=#{user.id}"
+												= user.name
 		.container
 			== yield
 
