@@ -10,7 +10,7 @@ html lang="en"
 		script src="/js/jquery.min.js"
 		script src="/js/popper.min.js"
 		script src="/js/bootstrap.min.js"
-		script src="/js/bootstrap-datepicker.min.js"
+		script src="/js/main.js"
 	body style="padding-top: 70px;"
 		nav.navbar.navbar-default.navbar-fixed-top
 			.container-fluid
@@ -33,14 +33,16 @@ html lang="en"
 							li.dropdown
 								a.dropdown-toggle data-toggle="dropdown" href="#"
 									span.glyphicon.glyphicon-user
-									=<>in_lang('default:login')
+									=<>current_user.name
 									span.caret
 								ul.dropdown-menu
 									- User.all.each do |user|
 										li class=('active' if user.id == current_user.id)
-											a href="/login?user_id=#{user.id}"
+											a href="#" onclick="login_user(#{user.id})"
 												= user.name
 		.container
 			== yield
 
+		- if File.exist? "#{$root_dir}/public/js/service/#{current_page}.js"
+			script src="/js/service/#{current_page}.js"
 

@@ -10,12 +10,18 @@ get '/' do
 end
 
 get '/login' do
+	slim :login
+end
+
+post '/login' do
+	content_type :json
 	uid = params['user_id']
-	if uid and User.find_by(id: uid)
-		session[:user_id] = uid
-		redirect (session[:return_to] || request.referer)
+	if uid and User.find(uid.to_i)
+		session[:user_id] = uid.to_i
+		{ redirect: (session[:return_to] || request.referer).to_s }.to_json
 	else
-		slim :login
+		status 400
+		{}.to_json
 	end
 end
 

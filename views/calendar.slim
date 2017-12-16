@@ -1,7 +1,15 @@
-#MyDatePicker data-provide="datepicker-inline" data-date="today"
+script src="/js/bootstrap-datepicker.min.js"
+script src="/js/bootstrap-datepicker.#{current_user.lang}.min.js"
+
+#MyDatePicker data-date="#{Time.current}"
 input#MyDate
 
 javascript:
+	$('#MyDatePicker').datepicker({
+		language: "#{current_user.lang}",
+		format: "yyyy-mm-dd"
+	});
+	
 	$('#MyDatePicker').on('changeDate', function() {
 		$('#MyDate').val($('#MyDatePicker').datepicker('getFormattedDate'));
 	});
