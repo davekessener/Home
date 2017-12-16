@@ -8,7 +8,7 @@ class CreateActivities < ActiveRecord::Migration[5.1]
 			t.timestamps
 		end
 
-		create_table :users_activities, id: false do |t|
+		create_table :activities_users, id: false do |t|
 			t.belongs_to :user, index: true
 			t.belongs_to :activity, index: true
 		end

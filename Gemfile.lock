@@ -67,6 +67,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   rake
   rspec
   sinatra

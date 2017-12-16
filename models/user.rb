@@ -7,11 +7,11 @@ class LanguageValidator < ActiveModel::Validator
 end
 
 class User < ActiveRecord::Base
+	has_and_belongs_to_many :activities
+
 	validates :name, presence: true
 	validates :name, uniqueness: true
 	validates :lang, presence: true
 	validates_with LanguageValidator
-
-	has_and_belongs_to_many :activities
 end
 
