@@ -10,7 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171215190113) do
+ActiveRecord::Schema.define(version: 20171216072016) do
+
+  create_table "activities", force: :cascade do |t|
+    t.string "content"
+    t.datetime "due"
+    t.boolean "important"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
