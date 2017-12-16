@@ -23,15 +23,15 @@ html lang="en"
 				#MainNavbar.collapse.navbar-collapse
 					ul.nav.navbar-nav.navbar-right
 						- if logged_in?
-							- [].each do |service|
-								li class=("active" if service == $current_service)
+							- $services.each do |service|
+								li class=("active" if service == current_service)
 									a href="/#{service.id}"
 										span.glyphicon class="glyphicon-#{service.icon}"
 										=< service.name
 							li.dropdown
 								a.dropdown-toggle data-toggle="dropdown" href="#"
 									span.glyphicon.glyphicon-user
-									=<>in_lang('default:login', language)
+									=<>in_lang('default:login')
 									span.caret
 								ul.dropdown-menu
 									- User.all.each do |user|

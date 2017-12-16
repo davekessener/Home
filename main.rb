@@ -13,5 +13,5 @@ Dir.glob("#{$root_dir}/models/**/*.rb").each do |f|
 	require f
 end
 
-require_relative "config/config"
+require_relative "config"
 

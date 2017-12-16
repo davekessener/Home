@@ -19,3 +19,7 @@ get '/login' do
 	end
 end
 
+Dir.glob("#{$root_dir}/app/routes/**/*.rb").each do |f|
+	require f
+end
+

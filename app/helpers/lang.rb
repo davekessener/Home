@@ -8,10 +8,7 @@ helpers do
 	end
 
 	def s(path)
-		url = request.path_info
-		page = url.include?('?') ? url[1...url.index('?')] : url[1..-1]
-		page = page.split(/\//).first
-		path = "#{page.empty? ? 'default' : page}:#{path}"
+		path = "#{current_page}:#{path}"
 		in_lang(path)
 	end
 
