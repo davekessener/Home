@@ -1,5 +1,5 @@
 helpers do
-	def language
+	def current_language
 		if (u = current_user)
 			$lang[u.lang]
 		else
@@ -10,12 +10,12 @@ helpers do
 	def s(path)
 		url = request.path_info
 		page = url.include?('?') ? url[1...url.index('?')] : url[1..-1]
-		page.gsub!(/\//, ':')
+		page = page.split(/\//).first
 		path = "#{page.empty? ? 'default' : page}:#{path}"
-		in_lang(path, language)
+		in_lang(path)
 	end
 
-	def in_lang(path, l)
+	def in_lang(path, l = current_language)
 		l[path] || path
 	end
 end
