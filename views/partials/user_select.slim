@@ -1,0 +1,6 @@
+script src="/js/checked-list-group.js"
+
+ul#MyUserSelector.list-group.checked-list-box
+	- User.all.each do |user|
+		li.list-group-item data-checked=('true' if user == current_user)
+			= user.name

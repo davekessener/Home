@@ -1,0 +1,7 @@
+- Activity.where(due: on_day(date)).each do |a|
+	- if a.users.any? { |u| users.include? u }
+		p ="#{a.due.to_s(:time)} - #{a.content}"
+	- else
+		p = "#{a.due.to_s(:time)} - #{a.content} by #{a.users.map { |u| u.name }.to_sentence}"
+p ="Selected users: #{users.map { |u| u.name }.to_sentence}"
+

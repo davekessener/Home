@@ -1,3 +1,15 @@
+.list-group-item.active,
+.list-group-item.active:focus,
+.list-group-item.active:hover {
+	color: #3C763D;
+	background-color: #DFF0D8;
+	border-color: #DDD;
+}
+
+.state-icon {
+	left: -5px;
+}
+
 .navbar {
 	margin-bottom: 0;
 	border-radius: 0;
@@ -21,7 +33,7 @@
 }
 
 .navbar-default .navbar-nav li a {
-	color: #555;
+	color: #353;
 }
 
 .navbar-default .navbar-nav li a:hover,

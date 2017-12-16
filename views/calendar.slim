@@ -1,16 +1,13 @@
 script src="/js/bootstrap-datepicker.min.js"
 script src="/js/bootstrap-datepicker.#{current_user.lang}.min.js"
 
+input#MyUserLanguage type="hidden" value="#{current_user.lang}"
+
 #MyDatePicker data-date="#{Time.current}"
-input#MyDate
+
+== slim :'partials/user_select'
+
+#MyPageView
 
 javascript:
-	$('#MyDatePicker').datepicker({
-		language: "#{current_user.lang}",
-		format: "yyyy-mm-dd"
-	});
-	
-	$('#MyDatePicker').on('changeDate', function() {
-		$('#MyDate').val($('#MyDatePicker').datepicker('getFormattedDate'));
-	});
 
