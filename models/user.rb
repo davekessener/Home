@@ -11,5 +11,7 @@ class User < ActiveRecord::Base
 	validates :name, uniqueness: true
 	validates :lang, presence: true
 	validates_with LanguageValidator
+
+	has_and_belongs_to_many :activities
 end
 

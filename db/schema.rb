@@ -15,12 +15,21 @@ ActiveRecord::Schema.define(version: 20171216072016) do
   create_table "activities", force: :cascade do |t|
     t.string "content"
     t.datetime "due"
-    t.boolean "important"
+    t.boolean "important", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "lang", default: "de"
+  end
+
+  create_table "users_activities", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "activity_id"
+    t.index ["activity_id"], name: "index_users_activities_on_activity_id"
+    t.index ["user_id"], name: "index_users_activities_on_user_id"
   end
 
 end

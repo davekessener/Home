@@ -1,3 +1,8 @@
-p ="#{s('greet')}, #{current_user.name}!"
-p This is a calendar!
+#MyDatePicker data-provide="datepicker-inline" data-date="today"
+input#MyDate
+
+javascript:
+	$('#MyDatePicker').on('changeDate', function() {
+		$('#MyDate').val($('#MyDatePicker').datepicker('getFormattedDate'));
+	});
 
