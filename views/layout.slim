@@ -7,10 +7,14 @@ html lang="en"
 		link rel="stylesheet" href="/css/bootstrap.min.css"
 		link rel="stylesheet" href="/css/main.css"
 		link rel="stylesheet" href="/css/bootstrap-datepicker.standalone.min.css"
+		- if File.exist? "#{$root_dir}/public/css/service/#{current_page}.css"
+			link rel="stylesheet" href="/css/service/#{current_page}.css"
 		script src="/js/jquery.min.js"
 		script src="/js/popper.min.js"
 		script src="/js/bootstrap.min.js"
 		script src="/js/main.js"
+		- if File.exist? "#{$root_dir}/public/js/service/#{current_page}.js"
+			script src="/js/service/#{current_page}.js"
 	body style="padding-top: 70px;"
 		nav.navbar.navbar-default.navbar-fixed-top
 			.container-fluid
@@ -40,9 +44,5 @@ html lang="en"
 										li class=('active' if user.id == current_user.id)
 											a href="#" onclick="login_user(#{user.id})"
 												= user.name
-		.container
-			== yield
-
-		- if File.exist? "#{$root_dir}/public/js/service/#{current_page}.js"
-			script src="/js/service/#{current_page}.js"
+		== yield
 

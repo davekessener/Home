@@ -1,7 +1,11 @@
-- Activity.where(due: on_day(date)).each do |a|
-	- if a.users.any? { |u| users.include? u }
-		p ="#{a.due.to_s(:time)} - #{a.content}"
-	- else
-		p = "#{a.due.to_s(:time)} - #{a.content} by #{a.users.map { |u| u.name }.to_sentence}"
-p ="Selected users: #{users.map { |u| u.name }.to_sentence}"
+ul.list-group
+	- activities.each do |a|
+		li.list-group-item
+			.container
+				.row
+					.col-xs-12.no-padding
+						span.time =(a.due.to_s(:time))
+						a href="#" =a.content
+	- if activities.empty?
+		p Nothing for today!
 

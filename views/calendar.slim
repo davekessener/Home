@@ -1,13 +1,23 @@
 script src="/js/bootstrap-datepicker.min.js"
 script src="/js/bootstrap-datepicker.#{current_user.lang}.min.js"
+script src="/js/bootstrap-toolkit.js"
+script src="/js/auto-collapse.js"
 
 input#MyUserLanguage type="hidden" value="#{current_user.lang}"
 
-#MyDatePicker data-date="#{Time.current}"
-
-== slim :'partials/user_select'
-
-#MyPageView
-
-javascript:
+.container-fluid
+	.row
+		.col-sm-4
+			.row
+				.col-lg-6
+					button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="#MyDatePicker" =s('date')
+					#MyDatePicker.collapse data-date="#{Time.current}"
+				.col-lg-6
+					== slim :'partials/user_select', locals: { id: 'MyUserSelector' }
+			form.well
+				.form-group
+					label for="MyActContent" =s('content')
+					input#MyActContent.form-control type="text"
+		.col-sm-8
+			#MyPageView
 

@@ -3,11 +3,10 @@ get '/calendar' do
 end
 
 post '/calendar/index' do
-	data = {
-		date: parse_time(params['date']),
-		users: params['users'].map { |name| User.find_by(name: name) }
-	}
+	date = parse_time(params['date'])
+	users = params['users']
+	acts = Activity.joins(:users).where(users: {name: users}, due: day_of(date)).to_a;
 
-	slim :'/calendar/page', layout: false, locals: data
+	slim :'/calendar/page', layout: false, locals: {activities: acts}
 end
 

@@ -20,7 +20,7 @@ $(function() {
 		$checkbox.on('change', function() {
 			updateDisplay();
 			if(on_user_selection_change) {
-				on_user_selection_change(get_all_selected_users());
+				on_user_selection_change($this);
 			}
 		});
 
@@ -55,10 +55,10 @@ $(function() {
 	});
 });
 
-function get_all_selected_users() {
+function get_all_selected_users(id) {
 	var users = [];
 
-	$('#MyUserSelector li.active').each(function(idx, li) {
+	$(id + ' li.active').each(function(idx, li) {
 		users.push($(li).text());
 	});
 

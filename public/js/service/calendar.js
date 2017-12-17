@@ -1,13 +1,13 @@
 function update_calendar() {
 	var d = $('#MyDatePicker').datepicker('getFormattedDate');
-	var u = get_all_selected_users();
+	var u = get_all_selected_users('#MyUserSelector');
 	var data = { date: d, users: u };
 	var view = $('#MyPageView');
 
-	view.empty();
+	view.empty().append('<p>...</p>');
 
 	$.post('/calendar/index', data, function(answer) {
-		view.append(answer);
+		view.empty().append(answer);
 	});
 }
 
@@ -22,7 +22,7 @@ $(function() {
 	update_calendar();
 });
 
-on_user_selection_change = function(users) {
+on_user_selection_change = function($this) {
 	update_calendar();
 };
 
