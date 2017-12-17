@@ -7,17 +7,35 @@ input#MyUserLanguage type="hidden" value="#{current_user.lang}"
 
 .container-fluid
 	.row
-		.col-sm-4
+		.col-md-4.col-sm-6
 			.row
 				.col-lg-6
 					button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="#MyDatePicker" =s('date')
 					#MyDatePicker.collapse data-date="#{Time.current}"
 				.col-lg-6
 					== slim :'partials/user_select', locals: { id: 'MyUserSelector' }
-			form.well
+			form.form-horizontal.well
 				.form-group
-					label for="MyActContent" =s('content')
-					input#MyActContent.form-control type="text"
-		.col-sm-8
+					.col-sm-12
+						label for="MyActContent" =s('form:content')
+						input#MyActImportant.hidden type="checkbox"
+						span#MyActImportantIndicator.glyphicon.glyphicon-alert
+						.input-group
+							span.input-group-addon
+								i.glyphicon.glyphicon-pencil
+							input#MyActContent.form-control type="text"
+				.form-group
+					.col-lg-4.col-md-5
+						label.control-label =s('form:time')
+					.col-lg-8.col-md-7
+						.input-group
+							input#MyActTime.form-control type="text" value="#{Time.current.to_s(:time)}"
+							.input-group-btn
+								button.btn.btn-default
+									i.glyphicon.glyphicon-time
+				.form-group
+					#MyActSubmission.col-sm-12
+						button.btn.btn-success.btn-block =s('form:add')
+		.col-md-8.col-sm-6
 			#MyPageView
 
