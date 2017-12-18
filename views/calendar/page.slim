@@ -1,9 +1,6 @@
 ul.list-group
 	- activities.each do |a|
-		li.activity-list.list-group-item
-			.container
-				.row
-					.col-xs-12.no-padding
+		li.activity-list-item.list-group-item
 						span.time =(a.due.in_time_zone.to_s(:time))
 						a href="#" =a.content
 	- if activities.empty?

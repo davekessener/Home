@@ -1,3 +1,13 @@
+.error-signal {
+	font-size: 16px;
+	padding-right: 6px;
+	color: red;
+}
+
+.input-group {
+	width: 100%;
+}
+
 #MyActImportantIndicator {
 	float: right;
 	color: #DDD;
@@ -14,11 +24,11 @@ span.time {
 	padding-right: 5px;
 }
 
-.activity-list .list-group li:nth-child(even) {
+li.activity-list-item.list-group-item:nth-child(even) {
 	background-color: #beb;
 }
 
-.activity-list .list-group li:nth-child(odd) {
+li.activity-list-item.list-group-item:nth-child(odd) {
 	background-color: #f0fff0;
 }
 

@@ -4,6 +4,10 @@ script src="/js/bootstrap-toolkit.js"
 script src="/js/auto-collapse.js"
 
 input#MyUserLanguage type="hidden" value="#{current_user.lang}"
+input#MyUserName type="hidden" value="#{current_user.name}"
+input#form_warn_content type="hidden" value="#{s('form:warn:content')}"
+input#form_warn_time type="hidden" value="#{s('form:warn:time')}"
+input#form_warn_users type="hidden" value="#{s('form:warn:users')}"
 
 .container-fluid
 	.row
@@ -36,6 +40,7 @@ input#MyUserLanguage type="hidden" value="#{current_user.lang}"
 				.form-group
 					.col-xs-12
 						== slim :'partials/user_select', locals: { id: 'MyActUsers' }
+						#MyActErrors
 				.form-group
 					#MyActSubmission.col-sm-12
 						button#MyActAdd.btn.btn-success.btn-block =s('form:add')

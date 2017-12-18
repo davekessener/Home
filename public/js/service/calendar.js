@@ -19,7 +19,7 @@ $(function() {
 
 	$('#MyDatePicker').on('changeDate', update_calendar);
 	
-	update_calendar();
+	setTimeout(update_calendar, 500);
 });
 
 on_user_selection_change = function($this) {
@@ -69,19 +69,57 @@ $(function() {
 	var $this = $('#MyActAdd');
 
 	$this.on('click', function() {
-		var content = $('#MyActContent').val(),
-			important = $('#MyActImportant').is(':checked'),
-			due = $('#MyDatePicker').datepicker('getFormattedDate') + ' ' + $('#MyActTime').val(),
-			users = get_all_selected_users('#MyActUsers');
+		var $content = $('#MyActContent'),
+			$important = $('#MyActImportant'),
+			$due = $('#MyActTime'),
+			$errors = $('#MyActErrors');
+		var content = $content.val(),
+			important = $important.is(':checked'),
+			time = $.trim($due.val()),
+			due = $('#MyDatePicker').datepicker('getFormattedDate') + ' ' + time,
+			users = get_all_selected_users('#MyActUsers'),
+			errors = [];
 
-		$.post('/calendar/add', {
-			content: content,
-			due: due,
-			important: important,
-			users: users
-		}, function(r) {
-			update_calendar();
-		});
+		$errors.empty();
+
+		if(content == '') {
+			$content.closest('.input-group').addClass('has-error');
+			errors.push('#form_warn_content');
+		} else {
+			$content.closest('.input-group').removeClass('has-error');
+		}
+
+		if(!/^(([01][0-9])|(2[0-3])):[0-5][0-9]$/.test(time)) {
+			$due.closest('.input-group').addClass('has-error');
+			errors.push('#form_warn_time');
+		} else {
+			$due.closest('.input-group').removeClass('has-error');
+		}
+
+		if(users.length < 1) {
+			errors.push('#form_warn_users');
+		}
+
+		if(errors.length > 0) {
+			errors.forEach(function(e) {
+				$errors.append(
+					'<p>' +
+						'<label>' +
+							'<span class="glyphicon glyphicon-remove-circle error-signal" />' +
+							$(e).val() +
+						'</label>' +
+					'</p>');
+			});
+		} else {
+			$.post('/calendar/add', {
+				content: content,
+				due: due,
+				important: important,
+				users: users
+			}, function(r) {
+				update_calendar();
+			});
+		}
 	});
 });
 
