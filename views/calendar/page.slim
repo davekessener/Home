@@ -1,10 +1,10 @@
 ul.list-group
 	- activities.each do |a|
-		li.list-group-item
+		li.activity-list.list-group-item
 			.container
 				.row
 					.col-xs-12.no-padding
-						span.time =(a.due.to_s(:time))
+						span.time =(a.due.in_time_zone.to_s(:time))
 						a href="#" =a.content
 	- if activities.empty?
 		p Nothing for today!

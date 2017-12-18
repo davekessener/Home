@@ -14,11 +14,11 @@ span.time {
 	padding-right: 5px;
 }
 
-.list-group li:nth-child(even) {
+.activity-list .list-group li:nth-child(even) {
 	background-color: #beb;
 }
 
-.list-group li:nth-child(odd) {
+.activity-list .list-group li:nth-child(odd) {
 	background-color: #f0fff0;
 }
 

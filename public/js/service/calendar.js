@@ -23,8 +23,17 @@ $(function() {
 });
 
 on_user_selection_change = function($this) {
-	update_calendar();
+	if($this.attr('id') == 'MyUserSelector') {
+		update_calendar();
+	}
 };
+
+// # ==========================================================================
+
+$(document).on('submit', 'form', function(e) {
+	e.preventDefault();
+	return false;
+});
 
 // # ==========================================================================
 
@@ -52,5 +61,27 @@ $(function() {
 
 	$checkbox.prop('checked', false);
 	update_display();
+});
+
+// # ==========================================================================
+
+$(function() {
+	var $this = $('#MyActAdd');
+
+	$this.on('click', function() {
+		var content = $('#MyActContent').val(),
+			important = $('#MyActImportant').is(':checked'),
+			due = $('#MyDatePicker').datepicker('getFormattedDate') + ' ' + $('#MyActTime').val(),
+			users = get_all_selected_users('#MyActUsers');
+
+		$.post('/calendar/add', {
+			content: content,
+			due: due,
+			important: important,
+			users: users
+		}, function(r) {
+			update_calendar();
+		});
+	});
 });
 

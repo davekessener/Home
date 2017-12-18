@@ -34,8 +34,11 @@ input#MyUserLanguage type="hidden" value="#{current_user.lang}"
 								button.btn.btn-default
 									i.glyphicon.glyphicon-time
 				.form-group
+					.col-xs-12
+						== slim :'partials/user_select', locals: { id: 'MyActUsers' }
+				.form-group
 					#MyActSubmission.col-sm-12
-						button.btn.btn-success.btn-block =s('form:add')
+						button#MyActAdd.btn.btn-success.btn-block =s('form:add')
 		.col-md-8.col-sm-6
 			#MyPageView
 
