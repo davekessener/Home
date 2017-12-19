@@ -1,0 +1,26 @@
+script src="/js/lib/bootstrap-datepicker.min.js"
+- if File.exist? (uri = "${root_dir}/public/js/lib/bootstrap-datepicker.#{current_user.lang}.min.js")
+	script src="#{uri}"
+script src="/js/lib/bootstrap-toolkit.js"
+script src="/js/auto-collapse.js"
+
+input#MyUserLanguage type="hidden" value="#{current_user.lang}"
+input#MyUserName type="hidden" value="#{current_user.name}"
+input#form_warn_content type="hidden" value="#{s('form:warn:content')}"
+input#form_warn_time type="hidden" value="#{s('form:warn:time')}"
+input#form_warn_users type="hidden" value="#{s('form:warn:users')}"
+
+.container-fluid
+	.row
+		.col-md-4.col-sm-6
+			.row
+				.col-lg-6
+					button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="#MyDatePicker" =s('date')
+					#MyDatePicker.collapse data-date="#{Time.current}"
+				.col-lg-6
+					== slim :'partials/user_select', locals: { id: 'MyUserSelector' }
+			button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="#MyActForm" =s('form')
+			== slim :'calendar/edit'
+		.col-md-8.col-sm-6
+			#MyPageView
+

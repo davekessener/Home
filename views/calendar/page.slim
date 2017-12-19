@@ -1,8 +1,16 @@
 ul.list-group
 	- activities.each do |a|
 		li.activity-list-item.list-group-item
-						span.time =(a.due.in_time_zone.to_s(:time))
-						a href="#" =a.content
+			span.time =(a.due.in_time_zone.to_s(:time))
+			span.activity-info
+				=a.content
+				input.act-id type="hidden" value="#{a.id}"
+				input.act-content type="hidden" value="#{a.content}"
+				input.act-due type="hidden" value="#{a.due.in_time_zone.to_s(:time)}"
+				input.act-important type="hidden" value="#{a.important ? '1' : '0'}"
+				input.act-users type="hidden" value="#{a.users.map { |u| u.name}.join(',')}"
+			span.glyphicon.glyphicon-remove.delete-activity-btn data-target="#{a.id}"
+			span.glyphicon.glyphicon-pencil.edit-activity-btn
 	- if activities.empty?
 		p Nothing for today!
 

@@ -1,3 +1,20 @@
+.delete-activity-btn {
+	float: right;
+	font-size: 20px;
+	color: red;
+	vertical-align: center;
+	cursor: pointer;
+}
+
+.edit-activity-btn {
+	float: right;
+	font-size: 17px;
+	color: blue;
+	vertical-align: center;
+	cursor: pointer;
+	padding-right: 8px;
+}
+
 .error-signal {
 	font-size: 16px;
 	padding-right: 6px;

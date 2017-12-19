@@ -1,0 +1,35 @@
+form#MyActForm.form-horizontal.well.collapse
+	input#MyActID type="hidden"
+	.form-group
+		.col-sm-12
+			label for="MyActContent" =s('form:content')
+			input#MyActImportant.hidden type="checkbox"
+			span#MyActImportantIndicator.glyphicon.glyphicon-alert
+			.input-group
+				span.input-group-addon
+					i.glyphicon.glyphicon-pencil
+				input#MyActContent.form-control type="text"
+	.form-group
+		.col-lg-4.col-md-5
+			label.control-label =s('form:time')
+		.col-lg-8.col-md-7
+			.input-group
+				input#MyActTime.form-control type="text" value="#{Time.current.to_s(:time)}"
+				.input-group-btn
+					button.btn.btn-default
+						i.glyphicon.glyphicon-time
+	.form-group
+		.col-xs-12
+			== slim :'partials/user_select', locals: { id: 'MyActUsers' }
+			#MyActErrors
+	.form-group
+		#MyActSubmission.container-fluid
+			#MyActAddCtrl.row
+				.col-sm-12
+					button#MyActAdd.btn.btn-success.btn-block =s('form:add')
+			#MyActReviseCtrl.row.hidden
+				.col-md-6
+					button#MyActApply.btn.btn-success.btn-block =s('form:apply')
+				.col-md-6
+					button#MyActCancel.btn.btn-danger.btn-block =s('form:cancel')
+

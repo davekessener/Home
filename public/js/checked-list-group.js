@@ -1,8 +1,7 @@
-var on_user_selection_change;
-
 $(function() {
 	$('.list-group.checked-list-box .list-group-item').each(function() {
 		var $this = $(this),
+			$super = $this.closest('.checked-list'),
 			$checkbox = $('<input type="checkbox" class="hidden" />'),
 			settings = {
 				on:  { icon: 'glyphicon glyphicon-check' },
@@ -19,8 +18,8 @@ $(function() {
 
 		$checkbox.on('change', function() {
 			updateDisplay();
-			if(on_user_selection_change) {
-				on_user_selection_change($this);
+			if($super) {
+				$super.triggerHandler('changeList');
 			}
 		});
 
@@ -55,13 +54,24 @@ $(function() {
 	});
 });
 
-function get_all_selected_users(id) {
-	var users = [];
+function checkedList_getSelected($this) {
+	var r = [];
 
-	$(id + ' li.active').each(function(idx, li) {
-		users.push($(li).text());
+	$this.children('.list-group-item.active').each(function(idx, li) {
+		r.push($(li).text());
 	});
 
-	return users;
+	return r;
+}
+
+function checkedList_setSelected($this, vals) {
+	$this.children('.list-group-item').each(function(idx, li) {
+		var isChecked = $(li).hasClass('active'),
+			shouldChecked = vals.includes($(li).text());
+
+		if(isChecked != shouldChecked) {
+			$(li).triggerHandler('click');
+		}
+	});
 }
 

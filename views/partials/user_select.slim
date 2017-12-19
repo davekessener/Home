@@ -1,9 +1,9 @@
+script src="/js/lib/bootstrap-toolkit.js"
 script src="/js/checked-list-group.js"
-script src="/js/bootstrap-toolkit.js"
 script src="/js/auto-collapse.js"
 
 button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="##{id}" =s('users')
-ul.list-group.checked-list-box.collapse id="#{id}"
+ul.checked-list.list-group.checked-list-box.collapse id="#{id}"
 	- User.all.each do |user|
 		li.list-group-item data-checked=('true' if user == current_user)
 			= user.name

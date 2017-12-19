@@ -1,11 +1,15 @@
 get '/calendar' do
-	slim :calendar
+	redirect '/calendar/index'
+end
+
+get '/calendar/index' do
+	slim :'calendar/index'
 end
 
 post '/calendar/index' do
 	date = parse_time(params['date'])
 	users = params['users']
-	acts = Activity.joins(:users).where(users: {name: users}, due: day_of(date)).order(due: :asc).to_a;
+	acts = Activity.joins(:users).where(users: {name: users}, due: day_of(date)).order(due: :asc).to_a.uniq;
 
 	slim :'/calendar/page', layout: false, locals: {activities: acts}
 end
@@ -28,3 +32,46 @@ post '/calendar/add' do
 		a.errors.first
 	end
 end
+
+post '/calendar/delete' do
+	id = params['id'].to_i
+
+	if (a = Activity.find(id))
+		a.destroy
+
+		':('
+	else
+		status 400
+		"unknown id #{id}"
+	end
+end
+
+post '/calendar/update' do
+	id = params['id'].to_i
+	content = params['content']
+	due = parse_time(params['due'])
+	users = params['users'].uniq
+	important = params['important']
+
+	a = Activity.find(id)
+
+	if not a.nil?
+		a.content = content
+		a.due = due
+		a.important = important
+
+		if a.valid?
+			a.save
+			a.users.clear
+			User.where(name: users).each { |u| a.users << u }
+			':P'
+		else
+			status 400
+			a.errors.first
+		end
+	else
+		status 400
+		"invalid id #{id}"
+	end
+end
+

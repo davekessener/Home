@@ -12,11 +12,15 @@
 
 			var do_update = function() {
 				if(viewport.is(cond)) {
-					$button.hide();
-					$target.collapse('show');
+					if($button.is(':visible')) {
+						$button.hide();
+						$target.collapse('show');
+					}
 				} else {
-					$button.show();
-					$target.collapse('hide');
+					if(!$button.is(':visible')) {
+						$button.show();
+						$target.collapse('hide');
+					}
 				}
 			};
 
