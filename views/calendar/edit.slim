@@ -1,33 +1,55 @@
-form#MyActForm.form-horizontal.well.collapse
-	input#MyActID type="hidden"
+script src="/js/lib/bootstrap-toolkit.js"
+script src="/js/lib/bootstrap-datepicker.min.js"
+- if File.exist? (uri = "${root_dir}/public/js/lib/bootstrap-datepicker.#{current_user.lang}.min.js")
+	script src="#{uri}"
+script src="/js/checkbox-glyphicon.js"
+script src="/js/auto-collapse.js"
+script src="/js/calendar/form.js"
+
+ruby:
+	if defined? activity
+		@activity = activity
+		@standalone = true
+	end
+
+- if @standalone
+	input#MyUserLanguage type="hidden" value="#{current_user.lang}"
+
+form#MyActForm.form-horizontal.well class="#{'collapse' unless @standalone}"
+	input#MyActID type="hidden" value="#{@activity.id if @activity}"
 	.form-group
 		.col-sm-12
 			label for="MyActContent" =s('form:content')
-			input#MyActImportant.hidden type="checkbox"
-			span#MyActImportantIndicator.glyphicon.glyphicon-alert
+			input#MyActImportant.glyph-checkbox type="checkbox" data-glyph="alert" data-checked="#{@activity.important if @activity}"
 			.input-group
 				span.input-group-addon
 					i.glyphicon.glyphicon-pencil
-				input#MyActContent.form-control type="text"
+				input#MyActContent.form-control type="text" value="#{@activity.content if @activity}"
+	- if @standalone
+		.form-group
+			.col-xs-12
+				button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="#MyDatePicker" =s('date')
+				#MyDatePicker.collapse data-date="#{to_date(@activity ? @activity.due : Time.current)}"
 	.form-group
 		.col-lg-4.col-md-5
 			label.control-label =s('form:time')
 		.col-lg-8.col-md-7
 			.input-group
-				input#MyActTime.form-control type="text" value="#{Time.current.to_s(:time)}"
+				input#MyActTime.form-control type="text" value="#{to_time(@activity ? @activity.due : Time.current)}"
 				.input-group-btn
 					button.btn.btn-default
 						i.glyphicon.glyphicon-time
 	.form-group
 		.col-xs-12
+			input#MyActUsersLoaded type="hidden" value="#{@activity.users.map { |u| u.name }.join(',') if @activity}"
 			== slim :'partials/user_select', locals: { id: 'MyActUsers' }
 			#MyActErrors
 	.form-group
 		#MyActSubmission.container-fluid
-			#MyActAddCtrl.row
+			#MyActAddCtrl.row class="#{'hidden' if @activity}"
 				.col-sm-12
 					button#MyActAdd.btn.btn-success.btn-block =s('form:add')
-			#MyActReviseCtrl.row.hidden
+			#MyActReviseCtrl.row class="#{'hidden' unless @activity}"
 				.col-md-6
 					button#MyActApply.btn.btn-success.btn-block =s('form:apply')
 				.col-md-6

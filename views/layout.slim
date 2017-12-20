@@ -13,8 +13,6 @@ html lang="en"
 		script src="/js/lib/popper.min.js"
 		script src="/js/lib/bootstrap.min.js"
 		script src="/js/main.js"
-		- if File.exist? "#{$root_dir}/public/js#{request.path_info}.js"
-			script src="/js#{request.path_info}.js"
 	body style="padding-top: 70px;"
 		nav.navbar.navbar-default.navbar-fixed-top
 			.container-fluid
@@ -45,4 +43,7 @@ html lang="en"
 											a href="#" onclick="login_user(#{user.id})"
 												= user.name
 		== yield
+
+- if File.exist? "#{$root_dir}/public/js#{request.path_info}.js"
+	script src="/js#{request.path_info}.js"
 

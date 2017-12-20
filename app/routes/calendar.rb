@@ -6,18 +6,26 @@ get '/calendar/index' do
 	slim :'calendar/index'
 end
 
+get '/calendar/edit' do
+	id = params['id']
+	data = { activity: nil }
+
+	data[:activity] = Activity.find(id.to_i) if id
+
+	slim :'calendar/edit', locals: data
+end
+
 post '/calendar/index' do
-	date = parse_time(params['date'])
+	date = timezone.parse(params['date'])
 	users = params['users']
 	acts = Activity.joins(:users).where(users: {name: users}, due: day_of(date)).order(due: :asc).to_a.uniq;
 
 	slim :'/calendar/page', layout: false, locals: {activities: acts}
 end
 
-
 post '/calendar/add' do
 	content = params['content']
-	due = parse_time(params['due'])
+	due = timezone.parse(params['due'])
 	users = params['users'].uniq
 	important = params['important']
 
@@ -49,7 +57,7 @@ end
 post '/calendar/update' do
 	id = params['id'].to_i
 	content = params['content']
-	due = parse_time(params['due'])
+	due = timezone.parse(params['due'])
 	users = params['users'].uniq
 	important = params['important']
 

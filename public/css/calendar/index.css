@@ -1,3 +1,15 @@
+@media only screen and (max-width: 1400px) {
+	#MyActForm {
+		display: none;
+	}
+}
+
+@media only screen and (min-width: 1400px) {
+	#MyActNew {
+		display: none;
+	}
+}
+
 .delete-activity-btn {
 	float: right;
 	font-size: 20px;
