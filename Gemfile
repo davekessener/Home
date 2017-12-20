@@ -9,5 +9,6 @@ gem 'sqlite3'
 gem 'rspec'
 gem 'rake'
 gem 'slim'
+gem 'rubyzip'
 
 # gem "rails"

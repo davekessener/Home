@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171216072016) do
+ActiveRecord::Schema.define(version: 20171220064250) do
 
   create_table "activities", force: :cascade do |t|
     t.string "content"
@@ -25,6 +25,41 @@ ActiveRecord::Schema.define(version: 20171216072016) do
     t.integer "activity_id"
     t.index ["activity_id"], name: "index_activities_users_on_activity_id"
     t.index ["user_id"], name: "index_activities_users_on_user_id"
+  end
+
+  create_table "audiobooks", force: :cascade do |t|
+    t.integer "franchise_id"
+    t.string "title"
+    t.integer "duration"
+    t.integer "idx"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["franchise_id"], name: "index_audiobooks_on_franchise_id"
+  end
+
+  create_table "bookmarks", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "audiobook_id"
+    t.integer "value"
+    t.string "desc"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["audiobook_id"], name: "index_bookmarks_on_audiobook_id"
+    t.index ["user_id"], name: "index_bookmarks_on_user_id"
+  end
+
+  create_table "chapters", force: :cascade do |t|
+    t.integer "audiobook_id"
+    t.time "value"
+    t.string "title"
+    t.index ["audiobook_id"], name: "index_chapters_on_audiobook_id"
+  end
+
+  create_table "franchises", force: :cascade do |t|
+    t.string "name"
+    t.string "path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

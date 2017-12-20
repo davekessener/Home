@@ -8,6 +8,7 @@ end
 
 class User < ActiveRecord::Base
 	has_and_belongs_to_many :activities
+	has_many :bookmarks, dependent: :destroy
 
 	validates :name, presence: true
 	validates :name, uniqueness: true

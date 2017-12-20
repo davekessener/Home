@@ -38,6 +38,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.0)
+    rubyzip (1.2.1)
     sinatra (2.0.0)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -70,6 +71,7 @@ DEPENDENCIES
   activesupport
   rake
   rspec
+  rubyzip
   sinatra
   sinatra-activerecord
   sinatra-contrib
