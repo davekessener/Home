@@ -1,24 +1,9 @@
 require 'zip'
 require 'fileutils'
 
+require_relative 'helper'
+
 module AudiobookImport
-	module Helper
-		def self.convert(t)
-			l, s = 0, 1
-			t.split(/:/).reverse_each do |p|
-				l += s * p.to_i
-				s *= 60
-			end
-			l
-		end
-
-		def self.to_s(d)
-			s, d = d % 60, d / 60
-			m, d = d % 60, d / 60
-			[d, m, s].map { |e| '%02d' % e }.join(':')
-		end
-	end
-
 	def self.import(fn, root = $audiobook_dir)
 		name = File.basename(fn, '.*')
 		dir = File.join(root, name)

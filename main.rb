@@ -11,8 +11,8 @@ require_relative 'environment'
 
 set :root, $root_dir
 
-Dir.glob("#{$root_dir}/models/**/*.rb").each do |f|
-	require f
+Dir.glob("{utils,models}/**/*.rb").each do |f|
+	require_relative f
 end
 
 require_relative "config"
