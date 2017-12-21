@@ -1,0 +1,10 @@
+.container
+	- Franchise.find_each do |franchise|
+		.row
+			.col-xs-12
+				.panel.panel-success
+					.panel-body
+						img src="/resources/icons/audiobooks/#{franchise.path}.png" width="64" height="64"
+					.panel-footer
+						=franchise.name
+
