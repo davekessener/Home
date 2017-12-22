@@ -3,7 +3,7 @@ class Audiobook < ActiveRecord::Base
 	has_many :chapters, dependent: :destroy
 	has_many :bookmarks, dependent: :destroy
 	validates_presence_of :title, :duration, :franchise_id
-	validates :idx, presence: true, uniqueness: true
+	validates :idx, presence: true, uniqueness: { scope: [:franchise] }
 
 	def file_path
 		"audiobooks/#{franchise.path}/part#{'%02d' % idx}.mp3"
@@ -20,7 +20,7 @@ class Audiobook < ActiveRecord::Base
 
 	def on_stop(user, progress)
 		if progress
-			Bookmark.where(desc: ['', nil], user: user).destroy_all
+			Bookmark.where(desc: ['', nil], user: user, audiobook: self).destroy_all
 			Bookmark.create(user: user, audiobook: self, value: progress) if progress < (duration - 10).to_i
 		end
 	end

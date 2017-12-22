@@ -4,10 +4,10 @@
 	}
 
 	function on_error(e) {
-		if(e.id == 4) {
+		if(e == 4) {
 			document.location.replace('/audiobooks');
 		} else {
-			alert(e.message);
+			alert('' + e);
 		}
 	}
 
@@ -18,7 +18,7 @@
 			$('#MyTitle').empty().append(s.playing);
 			$('#MyProgress').empty().append(s.progress_fmt);
 
-			if($icon.hasClass('.glyphicon-pause') {
+			if($icon.hasClass('.glyphicon-pause')) {
 				$icon.addClass('.glyphicon-play');
 				$icon.removeClass('.glyphicon-pause');
 			}
@@ -26,7 +26,7 @@
 			$('#MyTitle').empty().append($('#MyBookTitle').val());
 			$('#MyProgress').empty().append('...');
 
-			if($icon.hasClass('.glyphicon-play') {
+			if($icon.hasClass('.glyphicon-play')) {
 				$icon.addClass('.glyphicon-pause');
 				$icon.removeClass('.glyphicon-play');
 			}
@@ -61,7 +61,9 @@
 
 	function stop() {
 		call('stop');
-		document.location.replace('/audiobooks');
+		setTimeout(function () {
+			document.location.replace('/audiobooks');
+		}, 750);
 	}
 
 	$(function () {

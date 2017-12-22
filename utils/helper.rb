@@ -1,4 +1,8 @@
 module Helper
+	def self.read_utf8(fn)
+		File.open(fn, 'r:UTF-8', &:read)[1..-1]
+	end
+
 	def self.convert(t)
 		l, s = 0, 1
 		t.split(/:/).reverse_each do |p|

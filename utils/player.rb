@@ -37,18 +37,18 @@ class MediaPlayer
 	def play(obj, user = nil)
 		raise unless reachable?
 		stop if playing?
-		@playing, @user = obj, user
 		@server.play(obj.file_path)
 		@client.play(@stream)
+		@playing, @user = obj, user
 	end
 
 	def stop
 		@playing.on_stop(@user, progress) if @user
-		@progress = @playing = @user= nil
 		if reachable?
 			@client.stop
 			@server.stop
 		end
+		@progress = @playing = @user= nil
 	end
 
 	def seek(t)

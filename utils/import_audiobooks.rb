@@ -4,7 +4,7 @@ require 'fileutils'
 require_relative 'helper'
 
 module AudiobookImport
-	def self.import(fn, root = $audiobook_dir)
+	def self.import(fn, root)
 		name = File.basename(fn, '.*')
 		dir = File.join(root, name)
 
@@ -25,7 +25,7 @@ module AudiobookImport
 
 		puts "Building database ..."
 
-		data = JSON.parse(File.read(File.join(dir, 'data.json')))
+		data = JSON.parse(Helper::read_utf8(File.join(dir, 'data.json')))
 		franchise = Franchise.new(name: data['name'], path: name)
 		books = []
 		data['books'].each_with_index do |b, i|
