@@ -39,11 +39,17 @@ class MediaPlayer
 	end
 
 	def stop
-		raise unless reachable?
 		@playing.on_stop(@user, progress) if @user
 		@playing = @user= nil
-		@client.stop
-		@server.stop
+		if reachable?
+			@client.stop
+			@server.stop
+		end
+	end
+
+	def seek(t)
+		raise unless reachable?
+		@server.execute "seek #{Helper::to_s(t)}"
 	end
 
 	def progress

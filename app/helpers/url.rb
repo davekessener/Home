@@ -5,5 +5,15 @@ helpers do
 		page = page.split(/\//).first
 		(page.nil? or page.empty?) ? 'default' : page
 	end
+
+	def resource_path(type)
+		t = request.path_info.split(/\//)
+		if t.empty?
+			url = 'main'
+		else
+			url = t[1..2].join('/')
+		end
+		"/#{type}/#{url}.#{type}"
+	end
 end
 

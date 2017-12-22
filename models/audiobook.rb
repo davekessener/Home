@@ -12,15 +12,17 @@ class Audiobook < ActiveRecord::Base
 	def pretty(progress)
 		a = chapters.to_a.sort { |e1, e2| e1.value - e2.value }
 		ch = 'ERROR'
-		if (idx = a.index { |e| e.value > progress })
+		if (idx = a.index { |e| e.value > progress.to_i })
 			ch = "Chapter #{idx} - #{a[idx - 1].title}"
 		end
 		"#{title}: #{ch}"
 	end
 
 	def on_stop(user, progress)
-		Bookmark.where(desc: ['', nil], user: user).destroy_all
-		Bookmark.create(user: user, audiobook: self, value: progress) if progress < (duration - 10).to_i
+		if progress
+			Bookmark.where(desc: ['', nil], user: user).destroy_all
+			Bookmark.create(user: user, audiobook: self, value: progress) if progress < (duration - 10).to_i
+		end
 	end
 end
 
