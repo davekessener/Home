@@ -21,6 +21,10 @@ class MediaPlayer
 		@playing
 	end
 
+	def done?
+		(not playing?) or (@progress and @server.progress.nil?)
+	end
+
 	def reachable?
 		if @check.nil? or (t = Time.current) - @check > 2
 			@check = t
@@ -40,7 +44,7 @@ class MediaPlayer
 
 	def stop
 		@playing.on_stop(@user, progress) if @user
-		@playing = @user= nil
+		@progress = @playing = @user= nil
 		if reachable?
 			@client.stop
 			@server.stop

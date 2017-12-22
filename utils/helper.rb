@@ -15,7 +15,7 @@ module Helper
 	end
 
 	def self.is_server_reachable(url)
-		(`fping -q -c 1 -t 100 "#{url}" 2>&1` =~ /xmt\/rcv\/%loss = 1\/1/)
+		(`fping -q -c 1 -t 300 "#{url}" 2>&1` =~ /xmt\/rcv\/%loss = 1\/1/)
 	end
 end
 

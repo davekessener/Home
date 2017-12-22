@@ -4,12 +4,33 @@
 	}
 
 	function on_error(e) {
-		$('#MyError').append(e);
+		if(e.id == 4) {
+			document.location.replace('/audiobooks');
+		} else {
+			alert(e.message);
+		}
 	}
 
 	function update(s) {
-		$('#MyTitle').empty().append(s.playing);
-		$('#MyProgress').empty().append(s.progress_fmt);
+		var $icon = $('#MyPlayPauseBtn').children('.glyphicon');
+
+		if(s.id == 0) {
+			$('#MyTitle').empty().append(s.playing);
+			$('#MyProgress').empty().append(s.progress_fmt);
+
+			if($icon.hasClass('.glyphicon-pause') {
+				$icon.addClass('.glyphicon-play');
+				$icon.removeClass('.glyphicon-pause');
+			}
+		} else if(s.id == 1) {
+			$('#MyTitle').empty().append($('#MyBookTitle').val());
+			$('#MyProgress').empty().append('...');
+
+			if($icon.hasClass('.glyphicon-play') {
+				$icon.addClass('.glyphicon-pause');
+				$icon.removeClass('.glyphicon-play');
+			}
+		}
 	}
 
 	function handle(r) {
@@ -17,7 +38,6 @@
 			on_error(r.error);
 		} else if(typeof r.status !== 'undefined') {
 			update(r.status);
-			setTimeout(getStatus, 500);
 		}
 	}
 
@@ -27,6 +47,8 @@
 
 	function getStatus() {
 		call('status');
+
+		setTimeout(getStatus, 500);
 	}
 
 	function play() {
@@ -60,8 +82,7 @@
 		});
 
 		$('#MyStopBtn').on('click', stop);
-
-		play();
+		getStatus();
 	});
 })(jQuery);
 

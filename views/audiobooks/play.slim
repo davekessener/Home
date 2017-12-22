@@ -1,17 +1,17 @@
 input#MyBookID type="hidden" value="#{book.id}"
+input#MyBookTitle type="hidden" value="#{book.title}"
 
 .container.well
 	p =book.franchise.name
 	p#MyTitle =book.title
 	p#MyProgress ="..."
-	p#MyError
 	
 footer.footer
 	.container-fluid
 		.row
 			.col-sm-6
 				button#MyPlayPauseBtn.btn-spacer.btn.btn-block.btn-success
-					span.glyphicon.glyphicon-pause
+					span.glyphicon.glyphicon-play
 			.col-sm-6
 				button#MyStopBtn.btn.btn-block.btn-danger
 					span.glyphicon.glyphicon-stop

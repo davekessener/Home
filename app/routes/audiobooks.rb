@@ -1,3 +1,12 @@
+ERROR_NO_DEVICE = 0
+ERROR_NO_BOOK = 1
+ERROR_NOT_PLAYING = 2
+ERROR_UNREACHABLE = 3
+ERROR_MOVED = 4
+
+STATUS_PLAYING = 0
+STATUS_STOPPED = 1
+
 before '/audiobooks' do
 	request.path_info = '/audiobooks/index'
 end
@@ -25,22 +34,29 @@ end
 def get_status(player, book)
 	p = player.progress.to_i
 	{
+		id: STATUS_PLAYING,
 		playing: book.pretty(p),
 		progress: p,
 		progress_fmt: "#{Helper::to_s(p)} / #{Helper::to_s(book.duration)}"
 	}
 end
 
+def get_error(id, msg)
+	{
+		error: { id: id, message: msg }
+	}.to_json
+end
+
 post '/audiobooks/play' do
 	content_type :json
 
 	if (player = current_device).nil?
-		{ error: 'FATAL: No device selected!'}.to_json
+		get_error(ERROR_NO_DEVICE, 'FATAL: No device selected!')
 	elsif (book = Audiobook.find(params['book'].to_i)).nil?
-		{ error: "FATAL: No book selected! (id = #{params['book']})" }.to_json
+		get_error(ERROR_NO_BOOK, "FATAL: No book selected! (id = #{params['book']})")
 	elsif not player.reachable?
 		player.stop if player.playing?
-		{ error: s('unreachable') }
+		get_error(ERROR_UNREACHABLE, s('unreachable'))
 	else
 		bm = Bookmark.where(desc: [nil, ''], user: current_user).first
 		bm = Bookmark.find(params['bookmark'].to_i) if params['bookmark']
@@ -48,7 +64,7 @@ post '/audiobooks/play' do
 		player.play(book, current_user)
 		player.seek(bm.value) if bm
 
-		{ status: get_status(player, book) }.to_json
+		{ }.to_json
 	end
 end
 
@@ -56,11 +72,13 @@ post '/audiobooks/stop' do
 	content_type :json
 
 	if (player = current_device).nil?
-		{ error: 'FATAL: No device selected!' }.to_json
+		get_error(ERROR_NO_DEVICE, 'FATAL: No device selected!')
 	elsif not player.playing?
-		{ error: 'Not playing.' }.to_json
+		get_error(ERROR_NOT_PLAYING, 'Not playing.')
 	else
 		player.stop
+
+		{ }.to_json
 	end
 end
 
@@ -68,11 +86,18 @@ post '/audiobooks/status' do
 	content_type :json
 
 	if (player = current_device).nil?
-		{ error: 'FATAL: No device selected!' }.to_json
-	elsif not player.playing?
-		{ error: 'Not playing.' }.to_json
+		get_error(ERROR_NO_DEVICE, 'FATAL: No device selected!')
+	elsif not player.reachable?
+		get_error(ERROR_UNREACHABLE, s('unreachable'))
+	elsif player.playing? and (player.user != current_user or player.playing.id != params['book'].to_i)
+		get_error(ERROR_MOVED, s('moved'));
 	else
-		{ status: get_status(player, player.playing) }.to_json
+		if player.done?
+			player.stop if player.playing?
+			{ status: { id: STATUS_STOPPED } }.to_json
+		else
+			{ status: get_status(player, player.playing) }.to_json
+		end
 	end
 end
 
