@@ -3,7 +3,8 @@ module Audiobooks
 		:unknown,
 		:play,
 		:stop,
-		:status
+		:status,
+		:seek
 	]
 
 	ACTION_STOPPED = 1
@@ -35,6 +36,10 @@ module Audiobooks
 			end
 		end
 
+		def pretty_status(book, p)
+			"<p>#{book.pretty(p)}</p><p>#{Helper::to_s(p)}/#{Helper::to_s(book.duration)}</p>"
+		end
+
 		def status(args)
 			if @device.playing?
 				if @device.done?
@@ -44,17 +49,43 @@ module Audiobooks
 					book, p = @device.playing, @device.progress
 					{ status: {
 						running: true,
-						display: "<p>#{book.pretty(p)}</p>" +
-							"<p>#{Helper::to_s(p)}/#{Helper::to_s(book.duration)}</p>"
+						display: pretty_status(book, p)
 					} }
 				end
 			else
 				book = Audiobook.find(args[:message])
 				{ status: {
 					running: false,
-					display: book.title
+					display: pretty_status(book, book.left_off(@user))
 				} }
 			end
+		end
+
+		def seek(args)
+			if (s = args[:message])
+				book, pos = s[:book_id], s[:seek]
+
+				if @device.playing?
+					book = @device.playing
+					p = @device.progress || book.left_off(@user)
+				else
+					book = Audiobook.find(book.to_i)
+					p = book.left_off(@user)
+				end
+
+				if pos[0] == '+'
+					pos = p + Helper::convert(pos[1..-1])
+				elsif pos[0] == '-'
+					pos = p - Helper::convert(pos[1..-1])
+				else
+					pos = Helper::convert(pos)
+				end
+
+				pos = [[0, pos].max, book.duration - 1].min
+
+				@device.seek(pos)
+			end
+			{ }
 		end
 	end
 

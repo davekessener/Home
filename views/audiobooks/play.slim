@@ -1,11 +1,42 @@
+script src="/js/lib/bootstrap-toolkit.js"
 script src="/js/async-queue.js"
+script src="/js/auto-collapse.js"
 
 input#MyBookID type="hidden" value="#{book.id}"
 
-.container.well
-	p =book.franchise.name
-	p#MyDisplay =book.title
-	
+.container-fluid
+	.row
+		.col-md-2
+		.col-md-4
+			.well
+				p =book.franchise.name
+				#MyDisplay
+					p =book.title
+			.row
+				.col-xs-4 style="padding-right: 0px;"
+					button#MySeekBackward.btn.btn-block.btn-success
+						span.glyphicon.glyphicon-step-backward
+				.col-xs-4 style="padding-left: 2px; padding-right: 2px;"
+					.dropdown
+						button#MySeekSelector.btn.btn-block.btn-success.dropdown-toggle type="button" data-toggle="dropdown"
+							| 00:00
+						ul.dropdown-menu
+							- ['00:00', '00:05', '00:10', '00:30', '01:00', '05:00', '15:00'].each do |e|
+								li: a.seek-select href="#" data-seek="#{e}" =e
+				.col-xs-4 style="padding-left: 0px;"
+					button#MySeekForward.btn.btn-block.btn-success
+						span.glyphicon.glyphicon-step-forward
+			.row
+				.col-xs-8
+				.col-xs-4
+/		.col-md-4
+			.panel.panel-primary
+				.panel-body style="height: 100%; overflow-y: scroll;"
+					button.btn.btn-block.auto-collapse data-toggle="collapse" data-target="#MyChapterList" =s('bookmarks')
+					#MyChapterList.list-group.collapse
+						- book.chapters.each_with_index do |ch, i|
+							button.list-group-item type="button" ="#{s('chapter')} #{i}: #{ch.title}"
+
 footer.footer
 	.container-fluid
 		.row

@@ -1,7 +1,8 @@
 (function ($, Server) {
 	const CMD_PLAY = 1,
 		  CMD_STOP = 2,
-		  CMD_STATUS = 3;
+		  CMD_STATUS = 3,
+		  CMD_SEEK = 4;
 	const ACTION_STOPPED = 1,
 		  ACTION_MOVED = 2;
 
@@ -40,7 +41,7 @@
 	}
 
 	function onTimeout() {
-		alert('Connection timed out!');
+		document.location.reload();
 	}
 
 	function onError(e) {
@@ -90,6 +91,13 @@
 		}
 	}
 
+	function seek(d) {
+		connection.send(CMD_SEEK, {
+			book_id: $('#MyBookID').val(),
+			seek: d
+		});
+	}
+
 	function getDefaultMsg() {
 		return {
 			id: CMD_STATUS,
@@ -99,7 +107,8 @@
 
 	$(function () {
 		var $playBtn = $('#MyPlayPauseBtn'),
-			$stopBtn = $('#MyStopBtn');
+			$stopBtn = $('#MyStopBtn'),
+			$seek = $('#MySeekSelector');
 
 		$playBtn.on('click', playPause);
 		$stopBtn.on('click', stop);
@@ -107,10 +116,25 @@
 		state = CreateState($playBtn);
 
 		actions[ACTION_MOVED] = onMoved;
+
+		$('.seek-select').each(function () {
+			$(this).on('click', function () {
+				$seek.html($(this).data('seek'))
+			});
+		});
+
+		$('#MySeekForward').on('click', function () {
+			seek('+' + $seek.html());
+		});
+
+		$('#MySeekBackward').on('click', function () {
+			seek('-' + $seek.html());
+		});
 		
 		connection = Server.open({
 			path: '/audiobooks/play',
 			interval: 1000,
+			maxResponseTime: 2000,
 			receiver: receive,
 			errorHandler: onTimeout,
 			defaultMsg: getDefaultMsg

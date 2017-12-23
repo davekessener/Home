@@ -7,6 +7,8 @@ before do
 	elsif device.playing? and device.user != current_user
 		session[:return_to] = request.path_info
 		request.path_info = '/device/kill'
+	elsif not device.reachable?
+		redirect '/device/unreachable'
 	end
 end
 
@@ -29,4 +31,7 @@ get '/device/select' do
 	end
 end
 
+get '/device/unreachable' do
+	slim :'device/unreachable'
+end
 

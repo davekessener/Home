@@ -1,3 +1,19 @@
 {
+	"users" : "Benutzer",
+	"login" : {
+		"title" : "Login"
+	},
+	"default" : {
+		"title" : "HOME",
+		"greet" : "Herzlich willkommen"
+	},
+	"audiobooks" : {
+		"chapter" : "Kapitel",
+		"chapters" : "Kapitel",
+		"title" : "Hoerbuecher"
+	},
+	"device" : {
+		"title" : "HOME"
+	}
 }
 

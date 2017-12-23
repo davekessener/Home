@@ -62,6 +62,7 @@ class MediaPlayer
 
 	def progress
 		raise unless reachable?
+		@client.execute 'play'
 		@progress = @server.progress  || @progress
 	end
 
