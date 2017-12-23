@@ -1,7 +1,14 @@
 .container
-	- Franchise.find_each do |franchise|
+	- Franchise.all.to_a.each_slice(12) do |a12|
 		.row
-			.col-xs-12
-				a href="/audiobooks/franchise/#{franchise.id}"
-					img.thumbnail src="/resources/icons/audiobooks/#{franchise.path}.png" width="64" height="64"
+			- a12.each_slice(6) do |a6|
+				.col-md-6
+					.row
+						- a6.each_slice(3) do |a3|
+							.col-sm-6
+								.row
+									- a3.each do |franchise|
+										.col-xs-4
+											a href="/audiobooks/franchise/#{franchise.id}"
+												img.thumbnail src="/resources/icons/audiobooks/#{franchise.path}.png" width="80" height="80"
 

@@ -2,6 +2,8 @@ Dir.glob("#{$root_dir}/app/audiobooks/**/*.rb").each do |fn|
 	require fn
 end
 
+# ==============================================================================
+
 before '/audiobooks' do
 	request.path_info = '/audiobooks/index'
 end
@@ -12,7 +14,11 @@ end
 
 get '/audiobooks/franchise/:id' do |id|
 	if (f = Franchise.find(id.to_i))
-		slim :'audiobooks/franchise', locals: { franchise: f }
+		if f.audiobooks.length > 1
+			slim :'audiobooks/franchise', locals: { franchise: f }
+		else
+			redirect "/audiobooks/play/#{f.audiobooks.first.id}"
+		end
 	else
 		status 404
 	end
@@ -25,6 +31,8 @@ get '/audiobooks/play/:id' do |id|
 		status 404
 	end
 end
+
+# ==============================================================================
 
 post '/audiobooks/play' do
 	content_type :json
