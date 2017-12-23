@@ -10,6 +10,7 @@ require 'json'
 require_relative 'environment'
 
 set :root, $root_dir
+enable :lock
 
 Dir.glob("{utils,models}/**/*.rb").each do |f|
 	require_relative f

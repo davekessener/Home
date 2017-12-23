@@ -22,7 +22,7 @@ class MPC
 	end
 
 	def progress
-		if (r = execute('status').split(/\n/)).length > 1
+		if (r = execute('play').split(/\n/)).length > 1
 			if r[1] =~ /([0-9]+:[0-5][0-9])\/([0-9]+:[0-5][0-9])/
 				Helper::convert($1)
 			end

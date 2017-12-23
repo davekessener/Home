@@ -8,6 +8,15 @@ before '/audiobooks' do
 	request.path_info = '/audiobooks/index'
 end
 
+before '/audiobooks/*' do
+	if request.get?
+		if (device = current_device) and (book = device.playing) and device.user == current_user
+			p = "/audiobooks/play/#{book.id}"
+			redirect p unless request.path_info == p
+		end
+	end
+end
+
 get '/audiobooks/index' do
 	slim :'audiobooks/index'
 end
@@ -39,26 +48,4 @@ post '/audiobooks/play' do
 
 	Audiobooks::execute(params, current_device, current_user).to_json
 end
-
-#post '/audiobooks/play' do
-#	content_type :json
-#
-#	Audiobooks::play(
-#		current_user,
-#		current_device,
-#		Audiobook.find(params['book'].to_i),
-#		params['bookmark']).to_json
-#end
-#
-#post '/audiobooks/stop' do
-#	content_type :json
-#
-#	Audiobooks::stop(current_device).to_json
-#end
-#
-#post '/audiobooks/status' do
-#	content_type :json
-#
-#	Audiobooks::status(current_device, current_user, params['book'].to_i).to_json
-#end
 

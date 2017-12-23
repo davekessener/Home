@@ -1,6 +1,6 @@
 before do
 	p = current_page
-	pass unless p == 'audiobooks' or p == 'radio'
+	pass unless request.get? and (p == 'audiobooks' or p == 'radio')
 	if (device = current_device).nil?
 		session[:return_to] = request.path_info
 		request.path_info = '/device/select'
@@ -11,7 +11,12 @@ before do
 end
 
 get '/device/kill' do
-	slim :'device/kill'
+	if params['confirm']
+		current_device.stop
+		redirect (session[:return_to] || '/')
+	else
+		slim :'device/kill'
+	end
 end
 
 get '/device/select' do

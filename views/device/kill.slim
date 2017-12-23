@@ -1,0 +1,16 @@
+.container
+	p =s('message')
+	table.table
+		tr
+			td =s('device')
+			td =current_device.name
+		tr
+			td =s('user')
+			td =current_device.user.name
+	p =s('question')
+	.row
+		.col-sm-6
+			a.btn.btn-block.btn-danger href="/device/kill?confirm=1" =s('kill')
+		.col-sm-6
+			a.btn.btn-block.btn-success href="/device/select" =s('cancel')
+

@@ -70,11 +70,15 @@
 	}
 
 	function playPause() {
+		var id = $('#MyBookID').val();
+
 		if(state.get()) {
 			connection.send(CMD_STOP);
 		} else {
-			connection.send(CMD_PLAY, $('#MyBookID').val());
+			connection.send(CMD_PLAY, id);
 		}
+
+		connection.send(CMD_STATUS, id)
 	}
 
 	function stop() {

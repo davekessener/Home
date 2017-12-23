@@ -17,6 +17,10 @@ class MediaPlayer
 		@stream = "http://#{ServerInfo.ip}:#{ServerInfo.http + device.remote_idx}/"
 	end
 
+	def name
+		@device.name
+	end
+
 	def playing?
 		@playing
 	end
@@ -58,7 +62,7 @@ class MediaPlayer
 
 	def progress
 		raise unless reachable?
-		@progress = @server.progress || @progress
+		@progress = @server.progress  || @progress
 	end
 
 	def self.by_device(device)
