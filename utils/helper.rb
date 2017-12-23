@@ -3,6 +3,16 @@ module Helper
 		File.open(fn, 'r:UTF-8', &:read)[1..-1]
 	end
 
+	def self.symbolized_hash(h)
+		return h unless h.is_a? Hash
+
+		r = {}
+		h.each do |k, v|
+			r[(k.to_sym rescue k) || k] = Helper::symbolized_hash(v)
+		end
+		r
+	end
+
 	def self.convert(t)
 		l, s = 0, 1
 		t.split(/:/).reverse_each do |p|

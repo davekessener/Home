@@ -1,10 +1,10 @@
+script src="/js/async-queue.js"
+
 input#MyBookID type="hidden" value="#{book.id}"
-input#MyBookTitle type="hidden" value="#{book.title}"
 
 .container.well
 	p =book.franchise.name
-	p#MyTitle =book.title
-	p#MyProgress ="..."
+	p#MyDisplay =book.title
 	
 footer.footer
 	.container-fluid

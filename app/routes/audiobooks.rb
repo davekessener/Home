@@ -37,22 +37,28 @@ end
 post '/audiobooks/play' do
 	content_type :json
 
-	Audiobooks::play(
-		current_user,
-		current_device,
-		Audiobook.find(params['book'].to_i),
-		params['bookmark']).to_json
+	Audiobooks::execute(params, current_device, current_user).to_json
 end
 
-post '/audiobooks/stop' do
-	content_type :json
-
-	Audiobooks::stop(current_device).to_json
-end
-
-post '/audiobooks/status' do
-	content_type :json
-
-	Audiobooks::status(current_device, current_user, params['book'].to_i).to_json
-end
+#post '/audiobooks/play' do
+#	content_type :json
+#
+#	Audiobooks::play(
+#		current_user,
+#		current_device,
+#		Audiobook.find(params['book'].to_i),
+#		params['bookmark']).to_json
+#end
+#
+#post '/audiobooks/stop' do
+#	content_type :json
+#
+#	Audiobooks::stop(current_device).to_json
+#end
+#
+#post '/audiobooks/status' do
+#	content_type :json
+#
+#	Audiobooks::status(current_device, current_user, params['book'].to_i).to_json
+#end
 

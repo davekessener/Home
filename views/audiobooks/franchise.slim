@@ -7,7 +7,7 @@
 			td.desc-column
 				p.franchise =franchise.name
 	.list-group
-		- franchise.audiobooks.each do |book|
+		- franchise.audiobooks.find_each do |book|
 			a.btn.list-group-item.list-group-item-success href="/audiobooks/play/#{book.id}"
 				.container-fluid
 					.row
@@ -16,7 +16,7 @@
 								=book.title
 						.col-md-3.hidden-sm.hidden-xs
 							span.pull-right
-								="#{book.chapters.length} #{s('chapters')}"
+								="#{book.chapter_count} #{s('chapters')}"
 						.col-md-1.col-sm-4.hidden-xs
 							span.pull-right
 								=Helper::to_s(book.duration)

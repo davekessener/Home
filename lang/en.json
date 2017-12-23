@@ -6,6 +6,10 @@
 	"default" : {
 		"title" : "HOME Center",
 		"greet" : "Hello"
+	},
+	"audiobooks" : {
+		"chapter" : "Chapter",
+		"chapters" : "Chapters"
 	}
 }
 

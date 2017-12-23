@@ -1,9 +1,9 @@
 helpers do
 	def current_language
 		if (u = current_user)
-			$lang[u.lang]
+			$language = $lang[u.lang]
 		else
-			$lang[$lang[:default]]
+			$language = $lang[$lang[:default]]
 		end
 	end
 
@@ -40,6 +40,7 @@ module Language
 			Language::impl([], l, data)
 			$lang[id] = l
 		end
+		$language = $lang[$lang[:default]]
 	end
 end
 
