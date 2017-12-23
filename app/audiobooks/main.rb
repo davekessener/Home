@@ -83,7 +83,11 @@ module Audiobooks
 
 				pos = [[0, pos].max, book.duration - 1].min
 
-				@device.seek(pos)
+				if @device.playing?
+					@device.seek(pos)
+				else
+					book.on_stop(@user, pos)
+				end
 			end
 			{ }
 		end

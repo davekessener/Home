@@ -12,7 +12,7 @@ input#MyBookID type="hidden" value="#{book.id}"
 				p =book.franchise.name
 				#MyDisplay
 					p =book.title
-			.row
+			.row style="margin-bottom: 10px;"
 				.col-xs-4 style="padding-right: 0px;"
 					button#MySeekBackward.btn.btn-block.btn-success
 						span.glyphicon.glyphicon-step-backward
@@ -27,8 +27,14 @@ input#MyBookID type="hidden" value="#{book.id}"
 					button#MySeekForward.btn.btn-block.btn-success
 						span.glyphicon.glyphicon-step-forward
 			.row
-				.col-xs-8
-				.col-xs-4
+				.col-xs-8 style="paddig-right: 2px;"
+					.input-group
+						span.input-group-addon
+							i.glyphicon.glyphicon-time
+						input#MySeekPos.form-control type="text" value="00:00"
+				.col-xs-4 style="padding-left: 0px;"
+					button#MyDoSeek.btn.btn-block.btn-success
+						span.glyphicon.glyphicon-share-alt
 /		.col-md-4
 			.panel.panel-primary
 				.panel-body style="height: 100%; overflow-y: scroll;"

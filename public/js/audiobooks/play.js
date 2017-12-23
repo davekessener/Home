@@ -130,6 +130,10 @@
 		$('#MySeekBackward').on('click', function () {
 			seek('-' + $seek.html());
 		});
+
+		$('#MyDoSeek').on('click', function () {
+			seek($('#MySeekPos').val());
+		});
 		
 		connection = Server.open({
 			path: '/audiobooks/play',
