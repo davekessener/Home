@@ -1,15 +1,20 @@
 {
+	"users" : "Users",
 	"login" : {
-		"title" : "Login",
-		"user" : "User"
+		"title" : "Login"
 	},
 	"default" : {
 		"title" : "HOME Center",
 		"greet" : "Hello"
 	},
 	"audiobooks" : {
+		"title" : "Audiobooks",
 		"chapter" : "Chapter",
 		"chapters" : "Chapters"
+	},
+	"device" : {
+		"title" : "Devices",
+		"message" : "Pick a playback device:"
 	}
 }
 

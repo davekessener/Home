@@ -46,7 +46,7 @@ module Audiobooks
 					@device.stop
 					{ action: ACTION_STOPPED }
 				else
-					book, p = @device.playing, @device.progress
+					book, p = @device.playing, @device.progress.to_i
 					{ status: {
 						running: true,
 						display: pretty_status(book, p)

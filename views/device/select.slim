@@ -1,3 +1,8 @@
-- RadioServer.find_each do |device|
-	a href="/device/select?device=#{device.id}" =device.name
+.container
+	.row
+		p =s('message')
+	.row
+		.list-group
+			- RadioServer.find_each do |device|
+				a.list-group-item href="/device/select?device=#{device.id}" =device.name
 
