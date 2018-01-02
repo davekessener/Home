@@ -4,7 +4,8 @@ module Audiobooks
 		:play,
 		:stop,
 		:status,
-		:seek
+		:seek,
+		:volume
 	]
 
 	ACTION_STOPPED = 1
@@ -23,7 +24,7 @@ module Audiobooks
 			book = Audiobook.find(args[:message])
 			bm = Bookmark.where(desc: [nil, ''], user: @user, audiobook: book).first
 			@device.play(book, @user)
-			@device.seek(bm.value) if bm
+			@device.seek(book.translate(bm.value)) if bm
 			{ }
 		end
 
@@ -46,17 +47,19 @@ module Audiobooks
 					@device.stop
 					{ action: ACTION_STOPPED }
 				else
-					book, p = @device.playing, @device.progress.to_i
+					book = @device.playing
 					{ status: {
 						running: true,
-						display: pretty_status(book, p)
+						display: pretty_status(book, book.progress_of(@device.progress)),
+						volume: @device.volume
 					} }
 				end
 			else
 				book = Audiobook.find(args[:message])
 				{ status: {
 					running: false,
-					display: pretty_status(book, book.left_off(@user))
+					display: pretty_status(book, book.left_off(@user)),
+					volume: @device.volume
 				} }
 			end
 		end
@@ -67,7 +70,7 @@ module Audiobooks
 
 				if @device.playing?
 					book = @device.playing
-					p = @device.progress || book.left_off(@user)
+					p = book.progress_of(@device.progress)
 				else
 					book = Audiobook.find(book.to_i)
 					p = book.left_off(@user)
@@ -84,11 +87,16 @@ module Audiobooks
 				pos = [[0, pos].max, book.duration - 1].min
 
 				if @device.playing?
-					@device.seek(pos)
+					@device.seek(book.translate(pos))
 				else
 					book.on_stop(@user, pos)
 				end
 			end
+			{ }
+		end
+
+		def volume(args)
+			@device.volume args[:message]
 			{ }
 		end
 	end

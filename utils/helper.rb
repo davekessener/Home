@@ -28,7 +28,7 @@ module Helper
 		[d, m, s].map { |e| '%02d' % e }.join(':')
 	end
 
-	def self.is_server_reachable(url)
+	def self.is_server_reachable?(url)
 		(`fping -q -c 1 -t 300 "#{url}" 2>&1` =~ /xmt\/rcv\/%loss = 1\/1/)
 	end
 end

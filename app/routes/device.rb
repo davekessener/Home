@@ -12,6 +12,11 @@ before do
 	end
 end
 
+get '/devices' do
+	session[:return_to] = request.referer
+	redirect '/device/select'
+end
+
 get '/device/kill' do
 	if params['confirm']
 		current_device.stop

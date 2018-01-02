@@ -2,7 +2,8 @@
 	const CMD_PLAY = 1,
 		  CMD_STOP = 2,
 		  CMD_STATUS = 3,
-		  CMD_SEEK = 4;
+		  CMD_SEEK = 4,
+		  CMD_VOLUME = 5;
 	const ACTION_STOPPED = 1,
 		  ACTION_MOVED = 2;
 
@@ -37,6 +38,9 @@
 		}
 		if(typeof s.display !== 'undefined') {
 			$('#MyDisplay').empty().append(s.display);
+		}
+		if(typeof s.volume !== 'undefined') {
+			$('#MyVolumeSlider').slider('setValue', s.volume);
 		}
 	}
 
@@ -98,6 +102,10 @@
 		});
 	}
 
+	function volume(v) {
+		connection.send(CMD_VOLUME, v);
+	}
+
 	function getDefaultMsg() {
 		return {
 			id: CMD_STATUS,
@@ -133,6 +141,10 @@
 
 		$('#MyDoSeek').on('click', function () {
 			seek($('#MySeekPos').val());
+		});
+
+		$('#MyVolumeSlider').slider('on', 'change', function(o) {
+			volume(o.newValue);
 		});
 		
 		connection = Server.open({

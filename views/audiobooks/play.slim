@@ -1,4 +1,6 @@
+link rel="stylesheet" href="/css/lib/bootstrap-slider.min.css"
 script src="/js/lib/bootstrap-toolkit.js"
+script src="/js/lib/bootstrap-slider.min.js"
 script src="/js/async-queue.js"
 script src="/js/auto-collapse.js"
 
@@ -35,6 +37,9 @@ input#MyBookID type="hidden" value="#{book.id}"
 				.col-xs-4 style="padding-left: 0px;"
 					button#MyDoSeek.btn.btn-block.btn-success
 						span.glyphicon.glyphicon-share-alt
+			.row
+				.col-cs-12
+					input#MyVolumeSlider type="text" data-provide="slider" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-tooltip="hide"
 /		.col-md-4
 			.panel.panel-primary
 				.panel-body style="height: 100%; overflow-y: scroll;"

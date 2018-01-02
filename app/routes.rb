@@ -3,6 +3,9 @@ before do
 		session[:return_to] = request.path_info
 		redirect '/login' 
 	end
+	if request.path_info.start_with? '/login' and logged_in?
+		redirect '/'
+	end
 end
 
 get '/' do

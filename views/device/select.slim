@@ -4,5 +4,5 @@
 	.row
 		.list-group
 			- RadioServer.find_each do |device|
-				a.list-group-item href="/device/select?device=#{device.id}" =device.name
+				a.list-group-item href="/device/select?device=#{device.id}" class="#{'active' if device == current_device} #{'list-group-item-danger active' unless Helper::is_server_reachable? device.url}" =device.name
 

@@ -3,7 +3,7 @@ require_relative 'mpc'
 
 class MediaPlayer
 	ServerInfo = {
-		ip: '192.168.1.29',
+		ip: '192.168.1.19',
 		service: 6600,
 		http: 8000
 	}.to_o
@@ -12,8 +12,8 @@ class MediaPlayer
 
 	def initialize(device)
 		@device = device
-		@server = MPC.new(ServerInfo.ip, ServerInfo.service + device.remote_idx)
-		@client = MPC.new(device.url, ServerInfo.service)
+		@server = MPC::Client.new(ServerInfo.ip, ServerInfo.service + device.remote_idx)
+		@client = MPC::Client.new(device.url, ServerInfo.service)
 		@stream = "http://#{ServerInfo.ip}:#{ServerInfo.http + device.remote_idx}/"
 	end
 
@@ -26,14 +26,13 @@ class MediaPlayer
 	end
 
 	def done?
-		(not playing?) or (@progress and @server.progress.nil?)
+		@server.status['state'] != 'play'
 	end
 
 	def reachable?
 		if @check.nil? or (t = Time.current) - @check > 2
 			@check = t
-			return false unless Helper::is_server_reachable(@client.ip)
-			return false unless Helper::is_server_reachable(@server.ip)
+			(@client.reachable? and @server.reachable?)
 		end
 		true
 	end
@@ -41,29 +40,46 @@ class MediaPlayer
 	def play(obj, user = nil)
 		raise unless reachable?
 		stop if playing?
-		@server.play(obj.file_path)
-		@client.play(@stream)
+		@server.play(obj.files)
+		@client.play([@stream])
 		@playing, @user = obj, user
 	end
 
 	def stop
 		@playing.on_stop(@user, progress) if @user
-		if reachable?
-			@client.stop
-			@server.stop
-		end
+		@client.stop
+		@server.stop
 		@progress = @playing = @user= nil
 	end
 
-	def seek(t)
+	def seek(pos)
 		raise unless reachable?
-		@server.execute "seek #{Helper::to_s(t)}"
+		if pos.is_a? Hash
+			@server.execute "seek #{pos[:song]} #{pos[:elapsed]}"
+		else
+			@server.execute "seekcur #{pos.to_i}"
+		end
 	end
 
 	def progress
 		raise unless reachable?
-		@client.execute 'play'
-		@progress = @server.progress  || @progress
+		if (s = @server.status)['state'] == 'play'
+			@progress = {
+				song: s['song'].to_i,
+				elapsed: s['elapsed'].to_i
+			}
+			@client.execute 'play'
+		end
+		(@progress || no_progress)
+	end
+
+	def volume(v = nil)
+		if v
+			@client.set_volume v
+			v
+		else
+			@client.get_volume
+		end
 	end
 
 	def self.by_device(device)
@@ -73,5 +89,11 @@ class MediaPlayer
 	end
 
 	private_class_method :new
+
+	private
+
+	def no_progress
+		@@no_prog ||= { song: 0, elapsed: 0 }
+	end
 end
 
