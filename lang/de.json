@@ -10,7 +10,8 @@
 	"audiobooks" : {
 		"chapter" : "Kapitel",
 		"chapters" : "Kapitel",
-		"title" : "Hoerbuecher"
+		"title" : "Hoerbuecher",
+		"bookmarks" : "Kapitelauswahl"
 	},
 	"device" : {
 		"title" : "HOME",

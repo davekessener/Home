@@ -7,7 +7,7 @@
 	const ACTION_STOPPED = 1,
 		  ACTION_MOVED = 2;
 
-	var connection, state, actions = {};
+	var connection, dragVal = -1, state, actions = {};
 
 	function CreateState($this) {
 		var $icon = $this.children('.glyphicon');
@@ -40,7 +40,11 @@
 			$('#MyDisplay').empty().append(s.display);
 		}
 		if(typeof s.volume !== 'undefined') {
-			$('#MyVolumeSlider').slider('setValue', s.volume);
+			if(s.volume < 0) {
+				$('#MyVolumeSlider').hide();
+			} else if(dragVal != s.volume) {
+				$('#MyVolumeSlider').slider('setValue', dragVal = s.volume);
+			}
 		}
 	}
 
@@ -113,6 +117,10 @@
 		};
 	}
 
+	function resizeList() {
+		$('#MyChapterList').css('height', $('html').height() - 120);
+	}
+
 	$(function () {
 		var $playBtn = $('#MyPlayPauseBtn'),
 			$stopBtn = $('#MyStopBtn'),
@@ -143,9 +151,22 @@
 			seek($('#MySeekPos').val());
 		});
 
-		$('#MyVolumeSlider').slider('on', 'change', function(o) {
-			volume(o.newValue);
+		$('#MyVolumeSlider').slider('on', 'slideStop', function(v) {
+			volume(v);
 		});
+
+		$('#MyChapterSelector').on('click', function () {
+			document.location.replace('/audiobooks/chapters/' + $('#MyBookID').val());
+		});
+
+		$('.chapter-list-item').each(function () {
+			$(this).on('click', function () {
+				seek($(this).children('input').val());
+			});
+		});
+
+		$(window).resize(resizeList);
+		setTimeout(resizeList, 500);
 		
 		connection = Server.open({
 			path: '/audiobooks/play',

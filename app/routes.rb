@@ -3,7 +3,7 @@ before do
 		session[:return_to] = request.path_info
 		redirect '/login' 
 	end
-	if request.path_info.start_with? '/login' and logged_in?
+	if request.get? and request.path_info.start_with? '/login' and logged_in?
 		redirect '/'
 	end
 end
@@ -21,6 +21,7 @@ post '/login' do
 	uid = params['user_id']
 	if uid and User.find(uid.to_i)
 		session[:user_id] = uid.to_i
+		raise unless current_user.id == uid.to_i
 		{ redirect: (session[:return_to] || request.referer).to_s }.to_json
 	else
 		status 400

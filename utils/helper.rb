@@ -1,6 +1,7 @@
 module Helper
 	def self.read_utf8(fn)
-		File.open(fn, 'r:UTF-8', &:read)[1..-1]
+		s = File.open(fn, 'r:UTF-8', &:read)
+		((s[0] && s[0].ord == 65279) ? s[1..-1] : s)
 	end
 
 	def self.symbolized_hash(h)

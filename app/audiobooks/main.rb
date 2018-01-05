@@ -96,7 +96,7 @@ module Audiobooks
 		end
 
 		def volume(args)
-			@device.volume args[:message]
+			@device.volume args[:message].to_i
 			{ }
 		end
 	end

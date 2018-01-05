@@ -4,7 +4,8 @@ require 'fileutils'
 require_relative 'helper'
 
 module AudiobookImport
-	def self.import(fn, root)
+	def self.import(fn)
+		root = File.dirname(File.expand_path(fn))
 		name = File.basename(fn, '.*')
 		dir = File.join(root, name)
 
@@ -21,21 +22,27 @@ module AudiobookImport
 		end
 
 #		File.delete(fn)
-		FileUtils.cp(File.join(dir, 'icon.png'), "#{$root_dir}/public/resources/icons/#{name}.png")
+		FileUtils.cp(File.join(dir, 'icon.png'), "#{$root_dir}/public/resources/icons/audiobooks/#{name}.png")
 
-		puts "Building database ..."
+		data_fn = File.join(dir, 'data.json')
+		puts "Building database from [#{data_fn}] ..."
 
-		data = JSON.parse(Helper::read_utf8(File.join(dir, 'data.json')))
+		data = JSON.parse(Helper::read_utf8(data_fn))
 		franchise = Franchise.new(name: data['name'], path: name)
 		books = []
 		data['books'].each_with_index do |b, i|
-			book = Audiobook.new(title: b['name'], idx: i, duration: Helper::convert(b['length']))
+			book = Audiobook.new(title: b['name'], idx: i)
 			len = 0
 			chapters = []
 			b['chapters'].each do |ch|
 				len = Helper::convert(ch['offset']) if ch['offset']
-				chapters << Chapter.new(title: ch['title'], value: len)
+				chapters << Chapter.new(title: "#{ch['title']}", value: len)
 				len += Helper::convert(ch['length']) if ch['length']
+			end
+			if b['length']
+				book.duration = Helper::convert(b['length'])
+			else
+				book.duration = len
 			end
 			books << {book: book, chapters: chapters}
 		end

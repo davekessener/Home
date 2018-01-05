@@ -1,0 +1,13 @@
+input#MyBookID type="hidden" value="#{book.id}"
+
+.container-fluid
+	.row
+		.col-xs-12
+			.list-group
+				- book.chapters.each_with_index do |ch, i|
+					button.list-group-item type="button"
+						input type="hidden" value="#{Helper::to_s(ch.value)}"
+						="#{s('chapter')} #{i + 1} #{"- #{ch.title}" unless ch.title.blank?}"
+						span
+							=Helper::to_s(ch.value)
+

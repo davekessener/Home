@@ -12,7 +12,7 @@ before '/audiobooks/*' do
 	if request.get?
 		if (device = current_device) and (book = device.playing) and device.user == current_user
 			p = "/audiobooks/play/#{book.id}"
-			redirect p unless request.path_info == p
+			redirect p unless request.path_info =~ /^\/audiobooks\/(play|chapters)/
 		end
 	end
 end
@@ -28,6 +28,14 @@ get '/audiobooks/franchise/:id' do |id|
 		else
 			redirect "/audiobooks/play/#{f.audiobooks.first.id}"
 		end
+	else
+		status 404
+	end
+end
+
+get '/audiobooks/chapters/:id' do |id|
+	if (book = Audiobook.find(id.to_i))
+		slim :'audiobooks/chapters', locals: { book: book }
 	else
 		status 404
 	end
