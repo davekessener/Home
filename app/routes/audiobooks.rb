@@ -10,7 +10,7 @@ end
 
 before '/audiobooks/*' do
 	if request.get?
-		if (device = current_device) and (book = device.playing) and device.user == current_user
+		if (device = current_device) and (book = device.playing) and device.user == current_user and book.is_a? Audiobook
 			p = "/audiobooks/play/#{book.id}"
 			redirect p unless request.path_info =~ /^\/audiobooks\/(play|chapters)/
 		end

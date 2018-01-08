@@ -45,6 +45,13 @@ class MediaPlayer
 		@playing, @user = obj, user
 	end
 
+	def play_local(obj, user = nil)
+		raise unless reachable?
+		stop if playing?
+		@client.play(obj.files)
+		@playing, @user = obj, user
+	end
+
 	def stop
 		@playing.on_stop(@user, progress) if @user
 		@client.stop

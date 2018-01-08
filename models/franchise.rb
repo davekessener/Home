@@ -12,15 +12,15 @@ class Franchise < ActiveRecord::Base
 	after_destroy FranchiseCallbacks
 
 	def icon_exists?
-		File.exists? icon_path
+		File.exists? "#{$root_dir}/public#{thumb_path}"
 	end
 
-	def icon_path
-		if @icon_path.nil? or path != @path_bak
-			@path_bak = path
-			@icon_path = File.join($root_dir, 'public', 'resources', 'icons', 'audiobooks', "#{@path_bak}.png")
-		end
-		@icon_path
+	def target_path
+		@target_path ||= "/audiobooks/franchise/#{id}"
+	end
+
+	def thumb_path
+		@thumb_path ||= "/resources/icons/audiobooks/#{path}.png"
 	end
 end
 

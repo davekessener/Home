@@ -42,12 +42,11 @@ module Audiobooks
 		end
 
 		def status(args)
-			if @device.playing?
+			if @device.playing? and (book = @device.playing).is_a? Audiobook
 				if @device.done?
 					@device.stop
 					{ action: ACTION_STOPPED }
 				else
-					book = @device.playing
 					{ status: {
 						running: true,
 						display: pretty_status(book, book.progress_of(@device.progress)),
@@ -68,7 +67,9 @@ module Audiobooks
 			if (s = args[:message])
 				book, pos = s[:book_id], s[:seek]
 
-				if @device.playing?
+				listening = @device.playing? and @device.playing.is_a? Audiobook
+
+				if listening
 					book = @device.playing
 					p = book.progress_of(@device.progress)
 				else
@@ -86,7 +87,7 @@ module Audiobooks
 
 				pos = [[0, pos].max, book.duration - 1].min
 
-				if @device.playing?
+				if listening
 					@device.seek(book.translate(pos))
 				else
 					book.on_stop(@user, pos)
@@ -102,7 +103,7 @@ module Audiobooks
 	end
 
 	def self.execute(params, device, user)
-		if device.nil? or (device.playing? and device.user != user)
+		if device.nil? or (device.playing? and (device.user and device.user != user))
 			{ action: ACTION_MOVED }
 		else
 			args = Helper::symbolized_hash(params)

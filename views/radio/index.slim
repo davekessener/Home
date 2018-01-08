@@ -1,0 +1,10 @@
+.container
+	.row
+		.col-xs-12
+			p#MyStatus ...
+	.row
+		.col-xs-12
+			.list-group
+				- RadioStation.find_each do |station|
+					a.btn.list-group-item.radio-station data-station-id="#{station.id}" href="#" ="#{station.name}"
+
