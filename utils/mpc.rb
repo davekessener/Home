@@ -42,10 +42,11 @@ module MPC
 		end
 	
 		def status
-			@status = nil
-			@status if Connection.open(@ip, @port) do |c|
+			@status = {}
+			Connection.open(@ip, @port) do |c|
 				@status = c.execute('status')
 			end
+			@status
 		end
 	
 		def progress
