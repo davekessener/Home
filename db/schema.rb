@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180105055344) do
+ActiveRecord::Schema.define(version: 20181117173213) do
 
   create_table "activities", force: :cascade do |t|
     t.string "content"
@@ -37,6 +37,14 @@ ActiveRecord::Schema.define(version: 20180105055344) do
     t.index ["franchise_id"], name: "index_audiobooks_on_franchise_id"
   end
 
+  create_table "base_ingredients", force: :cascade do |t|
+    t.integer "ingredient_list_id"
+    t.integer "ingredient_variation_id"
+    t.float "quantity"
+    t.index ["ingredient_list_id"], name: "index_base_ingredients_on_ingredient_list_id"
+    t.index ["ingredient_variation_id"], name: "index_base_ingredients_on_ingredient_variation_id"
+  end
+
   create_table "bookmarks", force: :cascade do |t|
     t.integer "user_id"
     t.integer "audiobook_id"
@@ -55,9 +63,57 @@ ActiveRecord::Schema.define(version: 20180105055344) do
     t.index ["audiobook_id"], name: "index_chapters_on_audiobook_id"
   end
 
+  create_table "compound_ingredients", force: :cascade do |t|
+    t.integer "ingredient_list_id"
+    t.integer "dish"
+    t.float "quantity"
+    t.index ["dish"], name: "index_compound_ingredients_on_dish"
+    t.index ["ingredient_list_id"], name: "index_compound_ingredients_on_ingredient_list_id"
+  end
+
+  create_table "dishes", force: :cascade do |t|
+    t.integer "ingredient_list_id"
+    t.string "name"
+    t.string "description"
+    t.string "instructions"
+    t.integer "prep_time"
+    t.integer "cook_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_list_id"], name: "index_dishes_on_ingredient_list_id"
+  end
+
+  create_table "embedded_ingredients", force: :cascade do |t|
+    t.integer "ingredient_list_id"
+    t.integer "ingredient_list"
+    t.index ["ingredient_list"], name: "index_embedded_ingredients_on_ingredient_list"
+    t.index ["ingredient_list_id"], name: "index_embedded_ingredients_on_ingredient_list_id"
+  end
+
   create_table "franchises", force: :cascade do |t|
     t.string "name"
     t.string "path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ingredient_lists", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ingredient_variations", force: :cascade do |t|
+    t.integer "ingredient_id"
+    t.string "name"
+    t.string "description"
+    t.integer "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_ingredient_variations_on_ingredient_id"
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -73,6 +129,19 @@ ActiveRecord::Schema.define(version: 20180105055344) do
   create_table "radio_stations", force: :cascade do |t|
     t.string "name"
     t.string "url"
+  end
+
+  create_table "recipe_tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_tags_dishes", id: false, force: :cascade do |t|
+    t.integer "recipe_tag_id"
+    t.integer "dish_id"
+    t.index ["dish_id"], name: "index_recipe_tags_dishes_on_dish_id"
+    t.index ["recipe_tag_id"], name: "index_recipe_tags_dishes_on_recipe_tag_id"
   end
 
   create_table "users", force: :cascade do |t|
