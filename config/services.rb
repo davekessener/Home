@@ -12,6 +12,7 @@ $services = [
 	Service.new('Radio', 'music'),
 	Service.new('Audiobooks', 'headphones'),
 	Service.new('Devices', 'bullhorn'),
+	Service.new('Recipes', 'book'),
 	Service.new('Calendar', 'calendar')
 ]
 

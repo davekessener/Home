@@ -1,0 +1,6 @@
+.container
+	.list-group
+	- Recipe::Dish.all.each do |dish|
+		a.list-group-item href="/recipes/dish/#{dish.id}"
+			=dish.name
+

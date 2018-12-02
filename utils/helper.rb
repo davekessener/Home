@@ -32,5 +32,18 @@ module Helper
 	def self.is_server_reachable?(url)
 		(`fping -q -c 1 -t 300 "#{url}" 2>&1` =~ /xmt\/rcv\/%loss = 1\/1/)
 	end
+
+	module Linguistics
+		def self.table
+			@@content ||= [
+			]
+		end
+
+		def self.plural(s)
+		end
+
+		def self.singular(s)
+		end
+	end
 end
 

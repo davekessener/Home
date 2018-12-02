@@ -1,0 +1,37 @@
+.container
+	h1
+		=dish.name
+	hr
+	h3
+		="#{s('ingredients')}"
+	table.table
+		- dish.ingredient_list.base_ingredients.each do |bi|
+			tr
+				- var = bi.ingredient_variation
+				- ing = var.ingredient
+				- name = ing.name
+				- name = "#{name} (#{var.name})" unless (var.name || '').empty?
+				- q = bi.quantity
+				- q = q.to_i if q == q.to_i
+				- u = Recipe::Unit[bi.unit]
+				- if (u.short || '').empty?
+					- u = "#{s('units:' + u.name)}"
+				- else
+					- u = u.short
+				td
+					=name
+				td
+					=q
+				td
+					=u
+
+	hr
+	h3
+		="#{s('instructions')}"
+	ol
+		- dish.instructions.split("\n\n").each do |step|
+			li
+				- step.split("\n").each do |part|
+					p
+						=part
+

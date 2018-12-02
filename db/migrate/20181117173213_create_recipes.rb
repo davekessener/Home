@@ -15,7 +15,6 @@ class CreateRecipes < ActiveRecord::Migration[5.1]
 			t.belongs_to :ingredient, index: true
 			t.string :name
 			t.string :description
-			t.integer :unit
 
 			t.timestamps
 		end
@@ -43,18 +42,21 @@ class CreateRecipes < ActiveRecord::Migration[5.1]
 		create_table :base_ingredients do |t|
 			t.belongs_to :ingredient_list, index: true
 			t.belongs_to :ingredient_variation, index: true
+			t.integer :unit
 			t.float :quantity
 		end
 
 		create_table :compound_ingredients do |t|
 			t.belongs_to :ingredient_list, index: true
 			t.integer :dish, index: true
+			t.integer :unit
 			t.float :quantity
 		end
 
 		create_table :embedded_ingredients do |t|
 			t.belongs_to :ingredient_list, index: true
 			t.integer :ingredient_list, index: true
+			t.string :name
 		end
 	end
 end

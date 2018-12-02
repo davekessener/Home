@@ -16,6 +16,22 @@
 	"device" : {
 		"title" : "HOME",
 		"message" : "Bekannte Lautsprecher:"
+	},
+	"recipes" : {
+		"title" : "Kochbuch",
+		"ingredients" : "Zutaten",
+		"instructions" : "Zubereitung",
+		"units" : {
+			"single" : "Stück",
+			"cup" : "Tasse",
+			"teaspoon" : "Teelöffel",
+			"tablespoon" : "Eßlöffel",
+			"gramm" : "Gramm",
+			"kilogramm" : "Kilogramm",
+			"milliliter" : "Milliliter",
+			"liter" : "Liter",
+			"bag" : "Tüte"
+		}
 	}
 }
 

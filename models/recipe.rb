@@ -1,44 +1,94 @@
-class RecipeTag < ActiveRecord::Base
-	validates :name, presence: true
-end
+module Recipe
+	class UnitType
+		attr_reader :name, :unit
 
-class Ingredient < ActiveRecord::Base
-	validates :name, presence: true
-end
+		def initialize(name, unit)
+			@name, @unit = name, unit
+		end
 
-class IngredientVariation < ActiveRecord::Base
-	belongs_to :ingredient
-	validates :unit, presence: true
-end
+		def self.[](i)
+			@@types ||= [
+				UnitType.new('discrete', 7),
+				UnitType.new('weight', 0),
+				UnitType.new('volume', 3)
+			]
+			@@types[i]
+		end
+	end
 
-class IngredientList < ActiveRecord::Base
-	has_many :base_ingredients
-	has_many :compound_ingredients
-	has_many :embedded_ingredients
-end
+	class Unit
+		attr_reader :name, :short, :type, :conversion
 
-class Dish < ActiveRecord::Base
-	belongs_to :ingredient_list
+		def initialize(name, short, type, conversion = 1)
+			@name, @short, @conversion = name, short, conversion.to_f
+			@type = UnitType[type]
+		end
 
-	validates :name, presence: true
-	validates :instructions, presence: true
-end
+		def self.all
+			@@units ||= [
+				Unit.new('gramm', 'g', 1),
+				Unit.new('kilogramm', 'kg', 1, 1000),
+				Unit.new('milliliter', 'ml', 2, 0.001),
+				Unit.new('liter', 'l', 2),
+				Unit.new('teaspoon', 'TL', 2, 5),
+				Unit.new('tablespoon', 'EL', 2, 15),
+				Unit.new('cup', nil, 2, 235),
+				Unit.new('single', nil, 0),
+				Unit.new('bag', nil, 0)
+			]
+		end
 
-class BaseIngredient < ActiveRecord::Base
-	belongs_to :ingredient_list
-	belongs_to :ingredient_variation
+		def self.[](i)
+			Unit.all[i]
+		end
+	end
 
-	validates :quantity, presence: true
-end
-
-class CompoundIngredient < ActiveRecord::Base
-	belongs_to :ingredient_list
-	belongs_to :dish
-
-	validates :quantity, presence: true
-end
-
-class EmbeddedIngredient < ActiveRecord::Base
-	belongs_to :ingredient_list
+	class RecipeTag < ActiveRecord::Base
+		validates :name, presence: true
+	end
+	
+	class Ingredient < ActiveRecord::Base
+		validates :name, presence: true
+		has_many :ingredient_variations, dependent: :destroy
+	end
+	
+	class IngredientVariation < ActiveRecord::Base
+		belongs_to :ingredient
+		validates :ingredient_id, presence: true
+	end
+	
+	class IngredientList < ActiveRecord::Base
+		has_many :base_ingredients
+		has_many :compound_ingredients
+		has_many :embedded_ingredients
+	end
+	
+	class Dish < ActiveRecord::Base
+		belongs_to :ingredient_list
+	
+		validates :name, presence: true
+		validates :instructions, presence: true
+		validates :ingredient_list_id, presence: true
+	end
+	
+	class BaseIngredient < ActiveRecord::Base
+		belongs_to :ingredient_list
+		belongs_to :ingredient_variation
+	
+		validates :unit, presence: true
+		validates :quantity, presence: true
+	end
+	
+	class CompoundIngredient < ActiveRecord::Base
+		belongs_to :ingredient_list
+		belongs_to :dish
+	
+		validates :unit, presence: true
+		validates :quantity, presence: true
+	end
+	
+	class EmbeddedIngredient < ActiveRecord::Base
+		belongs_to :ingredient_list
+	end
 end
 

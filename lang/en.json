@@ -16,6 +16,22 @@
 	"device" : {
 		"title" : "Devices",
 		"message" : "Pick a playback device:"
+	},
+	"recipes" : {
+		"title" : "Recipes",
+		"ingredients" : "Ingredients",
+		"instructions" : "Instructions",
+		"units" : {
+			"single" : "",
+			"cup" : "Cup",
+			"teaspoon" : "Teaspoon",
+			"tablespoon" : "Tablespoon",
+			"gramm" : "Gramm",
+			"kilogramm" : "Kilogramm",
+			"milliliter" : "Milliliter",
+			"liter" : "Liter",
+			"bag" : "Bag"
+		}
 	}
 }
 

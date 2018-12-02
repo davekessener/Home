@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20181117173213) do
   create_table "base_ingredients", force: :cascade do |t|
     t.integer "ingredient_list_id"
     t.integer "ingredient_variation_id"
+    t.integer "unit"
     t.float "quantity"
     t.index ["ingredient_list_id"], name: "index_base_ingredients_on_ingredient_list_id"
     t.index ["ingredient_variation_id"], name: "index_base_ingredients_on_ingredient_variation_id"
@@ -66,6 +67,7 @@ ActiveRecord::Schema.define(version: 20181117173213) do
   create_table "compound_ingredients", force: :cascade do |t|
     t.integer "ingredient_list_id"
     t.integer "dish"
+    t.integer "unit"
     t.float "quantity"
     t.index ["dish"], name: "index_compound_ingredients_on_dish"
     t.index ["ingredient_list_id"], name: "index_compound_ingredients_on_ingredient_list_id"
@@ -86,6 +88,7 @@ ActiveRecord::Schema.define(version: 20181117173213) do
   create_table "embedded_ingredients", force: :cascade do |t|
     t.integer "ingredient_list_id"
     t.integer "ingredient_list"
+    t.string "name"
     t.index ["ingredient_list"], name: "index_embedded_ingredients_on_ingredient_list"
     t.index ["ingredient_list_id"], name: "index_embedded_ingredients_on_ingredient_list_id"
   end
@@ -106,7 +109,6 @@ ActiveRecord::Schema.define(version: 20181117173213) do
     t.integer "ingredient_id"
     t.string "name"
     t.string "description"
-    t.integer "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ingredient_id"], name: "index_ingredient_variations_on_ingredient_id"
