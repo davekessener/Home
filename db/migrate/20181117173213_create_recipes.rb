@@ -28,8 +28,6 @@ class CreateRecipes < ActiveRecord::Migration[5.1]
 			t.string :name
 			t.string :description
 			t.string :instructions
-			t.integer :prep_time
-			t.integer :cook_time
 
 			t.timestamps
 		end
@@ -48,14 +46,14 @@ class CreateRecipes < ActiveRecord::Migration[5.1]
 
 		create_table :compound_ingredients do |t|
 			t.belongs_to :ingredient_list, index: true
-			t.integer :dish, index: true
+			t.integer :dish_id, index: true
 			t.integer :unit
 			t.float :quantity
 		end
 
 		create_table :embedded_ingredients do |t|
 			t.belongs_to :ingredient_list, index: true
-			t.integer :ingredient_list, index: true
+			t.integer :content_id, index: true
 			t.string :name
 		end
 	end

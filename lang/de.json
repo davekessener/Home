@@ -30,7 +30,9 @@
 			"kilogramm" : "Kilogramm",
 			"milliliter" : "Milliliter",
 			"liter" : "Liter",
-			"bag" : "Tüte"
+			"bag" : "Tüte",
+			"pinch" : "Prise",
+			"dash" : "Spritzer"
 		}
 	}
 }

@@ -4,7 +4,7 @@ end
 
 get '/recipes/dish/:id' do |id|
 	if (dish = Recipe::Dish.find(id.to_i))
-		slim :'recipes/dishes', locals: { dish: dish }
+		slim :'recipes/dish', locals: { dish: dish }
 	else
 		status 404
 	end

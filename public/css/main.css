@@ -1,3 +1,28 @@
+.fraction {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    letter-spacing: 0.001em;
+    text-align: center;
+}
+
+.fraction > span {
+    display: block;
+    padding: 0.1em;
+}
+
+.fraction > span.bottom {
+	border-top: thin solid black;
+}
+
+.col-align-center {
+	transform: translateY(50%);
+}
+
+.col-align-bottom {
+	transform : translateY(100%);
+}
+
 .list-group-item.active,
 .list-group-item.active:focus,
 .list-group-item.active:hover {

@@ -1,0 +1,88 @@
+.container
+	- scale = (params['scale'] || 1).to_f
+	.row
+		h1.col-xs-10
+			=dish.name
+			- if scale != 1.0
+				=" ("
+				==Helper::html_fraction(scale)
+				=")"
+		.col-xs-2
+			form
+				.input-group
+					input.form-control name="scale" type="text"
+					.input-group-btn
+						button.btn.btn-primary type="submit"
+							span.glyphicon.glyphicon-text-size
+	hr
+	h3
+		="#{s('ingredients')}"
+	- ing = dish.ingredient_list
+	- base = []
+	- converter = ->(b) do
+		- q = b.quantity
+		- { name: b.display_name(->(n) { (q && q > 1) ? pluralize(n) : n }), quantity: q, unit: b.unit }
+	- ing.compound_ingredients.each do |c|
+		- base.push({ name: c.dish.name, url: "/recipes/dish/#{c.dish.id}", quantity: c.quantity, unit: c.unit })
+	- ing.base_ingredients.each do |b|
+		- base.push(converter.(b))
+	- [[nil, base], *ing.embedded_ingredients.map { |e| [e.name, e.content.base_ingredients.map { |b| converter.(b) }] }].each do |name, ing|
+		- unless (name || '').empty?
+			hr
+			h4
+				=name
+		table.table.table-striped
+			colgroup
+				col.col-xs-10
+				col.col-xs-1
+				col.col-xs-1
+			- ing.each do |bi|
+				tr
+					- name = bi[:name]
+					- url = bi[:url]
+					- q = (bi[:quantity] || 0) * scale
+					- u = bi[:unit]
+					- if u
+						- u = Recipe::Unit[u]
+						- if (u.short || '').empty?
+							- u = "#{s('units:' + u.name, q)}"
+						- else
+							- u = u.short
+					td
+						- if url
+							a href=url
+								b
+									=name
+						- else
+							=name
+					td
+						- if q > 0
+							==Helper::html_fraction(q)
+					td
+						- if u
+							=u
+
+	- unless "#{dish.instructions}".empty?
+		hr
+		h3
+			="#{s('instructions')}"
+		table.table.table-striped
+			colgroup
+				col.col-xs-1
+				col.col-xs-11
+			- dish.instructions.split("\n\n").each_with_index do |step, i|
+				tr
+					td.align-middle
+						h3
+							=" #{i + 1} "
+							- if step.include? '{TIME'
+								span.glyphicon.glyphicon-time
+							- if step.include? '{TEMP'
+								span.glyphicon.glyphicon-dashboard
+					td.align-middle
+						- step.split("\n").each do |part|
+							div
+								==escape_html(part)\
+									.gsub(/{TIME ([0-9]+[a-zA-Z]+)}/, "<b>\\1</b>")\
+									.gsub(/{TEMP(:[^ ]+)? ([0-9]+)([A-Z])}/) { "<b>#{$2}°#{$3}#{$1 ? ' ' + Helper::temperature($1) : ''}</b>"}
+	

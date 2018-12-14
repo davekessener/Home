@@ -1,15 +1,29 @@
 helpers do
-	def current_language
+	def current_language_id
 		if (u = current_user)
-			$language = $lang[u.lang]
+			u.lang
 		else
-			$language = $lang[$lang[:default]]
+			$lang[:default]
 		end
 	end
 
-	def s(path)
+	def current_language
+		$current_language = $lang[current_language_id]
+	end
+
+	def singularize(n)
+		Helper::Linguistics[current_language_id].singular(n)
+	end
+
+	def pluralize(n)
+		Helper::Linguistics[current_language_id].plural(n)
+	end
+
+	def s(path, q = nil)
 		path = "#{current_page}:#{path}"
-		in_lang(path)
+		r = in_lang(path)
+		r = pluralize(r) if (q and q > 1)
+		r
 	end
 
 	def in_lang(path, l = current_language)

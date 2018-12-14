@@ -30,7 +30,9 @@
 			"kilogramm" : "Kilogramm",
 			"milliliter" : "Milliliter",
 			"liter" : "Liter",
-			"bag" : "Bag"
+			"bag" : "Bag",
+			"pinch" : "Pinch",
+			"dash" : "Dash"
 		}
 	}
 }

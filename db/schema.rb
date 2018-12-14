@@ -66,10 +66,10 @@ ActiveRecord::Schema.define(version: 20181117173213) do
 
   create_table "compound_ingredients", force: :cascade do |t|
     t.integer "ingredient_list_id"
-    t.integer "dish"
+    t.integer "dish_id"
     t.integer "unit"
     t.float "quantity"
-    t.index ["dish"], name: "index_compound_ingredients_on_dish"
+    t.index ["dish_id"], name: "index_compound_ingredients_on_dish_id"
     t.index ["ingredient_list_id"], name: "index_compound_ingredients_on_ingredient_list_id"
   end
 
@@ -78,8 +78,6 @@ ActiveRecord::Schema.define(version: 20181117173213) do
     t.string "name"
     t.string "description"
     t.string "instructions"
-    t.integer "prep_time"
-    t.integer "cook_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ingredient_list_id"], name: "index_dishes_on_ingredient_list_id"
@@ -87,9 +85,9 @@ ActiveRecord::Schema.define(version: 20181117173213) do
 
   create_table "embedded_ingredients", force: :cascade do |t|
     t.integer "ingredient_list_id"
-    t.integer "ingredient_list"
+    t.integer "content_id"
     t.string "name"
-    t.index ["ingredient_list"], name: "index_embedded_ingredients_on_ingredient_list"
+    t.index ["content_id"], name: "index_embedded_ingredients_on_content_id"
     t.index ["ingredient_list_id"], name: "index_embedded_ingredients_on_ingredient_list_id"
   end
 
