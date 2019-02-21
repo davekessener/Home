@@ -67,6 +67,7 @@ module Recipe
 	
 	class Dish < ActiveRecord::Base
 		belongs_to :ingredient_list
+		has_one :note, dependent: :destroy
 	
 		validates :name, presence: true
 		validates :ingredient_list_id, presence: true
@@ -100,6 +101,12 @@ module Recipe
 		def content
 			IngredientList.find(content_id)
 		end
+	end
+
+	class Note < ActiveRecord::Base
+		belongs_to :dish
+
+		validates :content, presence: true
 	end
 end
 

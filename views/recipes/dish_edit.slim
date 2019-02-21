@@ -1,0 +1,27 @@
+- is_new = (!defined?(dish))
+.container
+	.row
+		.col-xs-12
+			h1
+				=s(is_new ? 'new' : 'edit')
+	.row
+		#f_name
+			.input-group
+				span.input-group-addon
+					=s('name')
+				input.form-control.col-xs-12#v_name type="text"
+			.input-group
+				label.control-label#w_name
+	.row
+		.col-xs-12
+			h3
+				=s('tags')
+	.row
+		.col-xs-12
+			h3
+				=s('ingredients')
+	.row
+		.col-xs-12
+			h3
+				=s('instructions')
+

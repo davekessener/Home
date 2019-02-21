@@ -1,6 +1,11 @@
 .container
-	h1
-		=s('title')
+	.row
+		h1.col-xs-11
+			=s('title')
+		.col-xs-1
+			a href="/recipes/new/dish"
+				button.btn.btn-primary
+					span.glyphicon.glyphicon-plus
 	.list-group
 	- Recipe::Dish.all.sort_by(&:name).each do |dish|
 		a.list-group-item href="/recipes/dish/#{dish.id}"
