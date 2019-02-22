@@ -10,6 +10,17 @@ get '/recipes/dish/:id' do |id|
 	end
 end
 
+post '/recipes/dish/:id/notes' do |id|
+	content_type :json
+
+	if (dish = Recipe::Dish.find(id.to_i))
+		dish.note = params['content']
+		{ result: dish.save }.to_json
+	else
+		status 404
+	end
+end
+
 get '/recipes/new/dish' do
 	slim :'recipes/dish_edit'
 end
@@ -32,7 +43,7 @@ get '/recipes/ingredient/:id/edit' do |id|
 	end
 end
 
-put '/recipes/ingredient/:id' do |id|
+post '/recipes/ingredient/:id' do |id|
 end
 
 get '/recipes/dish/:id/edit' do |id|
@@ -43,6 +54,6 @@ get '/recipes/dish/:id/edit' do |id|
 	end
 end
 
-put '/recipes/dish/:id' do |id|
+post '/recipes/dish/:id' do |id|
 end
 

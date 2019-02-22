@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190221192401) do
+ActiveRecord::Schema.define(version: 20190222191656) do
 
   create_table "activities", force: :cascade do |t|
     t.string "content"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20190221192401) do
     t.string "instructions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "note"
     t.index ["ingredient_list_id"], name: "index_dishes_on_ingredient_list_id"
   end
 
@@ -116,14 +117,6 @@ ActiveRecord::Schema.define(version: 20190221192401) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "notes", force: :cascade do |t|
-    t.integer "dish_id"
-    t.string "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["dish_id"], name: "index_notes_on_dish_id"
   end
 
   create_table "radio_servers", force: :cascade do |t|

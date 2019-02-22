@@ -1,3 +1,8 @@
+input#dish_id     type="hidden" value="#{dish.id}"
+input#msg_saved   type="hidden" value="#{s('message:saved')}"
+input#msg_changed type="hidden" value="#{s('message:changed')}"
+input#msg_error   type="hidden" value="#{s('message:error')}"
+
 .container
 	- scale = (params['scale'] || 1).to_f
 	.row
@@ -92,4 +97,5 @@
 		.form-group.col-xs-12
 			label.control-label#w_notes
 			textarea.form-control.col-xs-12#v_notes rows="20" onInput="notes_changed();"
+				="#{dish.note}"
 	
