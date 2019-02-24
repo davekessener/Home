@@ -21,6 +21,12 @@
 		"title" : "Kochbuch",
 		"ingredients" : "Zutaten",
 		"instructions" : "Zubereitung",
+		"notes" : "Notizen",
+		"message" : {
+			"changed" : "Änderungen noch nicht gespeichert!",
+			"saved" : "Alle Änderungen sind gespeichert.",
+			"error" : "Error: Änderungen konnten nicht gespeichert werden!"
+		},
 		"units" : {
 			"single" : "Stück",
 			"cup" : "Tasse",

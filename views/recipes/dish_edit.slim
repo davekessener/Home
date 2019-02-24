@@ -9,7 +9,7 @@
 			.input-group
 				span.input-group-addon
 					=s('name')
-				input.form-control.col-xs-12#v_name type="text"
+				input.form-control.col-xs-12#v_name type="text" value="#{is_new ? "" : dish.name}"
 			.input-group
 				label.control-label#w_name
 	.row
@@ -20,6 +20,42 @@
 		.col-xs-12
 			h3
 				=s('ingredients')
+			hl
+			h4
+				=s('base')
+			table.table.table-responsive.table-hover.table-condensed
+				tr
+					th
+						=s('ing:base:super')
+					th
+						=s('ing:base:sub')
+					th
+						=s('ing:base:quantity')
+					th
+						=s('ing:base:unit')
+				- unless is_new
+					- dish.ingredient_list.base_ingredients.each do |b|
+						tr
+							td
+								select
+									- Recipe::Ingredient.all.sort { |a, b| a.name.to_ascii <=> b.name.to_ascii }.each do |ing|
+										option value="#{ing.id}" selected=("selected" if ing.id == b.ingredient_variation.ingredient.id)
+											=ing.name
+							td
+								=b.ingredient_variation.name
+							td
+								=b.quantity
+							td
+								select
+									option value="-"
+										="---"
+									- Recipe::Unit.all.each_with_index do |u, i|
+										option value="#{i}" selected=("selected" if i == b.unit)
+											=u.short.nil? ? s('units:' + u.name) : u.short
+				tr
+					td colspan="4"
+						button.btn.btn-primary
+							span.glyphicon.glyphicon-plus
 	.row
 		.col-xs-12
 			h3

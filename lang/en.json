@@ -21,6 +21,12 @@
 		"title" : "Recipes",
 		"ingredients" : "Ingredients",
 		"instructions" : "Instructions",
+		"notes" : "Notes",
+		"message" : {
+			"changed" : "Unsaved changes!",
+			"saved" : "All changes saved.",
+			"error" : "Error: Couldn't save changes!"
+		},
 		"units" : {
 			"single" : "",
 			"cup" : "Cup",

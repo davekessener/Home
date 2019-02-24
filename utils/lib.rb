@@ -12,3 +12,18 @@ class Hash
 	end
 end
 
+class String
+	def to_ascii
+		@@ascii_table ||= {
+			'ä' => 'a',
+			'Ä' => 'A',
+			'ü' => 'u',
+			'Ü' => 'U',
+			'ö' => 'o',
+			'Ö' => 'O',
+			'ß' => 'z'
+		}
+		self.gsub(/[öüäÖÜÄß]/) { |m| @@ascii_table[m] }
+	end
+end
+

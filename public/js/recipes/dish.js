@@ -18,7 +18,7 @@ var Notes = (function () {
 	}
 
 	function getMessage(s) {
-		return $('#msg_' + s.msg).val();
+		return ' ' + $('#msg_' + s.msg).val();
 	}
 
 	function updateState(s) {

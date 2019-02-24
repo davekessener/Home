@@ -1,11 +1,7 @@
 .container
-	.dropdown
-		button.btn.btn-primary.dropdown-toggle type="button" data-toggle="dropdown"
-			=>in_lang('users')
-			span.caret
-		ul.dropdown-menu
-			- User.all.each do |user|
-				li
-					a href="#" onclick="login_user(#{user.id}, true)"
-						= user.name
-	
+	h2
+		=in_lang('whoareyou')
+	.list-group
+		- User.all.each do |u|
+			a.list-group-item href="#" onclick="login_user(#{u.id}, true)"
+				= u.name
