@@ -35,7 +35,7 @@ end
 post '/recipes/new/ingredient' do
 end
 
-get '/recipes/ingredient/:id/edit' do |id|
+get '/recipes/edit/ingredient/:id' do |id|
 	if (dish = Recipe::Ingredient.find(id.to_i))
 		slim :'recipes/ingredient_edit', locals: { ingredient: dish }
 	else
@@ -46,7 +46,7 @@ end
 post '/recipes/ingredient/:id' do |id|
 end
 
-get '/recipes/dish/:id/edit' do |id|
+get '/recipes/edit/dish/:id' do |id|
 	if (dish = Recipe::Dish.find(id.to_i))
 		slim :'recipes/dish_edit', locals: { dish: dish }
 	else
@@ -55,5 +55,31 @@ get '/recipes/dish/:id/edit' do |id|
 end
 
 post '/recipes/dish/:id' do |id|
+end
+
+get '/recipes/ingredients' do
+	content_type :json
+
+	r = {}
+	Recipe::Ingredient.all.each do |ing|
+		vars = {}
+		ing.ingredient_variations.all.each do |var|
+			vars["#{var.id}"] = {
+				id: var.id,
+				name: var.name
+			}
+		end
+		r["#{ing.id}"] = {
+			id: ing.id,
+			name: ing.name,
+			variations: vars
+		}
+	end
+
+	if params['hash'] and params['hash'] == Helper.hash(r)
+		{ hash: params['hash'] }
+	else
+		r
+	end.to_json
 end
 

@@ -12,13 +12,17 @@ input#msg_error   type="hidden" value="#{s('message:error')}"
 				=" ("
 				==Helper::html_fraction(scale)
 				=")"
-		.col-xs-2
+		.col-xs-1
 			form
 				.input-group
 					input.form-control name="scale" type="text"
 					.input-group-btn
 						button.btn.btn-primary type="submit"
 							span.glyphicon.glyphicon-text-size
+		.col-xs-1
+			a href="/recipes/edit/dish/#{dish.id}"
+				button.btn.btn-primary
+					span.glyphicon.glyphicon-pencil
 	hr
 	h3
 		="#{s('ingredients')}"

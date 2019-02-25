@@ -1,4 +1,10 @@
 - is_new = (!defined?(dish))
+
+input#str_base_super type="hidden" value="#{s('ing:base:super')}"
+input#str_base_sub type="hidden" value="#{s('ing:base:sub')}"
+input#str_base_quantity type="hidden" value="#{s('ing:base:quantity')}"
+input#str_base_unit type="hidden" value="#{s('ing:base:unit')}"
+
 .container
 	.row
 		.col-xs-12
@@ -23,6 +29,19 @@
 			hl
 			h4
 				=s('base')
+			div#base_ing
+				- unless is_new
+					table style="display: none;"
+						- dish.ingredient_list.base_ingredients.each do |b|
+							tr
+								td
+									=b.ingredient_variation.ingredient.id
+								td
+									=b.ingredient_variation.id
+								td
+									=b.quantity
+								td
+									="#{b.unit || -1}"
 			table.table.table-responsive.table-hover.table-condensed
 				tr
 					th

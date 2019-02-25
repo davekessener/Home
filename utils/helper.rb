@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 class Numeric
 	def is_f?
 		(self % 1) != 0
@@ -27,6 +29,18 @@ module Helper
 			s *= 60
 		end
 		l
+	end
+
+	def self.hash(json)
+		if json.methods.include? :each
+			t = []
+			json.each do |e|
+				t.push(Helper.hash(e))
+			end
+			Helper.hash(t.sort.join)
+		else
+			Digest::MD5.hexdigest(json.to_s)
+		end
 	end
 
 	def self.find_denominator(f)
