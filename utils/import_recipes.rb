@@ -16,7 +16,7 @@ module RecipeImport
 	end
 
 	def self.parse_ilist(dish)
-		i = Recipe::IngredientList.create
+		i = Recipe::IngredientList.create!
 		
 		(dish['base'] || []).each do |base|
 			i_b, i_v = *base['ingredient'].split('.')
@@ -27,7 +27,7 @@ module RecipeImport
 			puts " !!! UNKNOWN INGREDIENT #{i_v}.#{i_b}" unless v
 			puts " ... with base ingredient #{v.ingredient.name} #{v.name} #{base['quantity']} #{un}"
 
-			Recipe::BaseIngredient.create(ingredient_list: i, ingredient_variation: v, unit: u, quantity: base['quantity'])
+			Recipe::BaseIngredient.create!(ingredient_list: i, ingredient_variation: v, unit: u, quantity: base['quantity'])
 		end
 
 		(dish['embedded'] || []).each do |embed|
@@ -37,7 +37,7 @@ module RecipeImport
 
 			il = RecipeImport::parse_ilist(embed['ingredients'])
 
-			Recipe::EmbeddedIngredient.create(ingredient_list: i, content_id: il.id, name: name)
+			Recipe::EmbeddedIngredient.create!(ingredient_list: i, content_id: il.id, name: name)
 		end
 
 		(dish['compound'] || []).each do |compound|
@@ -47,7 +47,7 @@ module RecipeImport
 
 			puts " > with compound dish #{d.name} (#{q} #{un})"
 
-			Recipe::CompoundIngredient.create(ingredient_list: i, dish: d, unit: u, quantity: q)
+			Recipe::CompoundIngredient.create!(ingredient_list: i, dish: d, unit: u, quantity: q)
 		end
 
 		i
@@ -56,37 +56,39 @@ module RecipeImport
 	def self.import(dir)
 		dir = File.expand_path(dir)
 
-		Recipe::Ingredient.all.destroy_all
-		Recipe::IngredientVariation.all.destroy_all
-		Recipe::Dish.all.destroy_all
-		Recipe::IngredientList.all.destroy_all
+		ActiveRecord::Base.transaction do
+			Recipe::Ingredient.all.destroy_all
+			Recipe::IngredientVariation.all.destroy_all
+			Recipe::Dish.all.destroy_all
+			Recipe::IngredientList.all.destroy_all
 
-		if File.exists? (ing_p = File.join(dir, "ingredients.json"))
-			JSON.parse(Helper::read_utf8(ing_p)).each do |ing|
-				e = Recipe::Ingredient.create(name: ing['name'])
-				puts "Adding new ingredient #{e.name} ..."
-				if (v = ing['variations'])
-					v.each do |v|
-						puts " ... with variant #{v['name']}"
-						Recipe::IngredientVariation.create(name: v['name'], ingredient: e, description: v['description'])
+			if File.exists? (ing_p = File.join(dir, "ingredients.json"))
+				JSON.parse(Helper::read_utf8(ing_p)).each do |ing|
+					puts "Adding new ingredient #{ing['name']} ..."
+					e = Recipe::Ingredient.create!(name: ing['name'])
+					if (v = ing['variations'])
+						v.each do |v|
+							puts " ... with variant #{v['name']}"
+							Recipe::IngredientVariation.create!(name: v['name'], ingredient: e, description: v['description'])
+						end
+					end
+					unless Recipe::IngredientVariation.find { |v| v.ingredient == e and "#{v.name}".empty? } 
+						Recipe::IngredientVariation.create!(ingredient: e)
 					end
 				end
-				unless Recipe::IngredientVariation.find { |v| v.ingredient == e and "#{v.name}".empty? } 
-					Recipe::IngredientVariation.create(ingredient: e)
-				end
 			end
-		end
 
-		Dir.glob(File.join(dir, '*.json')).sort.each do |fn|
-			next if fn == ing_p
+			Dir.glob(File.join(dir, '*.json')).sort.each do |fn|
+				next if fn == ing_p
 
-			dish = JSON.parse(Helper::read_utf8(fn))
+				dish = JSON.parse(Helper::read_utf8(fn))
 
-			puts "Adding new dish #{dish['name']} ..."
-			
-			e = Recipe::Dish.new(name: dish['name'], instructions: dish['instructions'])
-			e.ingredient_list = RecipeImport::parse_ilist(dish['ingredients'])
-			e.save
+				puts "Adding new dish #{dish['name']} ..."
+				
+				e = Recipe::Dish.new(name: dish['name'], instructions: dish['instructions'])
+				e.ingredient_list = RecipeImport::parse_ilist(dish['ingredients'])
+				e.save!
+			end
 		end
 	end
 end

@@ -46,11 +46,11 @@ module Recipe
 	end
 
 	class RecipeTag < ActiveRecord::Base
-		validates :name, presence: true
+		validates :name, uniqueness: true, presence: true
 	end
 	
 	class Ingredient < ActiveRecord::Base
-		validates :name, presence: true
+		validates :name, uniqueness: true, presence: true
 		has_many :ingredient_variations, dependent: :destroy
 	end
 	
@@ -63,13 +63,28 @@ module Recipe
 		has_many :base_ingredients, dependent: :destroy
 		has_many :compound_ingredients, dependent: :destroy
 		has_many :embedded_ingredients, dependent: :destroy
+
+		def to_js
+			{
+				base: base_ingredients.map(&:to_js),
+				compound: compound_ingredients.map(&:to_js),
+				embed: embedded_ingredients.map(&:to_js)
+			}
+		end
 	end
 	
 	class Dish < ActiveRecord::Base
 		belongs_to :ingredient_list
 	
-		validates :name, presence: true
+		validates :name, uniqueness: true, presence: true
 		validates :ingredient_list_id, presence: true
+
+		def to_js
+			{
+				name: name,
+				ingredients: ingredient_list.to_js
+			}
+		end
 	end
 	
 	class BaseIngredient < ActiveRecord::Base
@@ -82,6 +97,15 @@ module Recipe
 			name = "#{name} (#{f.(v.name)})" unless "#{v.name}".empty?
 			name
 		end
+
+		def to_js
+			{
+				ingredient: ingredient_variation.ingredient.id,
+				variation: ingredient_variation.id,
+				quantity: quantity,
+				unit: unit
+			}
+		end
 	end
 	
 	class CompoundIngredient < ActiveRecord::Base
@@ -89,6 +113,14 @@ module Recipe
 		belongs_to :dish
 	
 		validates :dish, presence: true
+
+		def to_js
+			{
+				dish: dish.id,
+				quantity: quantity,
+				unit: unit
+			}
+		end
 	end
 	
 	class EmbeddedIngredient < ActiveRecord::Base
@@ -99,6 +131,13 @@ module Recipe
 
 		def content
 			IngredientList.find(content_id)
+		end
+
+		def to_js
+			{
+				name: name,
+				content: content.to_js
+			}
 		end
 	end
 end

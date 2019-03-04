@@ -1,0 +1,38 @@
+.my-form-input {
+	width: 100%;
+	line-height: normal;
+	vertical-align: middle;
+}
+
+.my-icon-button {
+	cursor: pointer;
+	vertical-align: middle;
+	top: 0px;
+}
+
+.my-remove-button {
+	color: red;
+}
+
+.my-plus-button {
+	color: green;
+	font-size: 16pt;
+}
+
+.panel-heading h1, .panel-heading h2, .panel-heading h3, .panel-heading h4 {
+	margin-top: 1px;
+	margin-bottom: 0px;
+}
+
+.table {
+	margin-bottom: 0px;
+}
+
+.panel-body-compact {
+	padding: 0;
+}
+
+.control-group {
+	margin-bottom: 15px;
+}
+

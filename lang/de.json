@@ -1,5 +1,6 @@
 {
 	"users" : "Benutzer",
+	"whoami" : "Mit wem habe ich das Vergnügen?",
 	"login" : {
 		"title" : "Login"
 	},
@@ -22,10 +23,29 @@
 		"ingredients" : "Zutaten",
 		"instructions" : "Zubereitung",
 		"notes" : "Notizen",
+		"edit" : "Rezept ändern",
+		"new" : "Neues Rezept",
+		"name" : "Name",
+		"tags" : "Tags",
+		"base" : "Grundzutaten",
+		"embedded" : "Teilrezepte",
+		"compound" : "Referenzrezepte",
+		"save" : "Speichern",
 		"message" : {
 			"changed" : "Änderungen noch nicht gespeichert!",
 			"saved" : "Alle Änderungen sind gespeichert.",
 			"error" : "Error: Änderungen konnten nicht gespeichert werden!"
+		},
+		"ing" : {
+			"base" : {
+				"super" : "Zutat",
+				"sub" : "Variation",
+				"quantity" : "Menge",
+				"unit" : "Einheit"
+			},
+			"com" : {
+				"dish" : "Rezept"
+			}
 		},
 		"units" : {
 			"single" : "Stück",

@@ -1,5 +1,6 @@
 {
 	"users" : "Users",
+	"whoami" : "Who are you?",
 	"login" : {
 		"title" : "Login"
 	},
@@ -22,13 +23,32 @@
 		"ingredients" : "Ingredients",
 		"instructions" : "Instructions",
 		"notes" : "Notes",
+		"edit" : "Edit recipe",
+		"new" : "New recipe",
+		"name" : "Name",
+		"tags" : "Tags",
+		"base" : "Base ingredients",
+		"embedded" : "Sub-recipes",
+		"compound" : "Referenced dishes",
+		"save" : "Save",
 		"message" : {
 			"changed" : "Unsaved changes!",
 			"saved" : "All changes saved.",
 			"error" : "Error: Couldn't save changes!"
 		},
+		"ing" : {
+			"base" : {
+				"super" : "Ingredient",
+				"sub" : "Variation",
+				"quantity" : "Quantity",
+				"unit" : "Unit"
+			},
+			"com" : {
+				"dish" : "Dish"
+			}
+		},
 		"units" : {
-			"single" : "",
+			"single" : "Single",
 			"cup" : "Cup",
 			"teaspoon" : "Teaspoon",
 			"tablespoon" : "Tablespoon",
