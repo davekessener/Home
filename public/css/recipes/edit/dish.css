@@ -1,0 +1,77 @@
+.my-form-input {
+	width: 100%;
+	line-height: normal;
+	vertical-align: middle;
+}
+
+.my-icon-button {
+	cursor: pointer;
+	vertical-align: middle;
+	top: 0px;
+}
+
+.my-remove-button {
+	color: red;
+}
+
+.my-plus-button {
+	color: green;
+	font-size: 16pt;
+}
+
+.panel-heading h1, .panel-heading h2, .panel-heading h3, .panel-heading h4 {
+	margin-top: 1px;
+	margin-bottom: 0px;
+}
+
+.panel-heading table {
+	width: 100%;
+}
+
+td.important {
+	width: 100%;
+	padding-left: 10px;
+}
+
+.table {
+	margin-bottom: 0px;
+}
+
+.panel-body-compact {
+	padding: 0;
+}
+
+.control-group {
+	margin-bottom: 15px;
+}
+
+.error-sign {
+	color: red;
+	font-size: 18pt;
+}
+
+.recipe-tag {
+	background-color: darkorange;
+	margin-right: 5px;
+	font-size: 11pt;
+	cursor: pointer;
+}
+
+.recipe-tag i {
+	font-size: 8pt;
+	margin-left: 3px;
+}
+
+.input-group-btn button i.glyphicon {
+	top: 2px;
+}
+
+.panel-expander {
+	font-size: 17pt;
+	margin-top: 2px;
+}
+
+.panel-heading {
+	cursor: pointer;
+}
+

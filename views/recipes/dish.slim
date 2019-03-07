@@ -4,12 +4,13 @@ input#msg_changed type="hidden" value="#{s('message:changed')}"
 input#msg_error   type="hidden" value="#{s('message:error')}"
 
 .container
-	- scale = (params['scale'] || 1).to_f
+	- scale = (params['scale'] || '1').gsub(/,/, '.').to_f
 	.row
-		h1.col-xs-10
+		h1.col-xs-9
 			=dish.name
 			- if scale != 1.0
 				=" ("
+				span.glyphicon.glyphicon-remove style="font-size: 18pt; margin-right: 4px; font-weight: normal;"
 				==Helper::html_fraction(scale)
 				=")"
 		.col-xs-2
@@ -19,6 +20,13 @@ input#msg_error   type="hidden" value="#{s('message:error')}"
 					.input-group-btn
 						button.btn.btn-primary type="submit"
 							span.glyphicon.glyphicon-text-size
+		.col-xs-1
+			a href="/recipes/edit/dish/#{dish.id}"
+				button.btn.btn-primary
+					span.glyphicon.glyphicon-pencil
+	- dish.recipe_tags.each do |t|
+		a.badge.badge-pill.badge-warning href="/recipes?tag=#{t.id}"
+			=t.name
 	hr
 	h3
 		="#{s('ingredients')}"
@@ -31,7 +39,7 @@ input#msg_error   type="hidden" value="#{s('message:error')}"
 		- base.push({ name: c.dish.name, url: "/recipes/dish/#{c.dish.id}", quantity: c.quantity, unit: c.unit })
 	- ing.base_ingredients.each do |b|
 		- base.push(converter.(b))
-	- [[nil, base], *ing.embedded_ingredients.map { |e| [e.name, e.content.base_ingredients.map { |b| converter.(b) }] }].each do |name, ing|
+	- [[nil, base], *ing.embedded_ingredients.map { |e| [e.name, e.content.compound_ingredients.map { |b| { name: b.dish.name, url: "/recipes/dish/#{b.dish.id}", quantity: b.quantity, unit: b.unit } } + e.content.base_ingredients.map { |b| converter.(b) }] }].each do |name, ing|
 		- unless (name || '').empty?
 			hr
 			h4

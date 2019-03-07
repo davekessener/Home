@@ -2,6 +2,7 @@ class CreateRecipes < ActiveRecord::Migration[5.1]
 	def change
 		create_table :recipe_tags do |t|
 			t.string :name
+
 			t.timestamps
 		end
 

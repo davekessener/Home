@@ -23,13 +23,36 @@
 		"ingredients" : "Ingredients",
 		"instructions" : "Instructions",
 		"notes" : "Notes",
+		"edit" : "Edit recipe",
+		"new" : "New recipe",
+		"name" : "Name",
+		"tags" : "Tags",
+		"base" : "Base ingredients",
+		"embedded" : "Sub-recipes",
+		"compound" : "Referenced dishes",
+		"save" : "Save",
+		"wait" : "Please wait ...",
 		"message" : {
 			"changed" : "Unsaved changes!",
 			"saved" : "All changes saved.",
 			"error" : "Error: Couldn't save changes!"
 		},
+		"tag" : {
+			"new" : "New"
+		},
+		"ing" : {
+			"base" : {
+				"super" : "Ingredient",
+				"sub" : "Variation",
+				"quantity" : "Quantity",
+				"unit" : "Unit"
+			},
+			"com" : {
+				"dish" : "Dish"
+			}
+		},
 		"units" : {
-			"single" : "",
+			"single" : "Single",
 			"cup" : "Cup",
 			"teaspoon" : "Teaspoon",
 			"tablespoon" : "Tablespoon",

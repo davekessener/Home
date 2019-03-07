@@ -8,10 +8,12 @@ helpers do
 
 	def resource_path(type)
 		t = request.path_info.split(/\//)
+		t.shift
 		if t.empty?
 			url = 'main'
 		else
-			url = t[1..2].join('/')
+			t.pop while t.last =~ /^[0-9]+$/
+			url = t.join('/')
 		end
 		"/#{type}/#{url}.#{type}"
 	end

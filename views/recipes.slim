@@ -1,9 +1,18 @@
 .container
 	.row
-		h1.col-xs-12
+		h1.col-xs-11
 			=s('title')
+			- if params['tag']
+				a.badge.badge-pill.badge-tag href="/recipes"
+					=Recipe::RecipeTag.find(params['tag'].to_i).name
+					i.glyphicon.glyphicon-remove.tag-rm-btn
+		.col-xs-1
+			a href="/recipes/edit/dish"
+				button.btn.btn-primary
+					span.glyphicon.glyphicon-plus
 	.list-group
-	- Recipe::Dish.all.sort_by(&:name).each do |dish|
-		a.list-group-item href="/recipes/dish/#{dish.id}"
-			=dish.name
+		- Recipe::Dish.order('lower(name) ASC').each do |dish|
+			- if (not params['tag'] or dish.recipe_tags.any? { |t| t.id == params['tag'].to_i })
+				a.list-group-item href="/recipes/dish/#{dish.id}"
+					=dish.name
 

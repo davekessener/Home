@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190222191656) do
+ActiveRecord::Schema.define(version: 20190305202024) do
 
   create_table "activities", force: :cascade do |t|
     t.string "content"
@@ -84,6 +84,11 @@ ActiveRecord::Schema.define(version: 20190222191656) do
     t.index ["ingredient_list_id"], name: "index_dishes_on_ingredient_list_id"
   end
 
+  create_table "dishes_recipe_tags", id: false, force: :cascade do |t|
+    t.integer "dish_id", null: false
+    t.integer "recipe_tag_id", null: false
+  end
+
   create_table "embedded_ingredients", force: :cascade do |t|
     t.integer "ingredient_list_id"
     t.integer "content_id"
@@ -136,13 +141,6 @@ ActiveRecord::Schema.define(version: 20190222191656) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "recipe_tags_dishes", id: false, force: :cascade do |t|
-    t.integer "recipe_tag_id"
-    t.integer "dish_id"
-    t.index ["dish_id"], name: "index_recipe_tags_dishes_on_dish_id"
-    t.index ["recipe_tag_id"], name: "index_recipe_tags_dishes_on_recipe_tag_id"
   end
 
   create_table "users", force: :cascade do |t|
