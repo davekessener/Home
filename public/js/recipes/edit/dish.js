@@ -34,27 +34,31 @@ function sortSelect(s) {
 	s.val(v);
 }
 
-var Variation = (function () {
-	function Variation(id, name) {
+var BaseObject = (function () {
+	function Impl(o) {
 		var self = this;
 
-		self._id = id;
-		self._name = name;
+		self._id = o['id'];
+		self._name = o['name'];
 	}
 
-	return Variation;
+	return Impl;
 })();
 
+var Variation = BaseObject;
+var Dish = BaseObject;
+var Tag = BaseObject;
+
 var Ingredient = (function () {
-	function Ingredient(id, name, variations) {
+	function Ingredient(o) {
 		var self = this;
 
-		self._id = id;
-		self._name = name;
+		self._id = o['id'];
+		self._name = o['name'];
 		self._variations = {};
 		
-		variations.forEach(function (e) {
-			self._variations[e['id']] = new Variation(e['id'], e['name']);
+		o['variations'].forEach(function (e) {
+			self._variations[e['id']] = new Variation(e);
 
 			if(e['name'] === null) {
 				self._def_var = e['id'];
@@ -67,28 +71,6 @@ var Ingredient = (function () {
 	}
 
 	return Ingredient;
-})();
-
-var Dish = (function () {
-	function Impl(id, name) {
-		var self = this;
-
-		self._id = id;
-		self._name = name;
-	}
-
-	return Impl;
-})();
-
-var Tag = (function () {
-	function Impl(id, name) {
-		var self = this;
-
-		self._id = id;
-		self._name = name;
-	}
-
-	return Impl;
 })();
 
 var ingredients = {};
@@ -110,6 +92,10 @@ function makeTableRow(a, t) {
 	});
 
 	return row;
+}
+
+function makeHeading(t, v) {
+	return $('<' + t + '>' + $('#str_' + v).val() + '</' + t + '>')
 }
 
 function makePanel(h, b) {
@@ -301,7 +287,7 @@ function addFormButton(f, b_t, b_i, cb) {
 	f.append(c);
 }
 
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------------------------
 
 var ErrorStates = {
 	RUNNING: 0,
@@ -367,6 +353,24 @@ var ErrorPane = (function () {
 		self._state = ErrorStates.DONE;
 	};
 
+	Impl.prototype.post = function (url, n, r, f) {
+		var self = this;
+
+		var payload = {};
+
+		payload[n] = JSON.stringify(r);
+
+		$.post(url, payload, function (r) {
+			if(r['error'] === undefined) {
+				f(r);
+			} else {
+				self.submitError(r['error']);
+			}
+		}).fail(function () {
+			self.networkError('Network failure: ' + n);
+		});
+	};
+
 	return Impl;
 })();
 
@@ -412,11 +416,15 @@ var DynamicTable = (function () {
 
 		var row = makeTableRow(c);
 
+		$(row[0].children[c.length - 1]).addClass('remove-cell');
+
 		btn.click(function () {
 			row.remove();
 		});
 
 		self._adder.before(row);
+
+		return row;
 	};
 
 	Impl.prototype.get = function (e) {
@@ -550,6 +558,66 @@ var CompoundTable = (function () {
 	return Impl;
 })();
 
+var EditorTable = (function () {
+	function Impl() {
+		var self = this;
+
+		DynamicTable.call(self, [$('#str_name').val()]);
+	}
+
+	Impl.prototype = Object.create(DynamicTable.prototype);
+	Impl.prototype.constructor = Impl;
+
+	Impl.prototype.get = function (e) {
+		var r = {};
+		var id = e.data('id');
+
+		if(id !== undefined) {
+			r.id = +(id);
+		}
+
+		r.name = e.val();
+
+		return r;
+	};
+
+	Impl.prototype.create = function () {
+		var self = this;
+
+		self.addRow('');
+	};
+
+	Impl.prototype.convert = function (v) {
+		var self = this;
+
+		return v[0];
+	};
+
+	Impl.prototype.addRow = function (vn) {
+		var self = this;
+
+		var e = makeTextField(vn);
+
+		return DynamicTable.prototype.addRow.call(self, [e]);
+	};
+
+	Impl.prototype.addRowRaw = function (vn) {
+		var self = this;
+
+		var r = self.addRow(vn);
+		var btn = $(r[0].children[1].children[0]);
+		var icon = $(btn[0].children[0]);
+
+		icon.css('color', 'gray');
+		icon.css('cursor', 'default');
+		btn.off('click');
+
+		return r;
+	};
+
+	return Impl;
+})();
+
 var EmbeddedEntry = (function () {
 	function Impl() {
 		var self = this;
@@ -628,8 +696,8 @@ var IngredientsManagerLight = (function () {
 		self._base     = new BaseTable();
 		self._compound = new CompoundTable();
 
-		self._value.append(makePanel($('<h3>' + $('#str_ing_base').val() + '</h3>'), self._base._value));
-		self._value.append(makePanel($('<h3>' + $('#str_ing_comp').val() + '</h3>'), self._compound._value));
+		self._value.append(makePanel(makeHeading('h3', 'ing_base'), self._base._value));
+		self._value.append(makePanel(makeHeading('h3', 'ing_comp'), self._compound._value));
 	}
 
 	Manager.prototype.getContent = function () {
@@ -657,14 +725,134 @@ var IngredientsManagerLight = (function () {
 	return Manager;
 })();
 
+var IngredientEditor = (function () {
+	function View() {
+		var self = this;
+
+		var n = makeNameField();
+
+		self._value = $(document.createElement('div'));
+		self._table = new EditorTable();
+		self._name = $(n[0].children[1]);
+		self._submit = $(document.createElement('button'));
+
+		self._submit.addClass('btn');
+		self._submit.addClass('btn-success');
+		self._submit.text($('#str_submit').val());
+
+		self._table._value.addClass('control-group');
+
+		n.addClass('control-group');
+
+		self._value.append(n);
+		self._value.append(self._table._value);
+		self._value.append(self._submit);
+	}
+
+	View.prototype.setContent = function (e) {
+		var self = this;
+
+		self._name.val(e._name);
+
+		Object.keys(e._variations).forEach(function (k) {
+			var n = e._variations[k]._name;
+
+			if(n !== null) {
+				var r = self._table.addRowRaw(n);
+
+				$(r[0].children[0].children[0]).data('id', k);
+			}
+		});
+	};
+
+	View.prototype.getContent = function () {
+		var self = this;
+
+		return {
+			name: self._name.val(),
+			variations: self._table.getContent()
+		};
+	};
+
+	function Impl() {
+		var self = this;
+
+		self._value = $(document.createElement('div'));
+
+		resetSelect.call(self);
+	}
+
+	function resetSelect() {
+		var self = this;
+
+		var s = makeSelect(ingredients);
+
+		s.prepend($('<option value="-">---</option>'));
+		s.val('-');
+
+		if(self._select === undefined) {
+			self._value.append(s);
+		} else {
+			self._select.replaceWith(s);
+		}
+
+		self._select = s;
+
+		function select_cb() {
+			var id = self._select.val();
+
+			if(self._active !== undefined) {
+				self._active._value.remove();
+				self._active = undefined;
+			}
+
+			self._active = new View();
+
+			if(id !== '-') {
+				self._active.setContent(ingredients[id]);
+			}
+
+			self._active._value.css('margin-top', '15px');
+			self._value.append(self._active._value);
+
+			self._active._submit.click(function () {
+				var r = self._active.getContent();
+				var url = '/recipes/ingredient/';
+
+				if(id === '-') {
+					url = '/recipes/new/ingredient';
+				} else {
+					url += id;
+					r.id = +(id);
+				}
+
+				error_pane.post(url, 'ingredient', r, function (r) {
+					ingredients[r['id']] = new Ingredient(r);
+
+					resetSelect.call(self);
+				});
+			});
+		}
+
+		self._select.on('change', select_cb);
+
+		select_cb();
+	}
+
+	return Impl;
+})();
+
 var IngredientsManager = (function () {
 	function Impl() {
 		var self = this;
 
 		IngredientsManagerLight.call(self);
 
+		self._edit = new IngredientEditor();
 		self._embed = new EmbeddedManager();
-		self._value.append(makePanel($('<h3>' + $('#str_ing_embed').val() + '</h3>'), self._embed._value));
+
+		self._value.prepend(makePanel(makeHeading('h3', 'ing_editor'), self._edit._value));
+		self._value.append (makePanel(makeHeading('h3', 'ing_embed'), self._embed._value));
 	}
 
 	Impl.prototype = Object.create(IngredientsManagerLight.prototype);
@@ -701,7 +889,7 @@ var TagManager = (function () {
 	function Impl() {
 		var self = this;
 
-		var creator = makeFancyField($('#str_tag_new').val());
+		var creator = makeFancyField($('#str_new').val());
 
 		self._value = $(document.createElement('div'));
 		self._tags = $(document.createElement('div'));
@@ -720,17 +908,11 @@ var TagManager = (function () {
 		sortSelect(self._select);
 
 		addFormButton(creator, 'primary', 'plus', function () {
-			$.post('/recipes/new/tag', { tag: self._creator.val() }, function (r) {
-				if(r['error'] === undefined) {
-					tags[r['id']] = new Tag(r['id'], r['name']);
+			error_pane.post('/recipes/new/tag', 'tag', self._creator.val(), function (r) {
+				tags[r['id']] = new Tag(r);
 
-					self._creator.val('');
-					self.addTag(r['id']);
-				} else {
-					error_pane.submitError(r['error']);
-				}
-			}).fail(function () {
-				error_pane.submitError('Network failure!');
+				self._creator.val('');
+				self.addTag(r['id']);
 			});
 		});
 
@@ -792,29 +974,19 @@ var Manager = (function () {
 
 			window.result = r;
 
-			$.post($('#post_url').val(), { dish: JSON.stringify(r) }, function (r) {
-				if(r['error'].length === 0) {
-					error_pane.done();
+			error_pane.post($('#post_url').val(), 'dish', r, function (r) {
+				error_pane.done();
 
-					window.location.href = '/recipes/dish/' + r['dish'];
-				} else {
-					error_pane.submitError(r['error']);
-				}
-			}).fail(function () {
-				error_pane.submitError(['Network failure!']);
+				window.location.href = '/recipes/dish/' + r['dish'];
 			});
 		});
 
 		name.addClass('control-group');
 
-		function heading(id) {
-			return $('<h2>' + $('#str_' + id).val() + '</h2>');
-		}
-
 		self._value.append(name);
-		self._value.append(makePanel(heading('tags'), self._tags._value));
-		self._value.append(makePanel(heading('ing'), self._ingredients._value));
-		self._value.append(makeCompactPanel(heading('ins'), self._instructions));
+		self._value.append(makePanel(makeHeading('h2', 'tags'), self._tags._value));
+		self._value.append(makePanel(makeHeading('h2', 'ing'), self._ingredients._value));
+		self._value.append(makeCompactPanel(makeHeading('h2', 'ins'), self._instructions));
 		self._value.append(submit);
 	}
 
@@ -848,15 +1020,15 @@ var hash = '';
 
 function evaluateIngredients(r) {
 	r['ingredients'].forEach(function (e) {
-		ingredients[e['id']] = new Ingredient(e['id'], e['name'], e['variations']);
+		ingredients[e['id']] = new Ingredient(e);
 	});
 
 	r['dishes'].forEach(function (e) {
-		dishes[e['id']] = new Dish(e['id'], e['name']);
+		dishes[e['id']] = new Dish(e);
 	});
 
 	r['tags'].forEach(function (e) {
-		tags[e['id']] = new Tag(e['id'], e['name']);
+		tags[e['id']] = new Tag(e);
 	});
 
 	hash = r['hash'];

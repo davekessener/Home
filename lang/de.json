@@ -31,6 +31,7 @@
 		"embedded" : "Teilrezepte",
 		"compound" : "Referenzrezepte",
 		"save" : "Speichern",
+		"editor" : "Zutaten-Editor",
 		"wait" : "Bitte warten ...",
 		"message" : {
 			"changed" : "Änderungen noch nicht gespeichert!",
