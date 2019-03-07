@@ -1,5 +1,35 @@
 module Recipe
 	module Utils
+		def self.compile
+			r = []
+			Ingredient.all.each do |ing|
+				vars = []
+				ing.ingredient_variations.all.each do |var|
+					vars.push({
+						id: var.id,
+						name: var.name
+					})
+				end
+				r.push({
+					id: ing.id,
+					name: ing.name,
+					variations: vars
+				})
+			end
+
+			d = []
+			Dish.all.each do |dish|
+				d.push({
+					id: dish.id,
+					name: dish.name
+				})
+			end
+
+			t = RecipeTag.all.map { |t| { id: t.id, name: t.name } }
+
+			{ ingredients: r, dishes: d, tags: t, hash: Utils.last_modified }
+		end
+
 		def self.get_quantity(q)
 			(q.empty? ? nil : q.gsub(/,/, '.').to_f)
 		end

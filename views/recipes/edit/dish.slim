@@ -5,6 +5,8 @@ input#post_url type="hidden" value="/recipes/#{is_new ? 'new/dish' : "dish/#{dis
 - unless is_new
 	input#old_data type="hidden" data-old="#{dish.to_js.to_json}"
 
+input#initial_data type="hidden" data-old="#{Recipe::Utils.compile.to_json}"
+
 input#str_name          type="hidden" value="#{s('name')}"
 input#str_tags          type="hidden" value="#{s('tags')}"
 input#str_ing           type="hidden" value="#{s('ingredients')}"

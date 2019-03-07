@@ -303,9 +303,16 @@ function addFormButton(f, b_t, b_i, cb) {
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+var ErrorStates = {
+	RUNNING: 0,
+	DONE: 1
+};
+
 var ErrorPane = (function () {
 	function Impl() {
 		var self = this;
+
+		self._state = ErrorStates.RUNNING;
 
 		self._submit  = $(document.createElement('div'));
 		self._network = $(document.createElement('div'));
@@ -330,23 +337,34 @@ var ErrorPane = (function () {
 	Impl.prototype.submitError = function (a) {
 		var self = this;
 
-		self._submit.empty();
+		if(self._state === ErrorStates.RUNNING) {
+			self._submit.empty();
 
-		if(a !== undefined) {
-			a.forEach(function (e) {
-				self._submit.append(makeError(e));
-			});
+			if(a !== undefined) {
+				a.forEach(function (e) {
+					self._submit.append(makeError(e));
+				});
+			}
 		}
 	};
 
 	Impl.prototype.networkError = function (msg) {
 		var self = this;
 
-		self._network.empty();
+		if(self._state === ErrorStates.RUNNING) {
+			self._network.empty();
 
-		if(msg !== undefined) {
-			self._network.append(makeError(msg));
+			if(msg !== undefined) {
+				self._network.append(makeError(msg));
+			}
 		}
+	};
+
+	Impl.prototype.done = function () {
+		var self = this;
+
+		self._value.empty();
+		self._state = ErrorStates.DONE;
 	};
 
 	return Impl;
@@ -776,6 +794,8 @@ var Manager = (function () {
 
 			$.post($('#post_url').val(), { dish: JSON.stringify(r) }, function (r) {
 				if(r['error'].length === 0) {
+					error_pane.done();
+
 					window.location.href = '/recipes/dish/' + r['dish'];
 				} else {
 					error_pane.submitError(r['error']);
@@ -824,46 +844,38 @@ var Manager = (function () {
 var manager = undefined;
 var error_pane = new ErrorPane();
 var failure_timeout = 750;
+var hash = '';
 
-function loadIngredients(t, hash) {
+function evaluateIngredients(r) {
+	r['ingredients'].forEach(function (e) {
+		ingredients[e['id']] = new Ingredient(e['id'], e['name'], e['variations']);
+	});
+
+	r['dishes'].forEach(function (e) {
+		dishes[e['id']] = new Dish(e['id'], e['name']);
+	});
+
+	r['tags'].forEach(function (e) {
+		tags[e['id']] = new Tag(e['id'], e['name']);
+	});
+
+	hash = r['hash'];
+}
+
+function loadIngredients(t) {
 	setTimeout(function () {
 		$.getJSON('/recipes/ingredients', { hash: hash }, function (r) {
 			error_pane.networkError();
 
 			if(hash != r['hash']) {
-				r['ingredients'].forEach(function (e) {
-					ingredients[e['id']] = new Ingredient(e['id'], e['name'], e['variations']);
-				});
-
-				r['dishes'].forEach(function (e) {
-					dishes[e['id']] = new Dish(e['id'], e['name']);
-				});
-
-				r['tags'].forEach(function (e) {
-					tags[e['id']] = new Tag(e['id'], e['name']);
-				});
+				evaluateIngredients(r);
 			}
 
-			hash = r['hash'];
-
-			if(manager === undefined) {
-				manager = new Manager();
-
-				var o = $('#old_data');
-		
-				if(o.length) {
-					manager.setContent(o.data('old'));
-				}
-
-				$('#main').empty();
-				$('#main').append(manager._value);
-			}
-
-			loadIngredients(2000, hash);
+			loadIngredients(2000);
 		}).fail(function () {
 			error_pane.networkError('Failed to retrieve data!');
 
-			loadIngredients(failure_timeout, hash);
+			loadIngredients(failure_timeout);
 			
 			if(failure_timeout < 10000) {
 				failure_timeout = failure_timeout * 2;
@@ -875,7 +887,20 @@ function loadIngredients(t, hash) {
 $(function () {
 	$('#error_pane').append(error_pane._value);
 
-	loadIngredients(0, '');
+	evaluateIngredients($('#initial_data').data('old'));
+
+	manager = new Manager();
+
+	var o = $('#old_data');
+
+	if(o.length) {
+		manager.setContent(o.data('old'));
+	}
+
+	$('#main').empty();
+	$('#main').append(manager._value);
+
+	loadIngredients(0);
 });
 
 })(jQuery);
