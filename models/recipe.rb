@@ -47,6 +47,7 @@ module Recipe
 
 	class RecipeTag < ActiveRecord::Base
 		validates :name, uniqueness: true, presence: true
+		has_and_belongs_to_many :dish
 	end
 	
 	class Ingredient < ActiveRecord::Base
@@ -75,6 +76,7 @@ module Recipe
 	
 	class Dish < ActiveRecord::Base
 		belongs_to :ingredient_list
+		has_and_belongs_to_many :recipe_tags
 	
 		validates :name, uniqueness: true, presence: true
 		validates :ingredient_list_id, presence: true
@@ -82,7 +84,9 @@ module Recipe
 		def to_js
 			{
 				name: name,
-				ingredients: ingredient_list.to_js
+				ingredients: ingredient_list.to_js,
+				instructions: instructions,
+				tags: recipe_tags.map(&:id)
 			}
 		end
 	end

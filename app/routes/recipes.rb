@@ -23,32 +23,19 @@ post '/recipes/dish/:id/notes' do |id|
 	end
 end
 
-get '/recipes/edit/dish' do
-	slim :'recipes/edit/dish'
-end
-
-post '/recipes/new/dish' do
+post '/recipes/new/tag' do
 	content_type :json
 
-	Recipe::Utils.construct_dish(Recipe::Dish.new, JSON.parse(params['dish'])).to_json
-end
-
-get '/recipes/new/ingredient' do
-	slim :'recipes/edit/ingredient'
-end
-
-post '/recipes/new/ingredient' do
-end
-
-get '/recipes/edit/ingredient/:id' do |id|
-	if (dish = Recipe::Ingredient.find(id.to_i))
-		slim :'recipes/edit/ingredient', locals: { ingredient: dish }
+	t = Recipe::RecipeTag.create(name: params['tag'])
+	if t.valid?
+		{ id: t.id, name: t.name }
 	else
-		status 404
-	end
+		{ error: t.errors.full_messages }
+	end.to_json
 end
 
-post '/recipes/ingredient/:id' do |id|
+get '/recipes/edit/dish' do
+	slim :'recipes/edit/dish'
 end
 
 get '/recipes/edit/dish/:id' do |id|
@@ -57,6 +44,12 @@ get '/recipes/edit/dish/:id' do |id|
 	else
 		status 404
 	end
+end
+
+post '/recipes/new/dish' do
+	content_type :json
+
+	Recipe::Utils.construct_dish(Recipe::Dish.new, JSON.parse(params['dish'])).to_json
 end
 
 post '/recipes/dish/:id' do |id|
@@ -69,10 +62,16 @@ post '/recipes/dish/:id' do |id|
 	end
 end
 
+post '/recipes/new/ingredient' do
+end
+
+post '/recipes/ingredient/:id' do |id|
+end
+
 get '/recipes/ingredients' do
 	content_type :json
 
-	if params['hash'] == Helper.last_modified
+	if params['hash'] == Recipe::Utils.last_modified
 		{ hash: params['hash'] }
 	else
 		r = []
@@ -90,6 +89,7 @@ get '/recipes/ingredients' do
 				variations: vars
 			})
 		end
+
 		d = []
 		Recipe::Dish.all.each do |dish|
 			d.push({
@@ -97,7 +97,10 @@ get '/recipes/ingredients' do
 				name: dish.name
 			})
 		end
-		{ ingredients: r, dishes: d, hash: Helper.last_modified }
+
+		t = Recipe::RecipeTag.all.map { |t| { id: t.id, name: t.name } }
+
+		{ ingredients: r, dishes: d, tags: t, hash: Recipe::Utils.last_modified }
 	end.to_json
 end
 

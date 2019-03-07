@@ -31,10 +31,14 @@
 		"embedded" : "Sub-recipes",
 		"compound" : "Referenced dishes",
 		"save" : "Save",
+		"wait" : "Please wait ...",
 		"message" : {
 			"changed" : "Unsaved changes!",
 			"saved" : "All changes saved.",
 			"error" : "Error: Couldn't save changes!"
+		},
+		"tag" : {
+			"new" : "New"
 		},
 		"ing" : {
 			"base" : {

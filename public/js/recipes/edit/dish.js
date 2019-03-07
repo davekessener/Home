@@ -22,6 +22,18 @@ function compare(a, b) {
 	return convert(a) > convert(b) ? 1 : -1;
 }
 
+function sortSelect(s) {
+	var opt = s.find('option');
+	var v = s.val();
+
+	opt.sort(function (a, b) {
+		return compare($(a).text(), $(b).text());
+	});
+
+	s.html(opt);
+	s.val(v);
+}
+
 var Variation = (function () {
 	function Variation(id, name) {
 		var self = this;
@@ -68,8 +80,22 @@ var Dish = (function () {
 	return Impl;
 })();
 
+var Tag = (function () {
+	function Impl(id, name) {
+		var self = this;
+
+		self._id = id;
+		self._name = name;
+	}
+
+	return Impl;
+})();
+
 var ingredients = {};
 var dishes = {};
+var tags = {};
+
+// ------------------------------------------------------------------------------------------------------------------------
 
 function makeTableRow(a, t) {
 	var row = $(document.createElement('tr'));
@@ -105,12 +131,59 @@ function makePanel(h, b) {
 	return panel;
 }
 
+function makeCompactPanel(h, b) {
+	var p = makePanel(h, b);
+
+	$(p[0].children[1]).addClass('panel-body-compact');
+
+	return p;
+}
+
+function makeFancyField(n, v) {
+	var c = $(document.createElement('div'));
+	var d = $(document.createElement('span'));
+	var f = $(document.createElement('input'));
+
+	f.addClass('form-control');
+	f.prop('type', 'text');
+
+	if(v !== undefined) {
+		f.prop('value', v);
+	}
+
+	d.addClass('input-group-addon');
+	d.text(n);
+
+	c.addClass('input-group');
+	c.append(d);
+	c.append(f);
+
+	return c;
+}
+
+function makeNameField(v) {
+	return makeFancyField($('#str_name').val(), v);
+}
+
+function makeGlyphicon(icon) {
+	return $('<i class="glyphicon glyphicon-' + icon + '"></i>');
+}
+
 function makeButton(type) {
-	return $('<button class="btn btn-primary"><span class="glyphicon glyphicon-' + type + '"></span></button>');
+	var btn = $('<button class="btn btn-primary"></button>');
+
+	btn.append(makeGlyphicon(type));
+
+	return btn;
 }
 
 function makeClickSpan(icon) {
-	return $('<span class="glyphicon glyphicon-' + icon + ' my-icon-button my-' + icon + '-button"></span>');
+	var e = makeGlyphicon(icon);
+
+	e.addClass('my-icon-button');
+	e.addClass('my-' + icon + '-button');
+
+	return e;
 }
 
 function makeSelect(t) {
@@ -151,6 +224,90 @@ function makeSelect(t) {
 function makeTextField(v) {
 	return $('<input type="text" class="my-form-input" value="' + v + '"></input>');
 }
+
+function makeTag(id) {
+	var r = $(document.createElement('span'));
+
+	r.addClass('badge');
+	r.addClass('badge-pill');
+	r.addClass('recipe-tag');
+
+	r.data('id', id);
+	r.append(tags[id]._name);
+	r.append(makeGlyphicon('remove'));
+
+	r.click(function () {
+		r.remove();
+	});
+
+	return r;
+}
+
+function addFormButton(f, b_t, b_i, cb) {
+	var icon = makeGlyphicon(b_i);
+	var btn = $('<button class="btn btn-' + b_t + '"></button>');
+	var c = $(document.createElement('div'));
+
+	btn.append(icon);
+
+	c.addClass('input-group-btn');
+	c.append(btn);
+
+	btn.click(cb);
+
+	f.append(c);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+var ErrorPane = (function () {
+	function Impl() {
+		var self = this;
+
+		self._submit  = $(document.createElement('div'));
+		self._network = $(document.createElement('div'));
+		self._value   = $(document.createElement('div'));
+
+		self._value.append(self._submit);
+		self._value.append(self._network);
+	}
+
+	function makeError(msg) {
+		var e = $(document.createElement('div'));
+		var icon = makeGlyphicon('alert');
+
+		icon.addClass('error-sign');
+
+		e.append(icon);
+		e.append($('<span style="margin-left: 7px;"><b>' + msg + '</b></span>'));
+
+		return e;
+	}
+
+	Impl.prototype.submitError = function (a) {
+		var self = this;
+
+		self._submit.empty();
+
+		if(a !== undefined) {
+			a.forEach(function (e) {
+				self._submit.append(makeError(e));
+			});
+		}
+	};
+
+	Impl.prototype.networkError = function (msg) {
+		var self = this;
+
+		self._network.empty();
+
+		if(msg !== undefined) {
+			self._network.append(makeError(msg));
+		}
+	};
+
+	return Impl;
+})();
 
 // -----------------------------------------------------------------------------
 
@@ -332,40 +489,21 @@ var CompoundTable = (function () {
 	return Impl;
 })();
 
-function fillTable(t, o) {
-	o[0].childNodes[0].childNodes.forEach(function (row) {
-		t.addRow.apply(t, Array.from(row.childNodes).map(function (e) {
-			return e.childNodes[0].data;
-		}));
-	});
-
-	return t;
-}
-
-function fillTableIfExists(t, o) {
-	if(o[0].children.length > 0) {
-		fillTable(t, $(o[0].children[0]));
-	}
-
-	return t;
-}
-
 var EmbeddedEntry = (function () {
 	function Impl() {
 		var self = this;
 
-		var name = $('#f_name').clone();
-		var rm = $('<button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>');
-		var container = $(document.createElement('div'));
+		var name = makeNameField();
 
-		container.addClass('input-group-btn');
-		container.append(rm);
-		name.append(container);
+		addFormButton(name, 'danger', 'remove', function () {
+			self._value.remove();
+		});
 
 		self._name = $(name[0].children[1]);
-		self._content = new IngredientsManager();
+		self._content = new IngredientsManagerLight();
 		self._value = makePanel(name, self._content._value);
 
+		self._name.val('');
 		self._value.prop('embed-ref', self);
 	}
 
@@ -421,17 +559,15 @@ var EmbeddedManager = (function () {
 	return Impl;
 })();
 
-var IngredientsManager = (function () {
+var IngredientsManagerLight = (function () {
 	function Manager() {
 		var self = this;
 
 		self._value    = $(document.createElement('div'));
 		self._base     = new BaseTable();
 		self._compound = new CompoundTable();
-		self._embed    = new EmbeddedManager();
 
 		self._value.append(makePanel($('<h3>' + $('#str_ing_base').val() + '</h3>'), self._base._value));
-		self._value.append(makePanel($('<h3>' + $('#str_ing_embed').val() + '</h3>'), self._embed._value));
 		self._value.append(makePanel($('<h3>' + $('#str_ing_comp').val() + '</h3>'), self._compound._value));
 	}
 
@@ -441,7 +577,7 @@ var IngredientsManager = (function () {
 		return {
 			base: self._base.getContent(),
 			compound: self._compound.getContent(),
-			embedded: self._embed.getContent()
+			embedded: []
 		};
 	};
 
@@ -455,6 +591,38 @@ var IngredientsManager = (function () {
 		o['compound'].forEach(function (b) {
 			self._compound.addRow(+(b['dish']), (b['quantity'] || '0'), (b['unit'] || '-'));
 		});
+	};
+
+	return Manager;
+})();
+
+var IngredientsManager = (function () {
+	function Impl() {
+		var self = this;
+
+		IngredientsManagerLight.call(self);
+
+		self._embed = new EmbeddedManager();
+		self._value.append(makePanel($('<h3>' + $('#str_ing_embed').val() + '</h3>'), self._embed._value));
+	}
+
+	Impl.prototype = Object.create(IngredientsManagerLight.prototype);
+	Impl.prototype.constructor = Impl;
+
+	Impl.prototype.getContent = function () {
+		var self = this;
+
+		var r = IngredientsManagerLight.prototype.getContent.call(self);
+
+		r.embedded = self._embed.getContent();
+
+		return r;
+	};
+
+	Impl.prototype.setContent = function (o) {
+		var self = this;
+
+		IngredientsManagerLight.prototype.setContent.call(self, o);
 
 		o['embed'].forEach(function (b) {
 			var e = new EmbeddedEntry();
@@ -465,32 +633,178 @@ var IngredientsManager = (function () {
 		});
 	};
 
-	return Manager;
+	return Impl;
+})();
+
+var TagManager = (function () {
+	function Impl() {
+		var self = this;
+
+		var creator = makeFancyField($('#str_tag_new').val());
+
+		self._value = $(document.createElement('div'));
+		self._tags = $(document.createElement('div'));
+		self._select = makeSelect(tags);
+		self._creator = $(creator[0].children[1]);
+
+		self._tags.addClass('control-group');
+
+		self._select.prepend($('<option value="-">---</option>'));
+		self._select.val('-');
+		self._select.on('change', function () {
+			self.addTag(self._select.val());
+		});
+		self._select.addClass('control-group');
+
+		sortSelect(self._select);
+
+		addFormButton(creator, 'primary', 'plus', function () {
+			$.post('/recipes/new/tag', { tag: self._creator.val() }, function (r) {
+				if(r['error'] === undefined) {
+					tags[r['id']] = new Tag(r['id'], r['name']);
+
+					self._creator.val('');
+					self.addTag(r['id']);
+				} else {
+					error_pane.submitError(r['error']);
+				}
+			}).fail(function () {
+				error_pane.submitError('Network failure!');
+			});
+		});
+
+		self._value.append(self._tags);
+		self._value.append(self._select);
+		self._value.append(creator);
+	}
+
+	Impl.prototype.addTag = function (id) {
+		var self = this;
+
+		var tag = makeTag(id);
+
+		tag.click(function () {
+			self._select.append($('<option value="' + id + '">' + tags[id]._name + '</option>'));
+
+			sortSelect(self._select);
+		});
+
+		self._tags.append(tag);
+		self._select.val('-');
+		self._select.find('option[value="' + id + '"]').remove();
+	};
+
+	Impl.prototype.getContent = function () {
+		var self = this;
+
+		return Array.from(self._tags[0].children).map(function (e) {
+			return +($(e).data('id'));
+		});
+	};
+
+	Impl.prototype.setContent = function (o) {
+		var self = this;
+
+		o.forEach(function (id) {
+			self.addTag(id);
+		});
+	};
+
+	return Impl;
+})();
+
+var Manager = (function () {
+	function Impl() {
+		var self = this;
+
+		var name = makeNameField();
+		var submit = $('<button class="btn btn-success control-group">' + $('#str_submit').val() + '</button>');
+
+		self._value = $(document.createElement('div'));
+		self._name = $(name[0].children[1]);
+		self._tags = new TagManager();
+		self._ingredients = new IngredientsManager();
+		self._instructions = $('<textarea class="form-control" rows="20"></textarea>');
+
+		submit.click(function () {
+			var r = self.getContent();
+
+			window.result = r;
+
+			$.post($('#post_url').val(), { dish: JSON.stringify(r) }, function (r) {
+				if(r['error'].length === 0) {
+					window.location.href = '/recipes/dish/' + r['dish'];
+				} else {
+					error_pane.submitError(r['error']);
+				}
+			}).fail(function () {
+				error_pane.submitError(['Network failure!']);
+			});
+		});
+
+		name.addClass('control-group');
+
+		function heading(id) {
+			return $('<h2>' + $('#str_' + id).val() + '</h2>');
+		}
+
+		self._value.append(name);
+		self._value.append(makePanel(heading('tags'), self._tags._value));
+		self._value.append(makePanel(heading('ing'), self._ingredients._value));
+		self._value.append(makeCompactPanel(heading('ins'), self._instructions));
+		self._value.append(submit);
+	}
+
+	Impl.prototype.getContent = function () {
+		var self = this;
+
+		return {
+			name: self._name.val(),
+			tags: self._tags.getContent(),
+			ingredients: self._ingredients.getContent(),
+			instructions: self._instructions.val()
+		};
+	};
+
+	Impl.prototype.setContent = function (o) {
+		var self = this;
+
+		self._name.val(o['name']);
+		self._tags.setContent(o['tags']);
+		self._ingredients.setContent(o['ingredients']);
+		self._instructions.val(o['instructions']);
+	};
+
+	return Impl;
 })();
 
 var manager = undefined;
+var error_pane = new ErrorPane();
+var failure_timeout = 750;
 
 function loadIngredients(t, hash) {
 	setTimeout(function () {
 		$.getJSON('/recipes/ingredients', { hash: hash }, function (r) {
-			if(r['ingredients'] !== undefined) {
+			error_pane.networkError();
+
+			if(hash != r['hash']) {
 				r['ingredients'].forEach(function (e) {
 					ingredients[e['id']] = new Ingredient(e['id'], e['name'], e['variations']);
 				});
-			}
 
-			if(r['dishes'] !== undefined) {
 				r['dishes'].forEach(function (e) {
 					dishes[e['id']] = new Dish(e['id'], e['name']);
 				});
+
+				r['tags'].forEach(function (e) {
+					tags[e['id']] = new Tag(e['id'], e['name']);
+				});
 			}
 
-			if(r['hash'] !== undefined) {
-				hash = r['hash']
-			}
+			hash = r['hash'];
 
 			if(manager === undefined) {
-				manager = new IngredientsManager();
+				manager = new Manager();
 
 				var o = $('#old_data');
 		
@@ -498,43 +812,26 @@ function loadIngredients(t, hash) {
 					manager.setContent(o.data('old'));
 				}
 
-				$('#ingredients').append(manager._value);
-
-				$('#submit_btn').click(function () {
-					var r = {
-						name: $('#v_name').val(),
-						ingredients: manager.getContent(),
-						instructions: $('#v_instructions').val()
-					};
-
-					window.result = r;
-
-					$.post($('#post_url').val(), { dish: JSON.stringify(r) }, function (r) {
-						$('#error_pane').text('');
-
-						if(r['error'].length === 0) {
-							window.location.href = '/recipes/dish/' + r['dish'];
-						} else {
-							r['error'].forEach(function (e) {
-								$('#error_pane').append($('<p>' + e + '</p>'));
-							});
-						}
-					}).fail(function () {
-						$('#error_pane').append('Network failure!');
-					});
-				});
+				$('#main').empty();
+				$('#main').append(manager._value);
 			}
 
 			loadIngredients(2000, hash);
 		}).fail(function () {
-			$('#error_pane').append('Failed to retrieve data!');
+			error_pane.networkError('Failed to retrieve data!');
 
-//			loadIngredients(1000, hash);
+			loadIngredients(failure_timeout, hash);
+			
+			if(failure_timeout < 10000) {
+				failure_timeout = failure_timeout * 2;
+			}
 		});
 	}, t);
 }
 
 $(function () {
+	$('#error_pane').append(error_pane._value);
+
 	loadIngredients(0, '');
 });
 

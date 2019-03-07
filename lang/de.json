@@ -31,10 +31,14 @@
 		"embedded" : "Teilrezepte",
 		"compound" : "Referenzrezepte",
 		"save" : "Speichern",
+		"wait" : "Bitte warten ...",
 		"message" : {
 			"changed" : "Änderungen noch nicht gespeichert!",
 			"saved" : "Alle Änderungen sind gespeichert.",
 			"error" : "Error: Änderungen konnten nicht gespeichert werden!"
+		},
+		"tag" : {
+			"new" : "Neu"
 		},
 		"ing" : {
 			"base" : {

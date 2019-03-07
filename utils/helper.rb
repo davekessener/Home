@@ -50,14 +50,6 @@ module Helper
 		nil
 	end
 
-	def self.mark_ingredients
-		@@ing_last_modified = DateTime.now.strftime('%Q')
-	end
-
-	def self.last_modified
-		@@ing_last_modified ||= Helper.mark_ingredients
-	end
-
 	def self.html_fraction(q)
 		r = ''
 		o = q

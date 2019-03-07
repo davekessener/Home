@@ -45,7 +45,10 @@ module Recipe
 					dish.name = data['name']
 					dish.ingredient_list = Utils.create_list(data['ingredients'])
 					dish.instructions = data['instructions'].strip
+					dish.recipe_tags = data['tags'].map { |id| RecipeTag.find(id.to_i) }
 					dish.save!
+
+					Utils.modify
 				end
 
 				{ error: [], dish: dish.id }
@@ -53,6 +56,14 @@ module Recipe
 				puts e.backtrace
 				{ error: [ e.to_s ] }
 			end
+		end
+
+		def self.modify
+			@@last_modified = DateTime.now.strftime('%Q')
+		end
+
+		def self.last_modified
+			@@last_modified ||= Utils.modify
 		end
 	end
 end

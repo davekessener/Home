@@ -2,3 +2,9 @@
 	vertical-align: middle;
 }
 
+.badge-warning {
+	background-color: darkorange;
+	margin-right: 5px;
+	font-size: 11pt;
+}
+

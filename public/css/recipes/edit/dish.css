@@ -36,3 +36,24 @@
 	margin-bottom: 15px;
 }
 
+.error-sign {
+	color: red;
+	font-size: 18pt;
+}
+
+.recipe-tag {
+	background-color: darkorange;
+	margin-right: 5px;
+	font-size: 11pt;
+	cursor: pointer;
+}
+
+.recipe-tag i {
+	font-size: 8pt;
+	margin-left: 3px;
+}
+
+.input-group-btn button i.glyphicon {
+	top: 2px;
+}
+

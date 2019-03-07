@@ -3,7 +3,15 @@
 input#post_url type="hidden" value="/recipes/#{is_new ? 'new/dish' : "dish/#{dish.id}"}"
 
 - unless is_new
-	input#old_data type="hidden" data-old="#{dish.to_js[:ingredients].to_json}"
+	input#old_data type="hidden" data-old="#{dish.to_js.to_json}"
+
+input#str_name          type="hidden" value="#{s('name')}"
+input#str_tags          type="hidden" value="#{s('tags')}"
+input#str_ing           type="hidden" value="#{s('ingredients')}"
+input#str_ins           type="hidden" value="#{s('instructions')}"
+input#str_submit        type="hidden" value="#{s('save')}"
+
+input#str_tag_new       type="hidden" value="#{s('tag:new')}"
 
 input#str_base_super    type="hidden" value="#{s('ing:base:super')}"
 input#str_base_sub      type="hidden" value="#{s('ing:base:sub')}"
@@ -29,44 +37,9 @@ select.my-form-input.hidden#unit_select
 	.row
 		.col-xs-12
 			#error_pane
-	.row
-		.col-xs-12
 			h1
 				=s(is_new ? 'new' : 'edit')
-	.row
-		.col-xs-12
-			.control-group
-				#f_name.input-group
-					span.input-group-addon
-						=s('name')
-					input.form-control.col-xs-12#v_name type="text" value="#{is_new ? "" : dish.name}"
-	.row
-		.col-xs-12
-			.panel.panel-default
-				.panel-heading
-					h2
-						=s('tags')
-				.panel-body
-	.row
-		.col-xs-12
-			.panel.panel-default
-				.panel-heading
-					h2
-						=s('ingredients')
-				.panel-body
-					#ingredients
-	.row
-		.col-xs-12
-			.panel.panel-default
-				.panel-heading
-					h2
-						=s('instructions')
-				.panel-body.panel-body-compact
-					textarea.form-control#v_instructions rows=20
-						- unless is_new
-							=dish.instructions
-	.row
-		.col-xs-12
-			button.btn.btn-success.control-group#submit_btn
-				=s('save')
+			#main
+				h2
+					=s('wait')
 
