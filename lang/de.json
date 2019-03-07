@@ -1,5 +1,6 @@
 {
 	"users" : "Benutzer",
+	"whoareyou" : "Mit wem habe ich das Vergnügen?",
 	"login" : {
 		"title" : "Login"
 	},
