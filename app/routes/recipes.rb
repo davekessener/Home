@@ -74,33 +74,7 @@ get '/recipes/ingredients' do
 	if params['hash'] == Recipe::Utils.last_modified
 		{ hash: params['hash'] }
 	else
-		r = []
-		Recipe::Ingredient.all.each do |ing|
-			vars = []
-			ing.ingredient_variations.all.each do |var|
-				vars.push({
-					id: var.id,
-					name: var.name
-				})
-			end
-			r.push({
-				id: ing.id,
-				name: ing.name,
-				variations: vars
-			})
-		end
-
-		d = []
-		Recipe::Dish.all.each do |dish|
-			d.push({
-				id: dish.id,
-				name: dish.name
-			})
-		end
-
-		t = Recipe::RecipeTag.all.map { |t| { id: t.id, name: t.name } }
-
-		{ ingredients: r, dishes: d, tags: t, hash: Recipe::Utils.last_modified }
+		Recipe::Utils.compile
 	end.to_json
 end
 
