@@ -113,9 +113,16 @@ function makeTableRow(a, t) {
 }
 
 function makePanel(h, b) {
+	var icon_0 = 'chevron-right';
+	var icon_1 = 'chevron-down';
+
 	var panel = $(document.createElement('div'));
 	var head = $(document.createElement('div'));
 	var body = $(document.createElement('div'));
+	var collapse = $(document.createElement('div'));
+	var toggle = $(document.createElement('div'));
+	var icon = makeGlyphicon(icon_0);
+	var container = $(document.createElement('table'));
 
 	panel.addClass('panel');
 	panel.addClass('panel-default');
@@ -123,10 +130,46 @@ function makePanel(h, b) {
 	head.addClass('panel-heading');
 	body.addClass('panel-body');
 
+	collapse.addClass('panel-collapse');
+	collapse.addClass('collapse');
+
+	toggle.data('expanded', false);
+	toggle.addClass('panel-expander');
+	toggle.append(icon);
+
+	head.click(function () {
+		var v = toggle.data('expanded');
+
+		if(v) {
+			icon.addClass('glyphicon-' + icon_0);
+			icon.removeClass('glyphicon-' + icon_1);
+			collapse.removeClass('in');
+		} else {
+			icon.removeClass('glyphicon-' + icon_0);
+			icon.addClass('glyphicon-' + icon_1);
+			collapse.addClass('in');
+		}
+
+		toggle.data('expanded', !v);
+	});
+
+	var row = $(document.createElement('tr'));
+	var c_btn = $(document.createElement('td'));
+	var c_h = $(document.createElement('td'));
+
+	c_btn.append(toggle);
+	c_h.append(h);
+	c_h.addClass('important');
+
+	row.append(c_btn);
+	row.append(c_h);
+
+	container.append(row);
 	body.append(b);
-	head.append(h);
+	head.append(container);
+	collapse.append(body);
 	panel.append(head);
-	panel.append(body);
+	panel.append(collapse);
 
 	return panel;
 }
@@ -134,7 +177,7 @@ function makePanel(h, b) {
 function makeCompactPanel(h, b) {
 	var p = makePanel(h, b);
 
-	$(p[0].children[1]).addClass('panel-body-compact');
+	$(p[0].children[1].children[0]).addClass('panel-body-compact');
 
 	return p;
 }

@@ -24,6 +24,15 @@
 	margin-bottom: 0px;
 }
 
+.panel-heading table {
+	width: 100%;
+}
+
+td.important {
+	width: 100%;
+	padding-left: 10px;
+}
+
 .table {
 	margin-bottom: 0px;
 }
@@ -55,5 +64,14 @@
 
 .input-group-btn button i.glyphicon {
 	top: 2px;
+}
+
+.panel-expander {
+	font-size: 17pt;
+	margin-top: 2px;
+}
+
+.panel-heading {
+	cursor: pointer;
 }
 
