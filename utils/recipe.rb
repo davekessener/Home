@@ -92,22 +92,22 @@ module Recipe
 			begin
 				ActiveRecord::Base.transaction do
 					ing.name = data['name']
+					ing.save!
 
+					c = Recipe::IngredientVariation
 					data['variations'].each do |v|
-						if v['id']
-							Recipe::IngredientVariation.find(v['id'].to_i).tap do |o|
-								o.name = v['name'];
-								o.save!
-							end
-						else
-							Recipe::IngredientVariation.create(name: v['name']).tap do |o|
-								o.save!
-								ing.ingredient_variations.push(o)
-							end
-						end
+						o = (v['id'] ? c.find(v['id'].to_i) : c.new)
+						o.name = v['name']
+						o.ingredient = ing
+						o.save!
 					end
 
-					ing.save!
+					if ing.ingredient_variations.all? { |v| v.name }
+						Recipe::IngredientVariation.new.tap do |o|
+							o.ingredient = ing
+							o.save!
+						end
+					end
 
 					Utils.modify
 				end

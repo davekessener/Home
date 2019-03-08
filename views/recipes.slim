@@ -1,14 +1,20 @@
 .container
 	.row
-		h1.col-xs-11
-			=s('title')
-			- if params['tag']
-				a.badge.badge-pill.badge-tag href="/recipes"
-					=Recipe::RecipeTag.find(params['tag'].to_i).name
-					i.glyphicon.glyphicon-remove.tag-rm-btn
+		.col-xs-11
+			h1 style="margin: 0px;"
+				=s('title')
+				- if params['tag']
+					a.badge.badge-pill.badge-tag href="/recipes"
+						=Recipe::RecipeTag.find(params['tag'].to_i).name
+						i.glyphicon.glyphicon-remove.tag-rm-btn
+			- unless params['tag']
+				div style="margin-bottom: 10px;"
+					- Recipe::RecipeTag.all.each do |t|
+						a.badge.badge-pill.badge-tag href="/recipes?tag=#{t.id}" style="font-size: 11pt;"
+							=t.name
 		.col-xs-1
 			a href="/recipes/edit/dish"
-				button.btn.btn-primary
+				span.btn.btn-primary
 					span.glyphicon.glyphicon-plus
 	.list-group
 		- Recipe::Dish.order('lower(name) ASC').each do |dish|

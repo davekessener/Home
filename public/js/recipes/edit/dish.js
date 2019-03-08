@@ -16,7 +16,7 @@ function compare(a, b) {
 		e = e.replace(/\u00FC/g, 'u');
 		e = e.replace(/\u00DF/g, 's');
 
-		return e;
+		return e.toLowerCase();
 	};
 
 	return convert(a) > convert(b) ? 1 : -1;
@@ -290,15 +290,16 @@ function addFormButton(f, b_t, b_i, cb) {
 // -----------------------------------------------------------------------------------------------------------------------------------
 
 var ErrorStates = {
-	RUNNING: 0,
-	DONE: 1
+	INIT: 0,
+	RUNNING: 2,
+	DONE: 3
 };
 
 var ErrorPane = (function () {
 	function Impl() {
 		var self = this;
 
-		self._state = ErrorStates.RUNNING;
+		self._state = ErrorStates.INIT;
 
 		self._submit  = $(document.createElement('div'));
 		self._network = $(document.createElement('div'));
@@ -306,6 +307,14 @@ var ErrorPane = (function () {
 
 		self._value.append(self._submit);
 		self._value.append(self._network);
+
+		$(window).on('beforeunload', function () {
+			if(self._state === ErrorStates.RUNNING) {
+				return $('#str_confirm').val();
+			}
+		});
+
+		self.start();
 	}
 
 	function makeError(msg) {
@@ -343,6 +352,14 @@ var ErrorPane = (function () {
 			if(msg !== undefined) {
 				self._network.append(makeError(msg));
 			}
+		}
+	};
+
+	Impl.prototype.start = function () {
+		var self = this;
+
+		if(self._state === ErrorStates.INIT) {
+			self._state = ErrorStates.RUNNING;
 		}
 	};
 
