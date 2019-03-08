@@ -75,3 +75,8 @@ td.important {
 	cursor: pointer;
 }
 
+table.table > tbody > tr > td.remove-cell {
+	width: 0;
+	padding-right: 8px;
+}
+

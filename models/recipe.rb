@@ -54,11 +54,27 @@ module Recipe
 	class Ingredient < ActiveRecord::Base
 		validates :name, uniqueness: true, presence: true
 		has_many :ingredient_variations, dependent: :destroy
+
+		def to_js
+			{
+				id: id,
+				name: name,
+				variations: ingredient_variations.map(&:to_js)
+			}
+		end
 	end
 	
 	class IngredientVariation < ActiveRecord::Base
 		belongs_to :ingredient
 		validates :ingredient_id, presence: true
+
+		def to_js
+			{
+				id: id,
+				name: name,
+				ingredient: ingredient.id
+			}
+		end
 	end
 	
 	class IngredientList < ActiveRecord::Base
@@ -84,6 +100,7 @@ module Recipe
 
 		def to_js
 			{
+				id: id,
 				name: name,
 				ingredients: ingredient_list.to_js,
 				instructions: instructions,

@@ -63,9 +63,19 @@ post '/recipes/dish/:id' do |id|
 end
 
 post '/recipes/new/ingredient' do
+	content_type :json
+
+	Recipe::Utils.construct_ingredient(Recipe::Ingredient.new, JSON.parse(params['ingredient'])).to_json
 end
 
 post '/recipes/ingredient/:id' do |id|
+	content_type :json
+
+	if (ing = Recipe::Ingredient.find(id.to_i))
+		Recipe::Utils.construct_ingredient(ing, JSON.parse(params['ingredient'])).to_json
+	else
+		status 404
+	end
 end
 
 get '/recipes/ingredients' do

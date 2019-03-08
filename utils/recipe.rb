@@ -81,7 +81,38 @@ module Recipe
 					Utils.modify
 				end
 
-				{ error: [], dish: dish.id }
+				{ dish: dish.id }
+			rescue => e
+				puts e.backtrace
+				{ error: [ e.to_s ] }
+			end
+		end
+
+		def self.construct_ingredient(ing, data)
+			begin
+				ActiveRecord::Base.transaction do
+					ing.name = data['name']
+					ing.save!
+
+					c = Recipe::IngredientVariation
+					data['variations'].each do |v|
+						o = (v['id'] ? c.find(v['id'].to_i) : c.new)
+						o.name = v['name']
+						o.ingredient = ing
+						o.save!
+					end
+
+					if ing.ingredient_variations.all? { |v| v.name }
+						Recipe::IngredientVariation.new.tap do |o|
+							o.ingredient = ing
+							o.save!
+						end
+					end
+
+					Utils.modify
+				end
+
+				ing.to_js
 			rescue => e
 				puts e.backtrace
 				{ error: [ e.to_s ] }

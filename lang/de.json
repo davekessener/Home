@@ -31,6 +31,8 @@
 		"embedded" : "Teilrezepte",
 		"compound" : "Referenzrezepte",
 		"save" : "Speichern",
+		"confirm" : "Es gibt ungespeicherte Veränderungen.\nWillst du wirklich beenden?",
+		"editor" : "Zutaten-Editor",
 		"wait" : "Bitte warten ...",
 		"message" : {
 			"changed" : "Änderungen noch nicht gespeichert!",

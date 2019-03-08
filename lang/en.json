@@ -31,6 +31,8 @@
 		"embedded" : "Sub-recipes",
 		"compound" : "Referenced dishes",
 		"save" : "Save",
+		"confirm" : "There are unsaved changes.\nDo you really want to leave?",
+		"editor" : "Editor",
 		"wait" : "Please wait ...",
 		"message" : {
 			"changed" : "Unsaved changes!",
