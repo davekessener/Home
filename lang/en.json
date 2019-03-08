@@ -53,7 +53,7 @@
 		},
 		"units" : {
 			"single" : "Single",
-			"cup" : "Cup",
+			"cup" : "Cup (DE)",
 			"teaspoon" : "Teaspoon",
 			"tablespoon" : "Tablespoon",
 			"gramm" : "Gramm",
@@ -62,7 +62,8 @@
 			"liter" : "Liter",
 			"bag" : "Bag",
 			"pinch" : "Pinch",
-			"dash" : "Dash"
+			"dash" : "Dash",
+			"cup" : "Cup"
 		}
 	}
 }

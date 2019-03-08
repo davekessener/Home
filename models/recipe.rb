@@ -36,7 +36,8 @@ module Recipe
 				Unit.new('single', nil, 0),
 				Unit.new('bag', nil, 0),
 				Unit.new('pinch', nil, 0),
-				Unit.new('dash', nil, 0)
+				Unit.new('dash', nil, 0),
+				Unit.new('cup_us', nil, 2, 235)
 			]
 		end
 

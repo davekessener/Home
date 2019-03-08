@@ -62,7 +62,8 @@
 			"liter" : "Liter",
 			"bag" : "Tüte",
 			"pinch" : "Prise",
-			"dash" : "Spritzer"
+			"dash" : "Spritzer",
+			"cup_us" : "Cup"
 		}
 	}
 }
