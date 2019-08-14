@@ -6,6 +6,14 @@ function sample(m, i) {
 	return m[keys[(i || Math.floor(Math.random() * keys.length))]];
 }
 
+function ifdef(v, d) {
+	if (v === undefined || v === null) {
+		return d;
+	} else {
+		return v;
+	}
+}
+
 function compare(a, b) {
 	var convert = function (e) {
 		e = e.replace(/\u00C4/g, 'A');
@@ -731,11 +739,11 @@ var IngredientsManagerLight = (function () {
 		var self = this;
 
 		o['base'].forEach(function (b) {
-			self._base.addRow(+(b['ingredient']), +(b['variation']), (b['quantity'] || '0'), (b['unit'] || '-'));
+			self._base.addRow(+(b['ingredient']), +(b['variation']), ifdef(b['quantity'], '0'), ifdef(b['unit'], '-'));
 		});
 
 		o['compound'].forEach(function (b) {
-			self._compound.addRow(+(b['dish']), (b['quantity'] || '0'), (b['unit'] || '-'));
+			self._compound.addRow(+(b['dish']), ifdef(b['quantity'], '0'), ifdef(b['unit'], '-'));
 		});
 	};
 
