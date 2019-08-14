@@ -27,7 +27,7 @@ module MPC
 			unless cmds.empty?
 				cmds.unshift 'command_list_begin'
 				cmds.push 'command_list_end'
-				puts "EXECUTING {#{cmds.join(', ')}}"
+				puts "mpc -h \"#{@host}\" -p #{@port} {#{cmds.join(', ')}}"
 				@socket.puts(cmds.map { |e| e.strip }.join("\n"))
 			end
 			response
@@ -38,7 +38,7 @@ module MPC
 				if cmd.is_a? Array
 					execute_all(cmd)
 				else
-					puts "EXECUTING #{cmd}"
+					puts "mpc -h \"#{@host}\" -p #{@port} #{cmd}"
 					@socket.puts(cmd.strip)
 					response
 				end

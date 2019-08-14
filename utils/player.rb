@@ -3,7 +3,7 @@ require_relative 'mpc'
 
 class MediaPlayer
 	ServerInfo = {
-		ip: '192.168.1.19',
+		ip: '192.168.1.41',
 		service: 6600,
 		http: 8000
 	}.to_o
@@ -64,7 +64,7 @@ class MediaPlayer
 		if pos.is_a? Hash
 			@server.execute "seek #{pos[:song]} #{pos[:elapsed]}"
 		else
-			@server.execute "seekcur #{pos.to_i}"
+			@server.execute "seek #{pos.to_i}"
 		end
 	end
 

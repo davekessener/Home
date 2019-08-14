@@ -925,7 +925,7 @@ var TagManager = (function () {
 		sortSelect(self._select);
 
 		addFormButton(creator, 'primary', 'plus', function () {
-			error_pane.post('/recipes/new/tag', 'tag', self._creator.val(), function (r) {
+			error_pane.post('/recipes/new/tag', 'tag', [self._creator.val()], function (r) {
 				tags[r['id']] = new Tag(r);
 
 				self._creator.val('');

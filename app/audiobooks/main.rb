@@ -17,10 +17,14 @@ module Audiobooks
 		end
 
 		def unknown(args)
+			puts "AB-handler: unknown #{args}"
+
 			{ error: "unknown command #{args[:id]}" }
 		end
 
 		def play(args)
+			puts "AB-handler: play #{args}"
+
 			book = Audiobook.find(args[:message])
 			bm = Bookmark.where(desc: [nil, ''], user: @user, audiobook: book).first
 			@device.play(book, @user)
@@ -29,6 +33,8 @@ module Audiobooks
 		end
 
 		def stop(args)
+			puts "AB-handler: stop #{args}"
+
 			if @device.playing?
 				@device.stop
 				{ action: ACTION_STOPPED }
@@ -42,6 +48,8 @@ module Audiobooks
 		end
 
 		def status(args)
+			puts "AB-handler: status #{args}"
+
 			if @device.playing? and (book = @device.playing).is_a? Audiobook
 				if @device.done?
 					@device.stop
@@ -64,6 +72,8 @@ module Audiobooks
 		end
 
 		def seek(args)
+			puts "AB-handler: seek #{args}"
+
 			if (s = args[:message])
 				book, pos = s[:book_id], s[:seek]
 
@@ -97,6 +107,8 @@ module Audiobooks
 		end
 
 		def volume(args)
+			puts "AB-handler: volume #{args}"
+
 			@device.volume args[:message].to_i
 			{ }
 		end

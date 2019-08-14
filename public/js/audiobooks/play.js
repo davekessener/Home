@@ -171,7 +171,7 @@
 		connection = Server.open({
 			path: '/audiobooks/play',
 			interval: 1000,
-			maxResponseTime: 2000,
+			maxResponseTime: 5000,
 			receiver: receive,
 			errorHandler: onTimeout,
 			defaultMsg: getDefaultMsg

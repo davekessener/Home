@@ -26,7 +26,7 @@ end
 post '/recipes/new/tag' do
 	content_type :json
 
-	t = Recipe::RecipeTag.create(name: params['tag'])
+	t = Recipe::RecipeTag.create(name: JSON.parse(params['tag'])[0])
 	if t.valid?
 		{ id: t.id, name: t.name }
 	else

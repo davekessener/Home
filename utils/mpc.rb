@@ -17,6 +17,10 @@ module MPC
 		def execute(cmd)
 			Connection.open(@ip, @port) { |c| c.execute cmd }
 		end
+
+		def seek(idx, t)
+			execute "seek #{idx} #{t}"
+		end
 	
 		def play(files, **opts)
 			opts = {
@@ -45,7 +49,8 @@ module MPC
 			@status = {}
 			Connection.open(@ip, @port) do |c|
 				@status = c.execute('status')
-			end
+			end while @status.empty?
+			puts "mpc status is #{@status}"
 			@status
 		end
 	
