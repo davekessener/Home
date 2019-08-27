@@ -1,0 +1,30 @@
+.container
+	.centered
+		h1
+			b
+				=s('confirm:title')
+		h2 style="padding-bottom: 15px;"
+			=s('confirm:text')
+		h1
+			- fn = params[:file]
+			- fn = fn[2..-1] if fn.start_with? './'
+			="#{fn}"
+		.row
+			.col-xs-6
+				a href="/nas/delete?file=#{CGI.escape params[:file]}&confirm=yes"
+					button.btn.btn-success.btn-wide
+						h3.flat
+							b
+								span.glyphicon.glyphicon-ok
+						h2.flat
+							b
+								=s('confirm:yes')
+			.col-xs-6
+				button.btn.btn-danger.btn-wide onclick="history.go(-1);"
+					h3.flat
+						b
+							span.glyphicon.glyphicon-remove
+					h2.flat
+						b
+							=s('confirm:no')
+

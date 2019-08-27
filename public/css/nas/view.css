@@ -1,0 +1,25 @@
+.btn-buffer {
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+td.input-cell {
+	padding: 0 !important;
+}
+
+.input-inline {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.icon-green {
+	color: #00C000;
+	cursor: pointer;
+}
+
+.icon-red {
+	color: #FF0000;
+	cursor: pointer;
+}
+

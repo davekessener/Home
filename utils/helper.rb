@@ -86,6 +86,20 @@ module Helper
 		(@@temps[t] || t)
 	end
 
+	def self.filesize(f)
+		s = File.size(f)
+
+		if s < 1000
+			"#{s}B"
+		elsif s < 1000000
+			"#{'%.1f' % (s / 1000.0)}KB"
+		elsif s < 1000000000
+			"#{'%.2f' % (s / 1000000.0)}MB"
+		else
+			"#{'%.3f' % (s / 1000000000.0)}GB"
+		end
+	end
+
 	module Linguistics
 		def self.[](t)
 			@@langs ||= {

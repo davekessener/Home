@@ -7,6 +7,7 @@
 .repl_history
 /doc/
 /rdoc/
+/nas/**/*
 
 /db/*.sqlite3
 /db/*.sqlite3-journal

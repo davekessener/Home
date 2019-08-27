@@ -1,8 +1,8 @@
 class Service
 	attr_reader :id, :name, :icon
 
-	def initialize(name, icon)
-		@id = name.downcase.gsub(/[^0-9a-z]+/, '_').to_sym
+	def initialize(name, icon, id = nil)
+		@id = (id || name.downcase.gsub(/[^0-9a-z]+/, '_').to_sym)
 		@name = name
 		@icon = icon
 	end
@@ -13,6 +13,7 @@ $services = [
 	Service.new('Audiobooks', 'headphones'),
 	Service.new('Devices', 'bullhorn'),
 	Service.new('Recipes', 'book'),
-	Service.new('Calendar', 'calendar')
+	Service.new('Calendar', 'calendar'),
+	Service.new('Storage', 'hdd', :nas)
 ]
 

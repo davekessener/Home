@@ -17,5 +17,9 @@ helpers do
 		end
 		"/#{type}/#{url}.#{type}"
 	end
+
+	def h(v)
+		Rack::Utils.escape_html(v)
+	end
 end
 

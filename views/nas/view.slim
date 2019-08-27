@@ -1,0 +1,107 @@
+link rel="stylesheet" href="/css/nas/view.css"
+
+- require 'fileutils'
+- require 'cgi'
+
+- nas_path = "./nas/#{current_user.name}"
+- req_path = request.path_info.to_s[9..-1]
+- folder_path = "#{nas_path}#{req_path}"
+
+- FileUtils.mkdir_p nas_path if not File.exists? nas_path
+
+- def date_changed(f); File.mtime(f).strftime('%d.%m.%y %H:%M:%S'); end
+- url_to = ->(f) { "/nas/view#{folder_path[nas_path.length..-1]}/#{f}" }
+
+input#folder_path type="hidden" value="#{folder_path}"
+
+.container
+	.row
+		.col-xs-10
+			h1
+				a href="/nas/view"
+					="nas/"
+				- t = ''
+				- req_path.split(/\//).each do |p|
+					- next if p.empty?
+					- t = "#{t}/#{p}"
+					a href="/nas/view#{t}"
+						="#{p}/"
+		.col-xs-2.text-right
+			a href="/nas/upload?path=#{CGI.escape folder_path}"
+				button.btn.btn-primary.btn-buffer
+					span.glyphicon.glyphicon-arrow-up
+	- if File.exists? folder_path and File.directory? folder_path
+		table.table.table-striped.table-bordered
+			thead
+				tr
+					th style="width:50%;"
+						=s('name')
+					th
+						=s('size')
+					th
+						=s('changed')
+					th
+						=s('type')
+					th
+						=s('action')
+			tbody
+				tr
+					td.input-cell
+						input#new_folder_name.input-inline
+					td
+					td
+					td
+					td
+						span#new_folder_button.glyphicon.glyphicon-plus.icon-green
+				- unless req_path.empty?
+					tr
+						td
+							a href="/nas/view#{req_path.include?('/') ? req_path.split(/\//)[0...-1].join('/') : ''}"
+								b
+									=s('parent')
+						td
+							="---"
+						td
+							="n/a"
+						td
+							=s('dir')
+						td
+				- files = Dir.glob("#{folder_path}/*").sort { |a, b| a.downcase <=> b.downcase }
+				- files.each do |f|
+					- next unless File.directory? f
+					- m = date_changed(f)
+					- f = File.basename(f)
+					tr
+						td
+							a href="#{url_to.(f)}"
+								b
+									="#{f}"
+						td
+							="---"
+						td
+							="#{m}"
+						td
+							=s('dir')
+						td
+							a href="/nas/delete?file=#{CGI.escape folder_path + '/' + f}"
+								span.glyphicon.glyphicon-remove.icon-red
+				- files.each do |f|
+					- next if File.directory? f
+					- s = Helper::filesize(f)
+					- m = date_changed(f)
+					- f = File.basename(f)
+					tr
+						td
+							a href="/nas/download?file=#{CGI.escape folder_path + '/' + f}"
+								="#{f}"
+						td
+							=s
+						td
+							="#{m}"
+						td
+							="#{f.include?('.') ? '.' + f.split(/\./)[-1].upcase + ' ' : ''}#{s('file')}"
+						td
+							a href="/nas/delete?file=#{CGI.escape folder_path + '/' + f}"
+								span.glyphicon.glyphicon-remove.icon-red
+
+script src="/js/nas/view.js"
