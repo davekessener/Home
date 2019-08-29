@@ -62,3 +62,18 @@ get '/nas/upload' do
 	slim :'nas/upload'
 end
 
+post '/nas/upload' do
+	tmpfile = params['file'][:tempfile]
+	filename = params['file'][:filename]
+	path = params[:path]
+	fn = "#{path}/#{filename}"
+
+	if File.exist? path and File.directory? path and not File.exist? fn
+		FileUtils.cp(tmpfile.path, fn)
+
+		status 200
+	else
+		status 400
+	end
+end
+

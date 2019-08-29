@@ -1,5 +1,19 @@
+- path = params[:path]
+- vpath = path.split(/\//)[2..-1].join('/')
 .container
 	h2
 		=s('upload:title')
-	
+	h3
+		=s('upload:back')
+		a href="/nas/view/#{vpath}" style="padding-left: 10px;"
+			="nas/#{vpath}"
 
+	input#the_file.hidden type="file" multiple=""
+	input#the_path type="hidden" value="#{params[:path]}"
+
+	div#the_display.file-upload-manager
+		label for="the_file" style="padding: 10px; margin: 0;"
+			.btn.btn-success
+				span.glyphicon.glyphicon-plus
+
+	

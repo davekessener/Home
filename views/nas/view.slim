@@ -3,7 +3,7 @@ link rel="stylesheet" href="/css/nas/view.css"
 - require 'fileutils'
 - require 'cgi'
 
-- nas_path = "./nas/#{current_user.name}"
+- nas_path = "nas/#{current_user.name}"
 - req_path = request.path_info.to_s[9..-1]
 - folder_path = "#{nas_path}#{req_path}"
 
