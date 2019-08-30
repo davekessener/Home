@@ -63,17 +63,39 @@ get '/nas/upload' do
 end
 
 post '/nas/upload' do
-	tmpfile = params['file'][:tempfile]
 	filename = params['file'][:filename]
 	path = params[:path]
 	fn = "#{path}/#{filename}"
 
 	if File.exist? path and File.directory? path and not File.exist? fn
+		tmpfile = params['file'][:tempfile]
+
 		FileUtils.cp(tmpfile.path, fn)
 
 		status 200
 	else
 		status 400
+	end
+end
+
+get '/nas/check' do
+	path = params[:path]
+	fn = params[:file]
+
+	if not File.exist? path or not File.directory? path
+		status 400
+	else
+		content_type :json
+
+		if File.exist? "#{path}/#{fn}"
+			{
+				errors: []
+			}
+		else
+			{
+				errors: [ 'duplicate' ]
+			}
+		end.to_json
 	end
 end
 

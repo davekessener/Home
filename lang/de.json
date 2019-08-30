@@ -67,6 +67,27 @@
 			"dash" : "Spritzer",
 			"cup_us" : "Cup"
 		}
+	},
+	"nas" : {
+		"title" : "Storage",
+		"name" : "Name",
+		"size" : "Größe",
+		"changed" : "Zuletzt geändert",
+		"type" : "Typ",
+		"action" : "Aktionen",
+		"dir" : "Ordner",
+		"file" : "Datei",
+		"parent" : "Zurück",
+		"confirm" : {
+			"title" : "Bestätigung",
+			"text" : "Sind Sie sich wirklich sicher, dass Sie den folgenden Order/Datei löschen wollen?",
+			"yes" : "JA",
+			"no" : "NEIN"
+		},
+		"upload" : {
+			"title" : "Datei hochladen",
+			"back" : "Zurück zu"
+		}
 	}
 }
 

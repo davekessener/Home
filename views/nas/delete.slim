@@ -5,10 +5,10 @@
 				=s('confirm:title')
 		h2 style="padding-bottom: 15px;"
 			=s('confirm:text')
-		h1
+		h1 style="padding-bottom: 15px;"
 			- fn = params[:file]
-			- fn = fn[2..-1] if fn.start_with? './'
-			="#{fn}"
+			- fn = fn.split(/\//)[2..-1].join('/')
+			="nas/#{fn}"
 		.row
 			.col-xs-6
 				a href="/nas/delete?file=#{CGI.escape params[:file]}&confirm=yes"

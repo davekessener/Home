@@ -67,6 +67,27 @@
 			"dash" : "Dash",
 			"cup" : "Cup"
 		}
+	},
+	"nas" : {
+		"title" : "Storage",
+		"name" : "Name",
+		"size" : "Size",
+		"changed" : "Last modified",
+		"type" : "Type",
+		"action" : "Actions",
+		"dir" : "Directory",
+		"file" : "File",
+		"parent" : "Parent Directory",
+		"confirm" : {
+			"title" : "Confirmation",
+			"text" : "Are you really sure you want to delete the following file/directory?",
+			"yes" : "YES",
+			"no" : "NO"
+		},
+		"upload" : {
+			"title" : "File Upload",
+			"back" : "Return to"
+		}
 	}
 }
 
