@@ -1,33 +1,37 @@
-before '/radio' do
-	request.path_info = '/radio/index'
-end
-
-get '/radio/index' do
+get '/radio' do
 	slim :'radio/index'
 end
 
-post '/radio/play' do
-	content_type :json
-	if (device = current_device) and (station = RadioStation.find(params['station'].to_i))
+get '/radio/play/:id' do |id|
+	if (device = current_device) and (station = RadioStation.find(id.to_i))
 		device.play_local station
+
+		slim :'radio/play', locals: { station: station, device: device }
+	else
+		status 400
 	end
-	{ }.to_json
 end
 
-post '/radio/stop' do
-	content_type :json
+get '/radio/stop' do
 	if (device = current_device)
 		device.stop
 	end
-	{ }.to_json
+
+	redirect '/radio'
 end
 
 post '/radio/status' do
 	content_type :json
-	if (device = current_device) and device.playing?
-		{ playing: device.playing.id }.to_json
+
+	if (device = current_device)
+		r = {}
+
+		r[:playing] = device.playing.id if device.playing
+		r[:volume] = device.volume
+
+		r
 	else
-		{ }.to_json
-	end
+		{ }
+	end.to_json
 end
 

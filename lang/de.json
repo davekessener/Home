@@ -8,6 +8,9 @@
 		"title" : "HOME",
 		"greet" : "Herzlich willkommen"
 	},
+	"radio" : {
+		"title" : "Radio"
+	},
 	"audiobooks" : {
 		"chapter" : "Kapitel",
 		"chapters" : "Kapitel",

@@ -1,2 +1,23 @@
-input#MyStationID type="hidden" value="#{station.id}"
+input#msg_wait type="hidden" value="#{s('wait')}"
+- if device.loopback?
+	#player.hidden
+	input#station_url type="hidden" value="#{station.url}"
+
+.container
+	table.thumb-table
+		tr
+			td.thumb-column
+				div.thumb-container
+					img.thumbnail src="#{station.thumb_path}" width="64" height="64"
+			td.desc-column
+				p.thumb-title =station.name
+	p#status.hidden
+		="---"
+	.row
+		.col-xs-12
+			a href="/radio/stop"
+				button.btn.btn-danger style="width: 100%;"
+					span.glyphicon.glyphicon-stop
+
+script src="/js/player.js"
 

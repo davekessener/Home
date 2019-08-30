@@ -3,6 +3,46 @@ require 'socket'
 require_relative 'helper'
 
 module MPC
+	class Dummy
+		attr_reader :ip, :port
+
+		def reachable?	
+			true
+		end
+
+		def execute(cmd)
+			true
+		end
+
+		def seek(idx, t)
+			true
+		end
+
+		def play(files, **opts)
+			true
+		end
+
+		def stop
+			true
+		end
+
+		def status
+			{}
+		end
+
+		def progress
+			true
+		end
+
+		def set_volume(v)
+			true
+		end
+
+		def get_volume
+			100
+		end
+	end
+
 	class Client
 		attr_reader :ip, :port
 	

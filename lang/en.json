@@ -8,6 +8,9 @@
 		"title" : "HOME Center",
 		"greet" : "Hello"
 	},
+	"radio" : {
+		"title" : "Radio"
+	},
 	"audiobooks" : {
 		"title" : "Audiobooks",
 		"chapter" : "Chapter",

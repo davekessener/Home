@@ -4,7 +4,7 @@ before do
 	if (device = current_device).nil?
 		session[:return_to] = request.path_info
 		request.path_info = '/device/select'
-	elsif device.playing? and (device.user and device.user != current_user)
+	elsif device.playing? and not device.loopback? and (device.user and device.user != current_user)
 		session[:return_to] = request.path_info
 		request.path_info = '/device/kill'
 	elsif not device.reachable?

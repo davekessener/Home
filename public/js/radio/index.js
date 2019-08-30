@@ -34,20 +34,20 @@
 		setTimeout(update, 3000);
 	}
 
-	$(function () {
-		$('.radio-station').each(function () {
-			var $this = $(this);
-
-			$this.on('click', function () {
-				if($this.hasClass('active')) {
-					stop();
-				} else {
-					play($this.data('station-id'));
-				}
-			});
-		});
-
-		setTimeout(update, 500);
-	});
+//	$(function () {
+//		$('.radio-station').each(function () {
+//			var $this = $(this);
+//
+//			$this.on('click', function () {
+//				if($this.hasClass('active')) {
+//					stop();
+//				} else {
+//					play($this.data('station-id'));
+//				}
+//			});
+//		});
+//
+//		setTimeout(update, 500);
+//	});
 })(jQuery);
 

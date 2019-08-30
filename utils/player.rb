@@ -8,13 +8,17 @@ class MediaPlayer
 		http: 8000
 	}.to_o
 
-	attr_reader :playing, :user
+	attr_reader :playing, :user, :stream
 
 	def initialize(device)
 		@device = device
 		@server = MPC::Client.new(ServerInfo.ip, ServerInfo.service + device.remote_idx)
-		@client = MPC::Client.new(device.url, ServerInfo.service)
+		@client = device.url ? MPC::Client.new(device.url, ServerInfo.service) : MPC::Dummy.new
 		@stream = "http://#{ServerInfo.ip}:#{ServerInfo.http + device.remote_idx}/"
+	end
+
+	def loopback?
+		@device.url.nil?
 	end
 
 	def name
@@ -91,8 +95,7 @@ class MediaPlayer
 
 	def self.by_device(device)
 		@@players ||= {}
-		@@players[device.id] = new(device) unless @@players[device.id]
-		@@players[device.id]
+		@@players[device.id] ||= new(device)
 	end
 
 	private_class_method :new

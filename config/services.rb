@@ -9,7 +9,7 @@ class Service
 end
 
 $services = [
-	Service.new('Radio', 'music'),
+	Service.new('Radio', 'equalizer'),
 	Service.new('Audiobooks', 'headphones'),
 	Service.new('Devices', 'bullhorn'),
 	Service.new('Recipes', 'book'),

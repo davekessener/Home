@@ -1,36 +1,3 @@
-table {
-	background-color: #7E7;
-	width: 100%;
-	padding-bottom: 0px;
-	table-layout: fixed;
-	margin-bottom: 10px;
-	border-radius: 5px;
-}
-
-td.thumb-column {
-	width: 90px;
-	height: 80px;
-}
-
-td.desc-column {
-	text-align: left;
-	width: 100%;
-}
-
-p.franchise {
-	color: #070;
-	display: inline;
-	font-size: 24px;
-}
-
-img.thumbnail {
-	margin-bottom: 10px;
-}
-
-.thumb-container {
-	padding: 10px 8px 0px 10px;
-}
-
 @media (max-width: 978px) {
 	.col-xs-12 {
 		padding-left: 0px;

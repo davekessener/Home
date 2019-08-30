@@ -1,11 +1,11 @@
 .container
-	table
+	table.thumb-table
 		tr
 			td.thumb-column
 				div.thumb-container
 					img.thumbnail src="/resources/icons/audiobooks/#{franchise.path}.png" width="64" height="64"
 			td.desc-column
-				p.franchise =franchise.name
+				p.thumb-title =franchise.name
 	.list-group
 		- franchise.audiobooks.find_each do |book|
 			a.btn.list-group-item.list-group-item-success href="/audiobooks/play/#{book.id}"
