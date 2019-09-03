@@ -1,0 +1,36 @@
+input#s_position type="hidden" value="#"
+input#s_name type="hidden" value=s('playlist:name')
+
+input#playlist_id type="hidden" value="#{playlist.id}"
+input#playlist_content type="hidden" value="[#{playlist.songs.map { |s| s.id.to_s }.join(', ')}]"
+
+.container
+	.panel.panel-default
+		.panel-heading style="padding: 2px;"
+			table
+				tr
+					td style="padding-right: 2px;"
+						button#button_save.btn.btn-primary.btn-small
+							span.glyphicon.glyphicon-floppy-disk
+					td.wide
+						input#playlist_name.wide value=playlist.name placeholder=s('playlist:name')
+					td
+						- if playlist.id and playlist.user.id == current_user.id
+							a href="/music/playlist/delete/#{playlist.id}"
+								h2 style="padding: 0; margin: 0;"
+									span.glyphicon.glyphicon-remove.rm-btn
+		.panel-body
+			.row
+				.col-md-6
+					h2.cropped
+						=s('playlist:content')
+					#the_playlist
+
+				.col-md-6
+					h2.cropped
+						=s('playlist:songs')
+					ul.list-group
+						- Music::Song.all.to_a.each do |s|
+							li.list-group-item.song-entry id="song_#{s.id}" data-id="#{s.id}" data-name="#{s.name}" onclick="window.playlist_manager.add(#{s.id})"
+								=s.name
+

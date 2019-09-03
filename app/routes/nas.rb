@@ -1,13 +1,5 @@
-require 'fileutils'
-
-def transform_nas_path(p, n = 0)
-	p = p[2..-1] if p.start_with? './'
-	p = p.split(/\//)
-	p[1] = 'view'
-
-	p = p[0...(p.length - n)] if n > 0
-
-	"/#{p.join('/')}"
+def nas_storage
+	$storage.request(:nas).request(current_user.name)
 end
 
 get '/nas' do
@@ -15,43 +7,51 @@ get '/nas' do
 end
 
 get '/nas/download' do
-	if (fn = params[:file]).nil? or fn.include? '/../' or fn.start_with? '..' or not File.exists? fn or File.directory? fn
+	io = nas_storage
+
+	if (fn = params[:file]).nil? or not io.exist? fn or io.directory? fn
 		status 400
 	else
-		send_file(fn, filename: File.basename(fn), type: 'Application/octet-stream')
+		tmpfile = Dir::Tmpname.create(['download', '.tmp']) { }
+
+		io.download(fn, tmpfile)
+		send_file(tmpfile, filename: File.basename(fn), type: 'Application/octet-stream')
 	end
 end
 
 get '/nas/view' do
-	slim :'nas/view'
+	slim :'nas/view', locals: { storage: nas_storage }
 end
 
 get '/nas/view/*' do
-	slim :'nas/view'
+	slim :'nas/view', locals: { storage: nas_storage }
 end
 
 get '/nas/new' do
+	io = nas_storage
 	p = params[:path]
-	n = "#{p}/#{params[:name]}"
+	n = Storage.path(p, params[:name])
 
-	if not File.exist? p or not File.directory? p or File.exist?(n)
+	if not io.exist? p or not io.directory? p or io.exist? n
 		status 400
 	else
-		FileUtils.mkdir n
+		io.mkdir n
 
-		redirect transform_nas_path(n)
+		redirect Storage.path('/nas/view', n)
 	end
 end
 
 get '/nas/delete' do
 	if params[:confirm] == 'yes'
+		io = nas_storage
 		p = params[:file]
-		if not File.exist? p
+
+		if not io.exist? p
 			status 400
 		else
-			FileUtils.rm_rf p
+			io.delete p
 
-			redirect transform_nas_path(p, 1)
+			redirect Storage.path('/nas/view', File.dirname(p))
 		end
 	else
 		slim :'nas/delete'
@@ -63,39 +63,19 @@ get '/nas/upload' do
 end
 
 post '/nas/upload' do
-	filename = params['file'][:filename]
+	io = nas_storage
 	path = params[:path]
-	fn = "#{path}/#{filename}"
+	filename = params['file'][:filename]
+	fn = Storage.path(path, filename)
 
-	if File.exist? path and File.directory? path and not File.exist? fn
+	if io.exist? path and io.directory? path and not io.exist? fn
 		tmpfile = params['file'][:tempfile]
 
-		FileUtils.cp(tmpfile.path, fn)
+		io.upload(fn, tmpfile.path)
 
 		status 200
 	else
 		status 400
-	end
-end
-
-get '/nas/check' do
-	path = params[:path]
-	fn = params[:file]
-
-	if not File.exist? path or not File.directory? path
-		status 400
-	else
-		content_type :json
-
-		if File.exist? "#{path}/#{fn}"
-			{
-				errors: []
-			}
-		else
-			{
-				errors: [ 'duplicate' ]
-			}
-		end.to_json
 	end
 end
 

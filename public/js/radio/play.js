@@ -32,8 +32,21 @@
 		});
 
 		$('#player').append(p.$_base);
+	}
 
-		p.play();
+	function attachPlayButton() {
+		var $play = $('#play_button');
+
+		$play.click(function () {
+			window.media_player.play();
+			$play.addClass('hidden');
+			showStopButton();
+			$('#stop_button').focus();
+		});
+	}
+
+	function showStopButton() {
+		$('#stop_button').removeClass('hidden');
 	}
 
 	$(function () {
@@ -41,6 +54,9 @@
 
 		if (is_loopback) {
 			createMediaPlayer();
+			attachPlayButton();
+		} else {
+			showStopButton();
 		}
 	});
 })(jQuery);

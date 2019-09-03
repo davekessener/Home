@@ -3,16 +3,15 @@ link rel="stylesheet" href="/css/nas/view.css"
 - require 'fileutils'
 - require 'cgi'
 
-- nas_path = "nas/#{current_user.name}"
-- req_path = request.path_info.to_s[9..-1]
-- folder_path = "#{nas_path}#{req_path}"
+- req_path = request.path_info.to_s
+- raise unless req_path.start_with? '/nas/view'
+- req_path = req_path[9..-1]
 
-- FileUtils.mkdir_p nas_path if not File.exists? nas_path
+- date_changed = ->(f) { storage.mtime(f).strftime('%d.%m.%y %H:%M:%S') }
+- file_size = ->(f) { storage.filesize(f) }
+- url_to = ->(f) { Storage.path('/nas/view', req_path, f) }
 
-- def date_changed(f); File.mtime(f).strftime('%d.%m.%y %H:%M:%S'); end
-- url_to = ->(f) { "/nas/view#{folder_path[nas_path.length..-1]}/#{f}" }
-
-input#folder_path type="hidden" value="#{folder_path}"
+input#path type="hidden" value="#{req_path}"
 
 .container
 	.row
@@ -27,10 +26,10 @@ input#folder_path type="hidden" value="#{folder_path}"
 					a href="/nas/view#{t}"
 						="#{p}/"
 		.col-xs-2.text-right
-			a href="/nas/upload?path=#{CGI.escape folder_path}"
+			a href="/nas/upload?path=#{CGI.escape req_path}"
 				button.btn.btn-primary.btn-buffer
 					span.glyphicon.glyphicon-arrow-up
-	- if File.exists? folder_path and File.directory? folder_path
+	- if storage.exist? req_path and storage.directory? req_path
 		table.table.table-striped.table-bordered
 			thead
 				tr
@@ -56,7 +55,7 @@ input#folder_path type="hidden" value="#{folder_path}"
 				- unless req_path.empty?
 					tr
 						td
-							a href="/nas/view#{req_path.include?('/') ? req_path.split(/\//)[0...-1].join('/') : ''}"
+							a href="/nas/view#{File.dirname(req_path)}"
 								b
 									=s('parent')
 						td
@@ -66,16 +65,16 @@ input#folder_path type="hidden" value="#{folder_path}"
 						td
 							=s('dir')
 						td
-				- files = Dir.glob("#{folder_path}/*").sort { |a, b| a.downcase <=> b.downcase }
+				- files = storage.glob("#{req_path}/*").sort { |a, b| a.downcase <=> b.downcase }
 				- files.each do |f|
-					- next unless File.directory? f
-					- m = date_changed(f)
-					- f = File.basename(f)
+					- next unless storage.directory? f
+					- m = date_changed.(f)
+					- fn = File.basename(f)
 					tr
 						td
-							a href="#{url_to.(f)}"
+							a href="#{url_to.(fn)}"
 								b
-									="#{f}"
+									="#{fn}"
 						td
 							="---"
 						td
@@ -83,25 +82,25 @@ input#folder_path type="hidden" value="#{folder_path}"
 						td
 							=s('dir')
 						td
-							a href="/nas/delete?file=#{CGI.escape folder_path + '/' + f}"
+							a href="/nas/delete?file=#{CGI.escape f}"
 								span.glyphicon.glyphicon-remove.icon-red
 				- files.each do |f|
-					- next if File.directory? f
-					- s = Helper::filesize(f)
-					- m = date_changed(f)
-					- f = File.basename(f)
+					- next if storage.directory? f
+					- s = Helper.size_h(storage.filesize f)
+					- m = date_changed.(f)
+					- fn = File.basename(f)
 					tr
 						td
-							a href="/nas/download?file=#{CGI.escape folder_path + '/' + f}"
-								="#{f}"
+							a href="/nas/download?file=#{CGI.escape f}"
+								="#{fn}"
 						td
 							=s
 						td
 							="#{m}"
 						td
-							="#{f.include?('.') ? '.' + f.split(/\./)[-1].upcase + ' ' : ''}#{s('file')}"
+							="#{fn.include?('.') ? '.' + fn.split(/\./)[-1].upcase + ' ' : ''}#{s('file')}"
 						td
-							a href="/nas/delete?file=#{CGI.escape folder_path + '/' + f}"
+							a href="/nas/delete?file=#{CGI.escape f}"
 								span.glyphicon.glyphicon-remove.icon-red
 
 script src="/js/nas/view.js"

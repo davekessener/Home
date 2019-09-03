@@ -1,0 +1,32 @@
+- "requires: delete_title, delete_message, delete_item, delete_url, delete_yes, delete_no"
+
+.container
+	.centered
+		h1
+			b
+				=delete_title
+			h2 style="padding-bottom: 15px;"
+				=delete_message
+			h1 style="padding-bottom: 15px;"
+				=delete_item
+
+		.row
+			.col-xs-6
+				a href="#{delete_url}"
+					button.btn.btn-success.wide
+						h3.flat
+							b
+								span.glyphicon.glyphicon-ok
+						h2.flat
+							b
+								=delete_yes
+
+			.col-xs-6
+				button.btn.btn-danger.wide onclick="history.go(-1);"
+					h3.flat
+						b
+							span.glyphicon.glyphicon-remove
+					h2.flat
+						b
+							=delete_no
+

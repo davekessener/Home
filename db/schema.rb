@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190305202024) do
+ActiveRecord::Schema.define(version: 20190901122520) do
 
   create_table "activities", force: :cascade do |t|
     t.string "content"
@@ -104,6 +104,12 @@ ActiveRecord::Schema.define(version: 20190305202024) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "genres", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ingredient_lists", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -124,6 +130,21 @@ ActiveRecord::Schema.define(version: 20190305202024) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "playlists", force: :cascade do |t|
+    t.string "name"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_playlists_on_user_id"
+  end
+
+  create_table "playlists_songs", id: false, force: :cascade do |t|
+    t.integer "song_id"
+    t.integer "playlist_id"
+    t.index ["playlist_id"], name: "index_playlists_songs_on_playlist_id"
+    t.index ["song_id"], name: "index_playlists_songs_on_song_id"
+  end
+
   create_table "radio_servers", force: :cascade do |t|
     t.string "name"
     t.string "url"
@@ -135,12 +156,28 @@ ActiveRecord::Schema.define(version: 20190305202024) do
   create_table "radio_stations", force: :cascade do |t|
     t.string "name"
     t.string "url"
+    t.string "uid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "recipe_tags", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.string "name"
+    t.string "interpret"
+    t.integer "release"
+    t.integer "length"
+    t.integer "user_id"
+    t.integer "genre_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["genre_id"], name: "index_songs_on_genre_id"
+    t.index ["user_id"], name: "index_songs_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

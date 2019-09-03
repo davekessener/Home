@@ -1,0 +1,9 @@
+- h = {}
+- h[:delete_title] = s('delete:title')
+- h[:delete_message] = s('delete:' + (song ? 'song' : 'playlist'))
+- h[:delete_item] = (song ? ('Song "' + song.name + '"') : ('Playlist "' + playlist.name + '"'))
+- h[:delete_url] = "/music/#{song ? 'song' : 'playlist'}/delete/#{song ? song.id : playlist.id}?confirm=YES"
+- h[:delete_yes] = s('delete:yes')
+- h[:delete_no] = s('delete:no')
+== slim :'partials/delete', locals: h
+

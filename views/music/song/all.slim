@@ -1,0 +1,47 @@
+.container
+	#songs
+		.panel.panel-default
+			.panel-heading
+				table.wide
+					tr
+						td.wide
+							h2.cropped
+								=s('songs:all')
+						td
+							a href="/music/song/new"
+								button.btn.btn-primary
+									span.glyphicon.glyphicon-plus
+			.panel-body
+				table.table style="margin-bottom: 0;"
+					thead
+						tr
+							th
+								=s('song:name')
+							th
+								=s('song:length')
+							th
+								=s('song:interpret')
+							th
+								=s('song:release')
+							th
+								=s('song:user')
+							th
+					tbody
+						- Music::Song.all.to_a.each do |s|
+							tr
+								td
+									a href="/music/song/edit/#{s.id}"
+										=s.name
+								td
+									=s.length
+								td
+									=s.interpret
+								td
+									=s.release
+								td
+									=s.user.name
+								td
+									- if current_user.id == s.user.id
+										a href="/music/song/delete/#{s.id}"
+											span.glyphicon.glyphicon-remove.remove-icon
+

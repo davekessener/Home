@@ -1,5 +1,5 @@
 class RadioStation < ActiveRecord::Base
-	validates_presence_of :name, :url
+	validates_presence_of :name, :url, :uid
 
 	def on_stop(user, progress)
 	end
@@ -13,7 +13,7 @@ class RadioStation < ActiveRecord::Base
 	end
 
 	def thumb_path
-		@thumb_path ||= "/resources/icons/radio/#{id}.png"
+		@thumb_path ||= "/resources/icons/radio/#{uid}.png"
 	end
 end
 

@@ -3,5 +3,5 @@
 		=in_lang('whoareyou')
 	.list-group
 		- User.all.each do |u|
-			a.list-group-item href="#" onclick="login_user(#{u.id}, true)"
+			a.list-group-item href="/login/#{u.id}"
 				= u.name

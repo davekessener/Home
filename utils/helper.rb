@@ -87,8 +87,10 @@ module Helper
 	end
 
 	def self.filesize(f)
-		s = File.size(f)
+		Helper.size_h File.size(f)
+	end
 
+	def self.size_h(s)
 		if s < 1000
 			"#{s}B"
 		elsif s < 1000000

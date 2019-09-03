@@ -1,0 +1,52 @@
+.container
+	table.wide
+		tr
+			td style="padding-right: 10px;"
+				a href="/music/song/all"
+					button.btn.btn-primary style="width: 46px;"
+						h3.cropped
+							span.glyphicon.glyphicon-pencil.cropped
+			td.wide
+				h2
+					=s('import:desc')
+
+	.row
+		.col-sm-4
+			a href='/music/song/new?type=1'
+				span.glyphicon.glyphicon-play
+				=s('import:yt')
+		.col-sm-4
+			a href='/music/song/new?type=2'
+				span.glyphicon.glyphicon-play
+				=s('import:nas')
+		.col-sm-4
+			a href='/music/song/new?type=3'
+				span.glyphicon.glyphicon-play
+				=s('import:up')
+
+	#playlists style="margin-top: 15px;"
+		.panel.panel-default
+			.panel-heading
+				table.wide
+					tr
+						td.wide
+							h2.cropped
+								=s('playlists:all')
+						td
+							a href="/music/playlist/edit"
+								button.btn.btn-primary
+									span.glyphicon.glyphicon-plus
+			.panel-body
+				table.wide
+					- Music::Playlist.all.to_a.each do |pl|
+						tr
+							td.wide
+								a href="/music/play/#{pl.id}"
+									h3.cropped
+										=pl.name
+							td
+								a href="/music/playlist/edit/#{pl.id}"
+									button.btn.btn-primary
+										span.glyphicon.glyphicon-cog
+
+

@@ -1,6 +1,9 @@
 before do
-	p = current_page
-	pass unless request.get? and (p == 'audiobooks' or p == 'radio')
+	pass if not request.get?
+	service = current_service
+	pass if service.nil?
+	pass if not current_service.needs_speaker?
+
 	if (device = current_device).nil?
 		session[:return_to] = request.path_info
 		request.path_info = '/device/select'

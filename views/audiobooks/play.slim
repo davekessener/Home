@@ -1,10 +1,16 @@
 link rel="stylesheet" href="/css/lib/bootstrap-slider.min.css"
+
 script src="/js/lib/bootstrap-toolkit.js"
 script src="/js/lib/bootstrap-slider.min.js"
 script src="/js/async-queue.js"
 script src="/js/auto-collapse.js"
+script src="/js/player.js"
 
 input#MyBookID type="hidden" value="#{book.id}"
+
+- if device.loopback?
+	#player.hidden
+	input#station_url type="hidden" value="#{device.stream}"
 
 .container-fluid
 	.row

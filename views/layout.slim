@@ -2,17 +2,21 @@ doctype html
 html lang="en"
 	head
 		title =s("title")
+
 		meta charset="utf-8"
 		meta name="viewport" content="width=device-width, initial-scale=1"
+		
 		link rel="stylesheet" href="/css/lib/bootstrap.min.css"
 		link rel="stylesheet" href="/css/lib/bootstrap-datepicker.standalone.min.css"
 		link rel="stylesheet" href="/css/main.css"
 		- if File.exist? "#{$root_dir}/public#{f = resource_path('css')}"
 			link rel="stylesheet" href="#{f}"
+		
 		script src="/js/lib/jquery.min.js"
 		script src="/js/lib/popper.min.js"
 		script src="/js/lib/bootstrap.min.js"
 		script src="/js/main.js"
+
 	body style="padding-top: 70px;"
 		nav.navbar.navbar-default.navbar-fixed-top
 			.container-fluid
@@ -40,7 +44,7 @@ html lang="en"
 								ul.dropdown-menu
 									- User.all.each do |user|
 										li class=('active' if user.id == current_user.id)
-											a href="#" onclick="login_user(#{user.id})"
+											a href="/login/#{user.id}"
 												= user.name
 		== yield
 

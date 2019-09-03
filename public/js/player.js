@@ -50,6 +50,13 @@ var MediaPlayer = (function ($) {
 		setTimeout(checkAudio, 500);
 	};
 
+	MediaPlayer.prototype.stop = function () {
+		var self = this;
+
+		self._audio.pause();
+		self.setState(MediaPlayer.STATE_STOPPED);
+	};
+
 	return MediaPlayer;
 })(jQuery);
 

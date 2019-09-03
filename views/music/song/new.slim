@@ -1,0 +1,29 @@
+script src="/js/upload.js"
+link rel="stylesheet" href="/css/upload.css"
+
+.container
+	input#the_file.hidden type="file" multiple=""
+
+	#status_pane
+
+	h1
+		=s('song:new')
+
+	.panel.panel-default
+		.panel-heading
+			h3.cropped
+				=s('song:songs')
+		#songs_in_progress.panel-body
+	
+	h2
+		=s('song:import-yt')
+	
+	h2
+		=s('song:import-nas')
+	
+	h2
+		=s('song:upload')
+	label for="the_file" style="padding: 10px; margin: 0;"
+		.btn.btn-success
+			span.glyphicon.glyphicon-plus
+

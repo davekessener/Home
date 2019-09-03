@@ -1,0 +1,24 @@
+.container
+	table style="margin-bottom: 20px;"
+		tr
+			td.wide
+				h1
+					=s('edit:title')
+			td
+				h2.cropped
+					a href="/music/song/delete/#{song.id}"
+						span.glyphicon.glyphicon-remove style="color: red;"
+	
+	form.form-horizontal action="/music/song/edit/#{song.id}" method="POST"
+		- ['name', 'interpret', 'release'].each do |part|
+			.form-group
+				label.control-label.col-sm-2 for="song_#{part}"
+					=s("edit:#{part}")
+				.col-sm-10
+					input.form-control id="song_#{part}" type="text" name="song_#{part}" value="#{song.send part.to_sym}"
+
+		.form-group
+			.col-sm-offset-2.col-sm-10
+				button.btn.btn-default type="submit"
+					=s('edit:submit')
+

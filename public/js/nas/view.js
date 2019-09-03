@@ -8,7 +8,7 @@
 
 	function addNewFolderCallback() {
 		$('#new_folder_button').click(function () {
-			var path = encodeURIComponent($('#folder_path').val());
+			var path = encodeURIComponent($('#path').val());
 			var name = encodeURIComponent($('#new_folder_name').val());
 
 			window.location = '/nas/new?path=' + path + '&name=' + name;

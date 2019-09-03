@@ -28,10 +28,14 @@ var AsyncConnection = (function ($) {
 
 		function doSend(msg) {
 			var sent = Date.now();
+
 			integrityQueue.push(lastSend = sent);
-			console.log("Sending", lastSend, "command", msg, "to", args.path);
+			
+//			console.log("Sending", lastSend, "command", msg, "to", args.path);
+			
 			$.post(args.path, msg, function (r) {
-				console.log("Received " + JSON.stringify(r) + " of " + sent);
+//				console.log("Received " + JSON.stringify(r) + " of " + sent);
+
 				integrityQueue.shift();
 				recvQueue.push(r);
 			});
@@ -53,6 +57,7 @@ var AsyncConnection = (function ($) {
 
 		function onError() {
 			console.log('TIMEOUT: ' + integrityQueue[0] + ", " + (Date.now() - integrityQueue[0]) + '/' + args.maxResponseTime);
+
 			if(typeof args.errorHandler === 'function') {
 				args.errorHandler();
 			}

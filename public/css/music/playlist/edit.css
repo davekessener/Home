@@ -1,0 +1,17 @@
+.song-entry {
+	cursor: pointer;
+}
+
+h2.cropped {
+	padding-bottom: 15px;
+}
+
+.draggable {
+	cursor: grab;
+}
+
+.rm-btn {
+	color: red;
+	cursor: pointer;
+}
+

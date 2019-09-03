@@ -1,10 +1,7 @@
 before do
-	unless request.path_info == '/login' or logged_in?
+	unless request.path_info.start_with? '/login' or logged_in?
 		session[:return_to] = request.path_info
 		redirect '/login' 
-	end
-	if request.get? and request.path_info.start_with? '/login' and logged_in?
-		redirect '/'
 	end
 end
 
@@ -16,16 +13,15 @@ get '/login' do
 	slim :login
 end
 
-post '/login' do
-	content_type :json
-	uid = params['user_id']
-	if uid and User.find(uid.to_i)
-		session[:user_id] = uid.to_i
-		raise unless current_user.id == uid.to_i
-		{ redirect: (session[:return_to] || request.referer).to_s }.to_json
+get '/login/:id' do |id|
+	id = id.to_i
+
+	if (user = User.find(id))
+		session[:user_id] = id
+
+		redirect (session[:return_to] || '/')
 	else
-		status 400
-		{}.to_json
+		status 404
 	end
 end
 

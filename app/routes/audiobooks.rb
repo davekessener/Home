@@ -42,8 +42,8 @@ get '/audiobooks/chapters/:id' do |id|
 end
 
 get '/audiobooks/play/:id' do |id|
-	if (book = Audiobook.find(id.to_i))
-		slim :'audiobooks/play', locals: { book: book }
+	if (device = current_device) and (book = Audiobook.find(id.to_i))
+		slim :'audiobooks/play', locals: { device: device, book: book }
 	else
 		status 404
 	end

@@ -83,8 +83,16 @@
 
 		if(state.get()) {
 			connection.send(CMD_STOP);
+
+			if (window.media_player) {
+				window.media_player.stop();
+			}
 		} else {
 			connection.send(CMD_PLAY, id);
+
+			if (window.media_player) {
+				window.media_player.play();
+			}
 		}
 
 		connection.send(CMD_STATUS, id)
@@ -121,10 +129,20 @@
 		$('#MyChapterList').css('height', $('html').height() - 120);
 	}
 
+	function createMediaPlayer() {
+		var url = $('#station_url').val();
+		var p = new MediaPlayer(url);
+
+		window.media_player = p;
+
+		$('#player').append(p.$_base);
+	}
+
 	$(function () {
 		var $playBtn = $('#MyPlayPauseBtn'),
 			$stopBtn = $('#MyStopBtn'),
 			$seek = $('#MySeekSelector');
+		var is_loopback = (document.getElementById('player') !== null);
 
 		$playBtn.on('click', playPause);
 		$stopBtn.on('click', stop);
@@ -176,6 +194,10 @@
 			errorHandler: onTimeout,
 			defaultMsg: getDefaultMsg
 		});
+
+		if (is_loopback) {
+			createMediaPlayer();
+		}
 	});
 })(jQuery, AsyncConnection);
 

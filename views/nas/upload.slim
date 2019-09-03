@@ -1,12 +1,14 @@
+script src="/js/upload.js"
+link rel="stylesheet" href="/css/upload.css"
+
 - path = params[:path]
-- vpath = path.split(/\//)[2..-1].join('/')
 .container
 	h2
 		=s('upload:title')
 	h3
 		=s('upload:back')
-		a href="/nas/view/#{vpath}" style="padding-left: 10px;"
-			="nas/#{vpath}"
+		a href="/nas/view#{path}" style="padding-left: 10px;"
+			="nas#{path}"
 
 	input#the_file.hidden type="file" multiple=""
 	input#the_path type="hidden" value="#{params[:path]}"
