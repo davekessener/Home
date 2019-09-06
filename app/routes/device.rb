@@ -5,11 +5,16 @@ before do
 	pass if not current_service.needs_speaker?
 
 	if (device = current_device).nil?
-		session[:return_to] = request.path_info
-		request.path_info = '/device/select'
+		user = current_user
+		if (device = RadioServer.all.to_a.find { |d| d.id == user.last_device })
+			session[:playback_device] = device.id
+		else
+			session[:return_to] = request.path_info
+			redirect '/device/select'
+		end
 	elsif device.playing? and not device.loopback? and (device.user and device.user != current_user)
 		session[:return_to] = request.path_info
-		request.path_info = '/device/kill'
+		redirect '/device/kill'
 	elsif not device.reachable?
 		redirect '/device/unreachable'
 	end
@@ -30,9 +35,12 @@ get '/device/kill' do
 end
 
 get '/device/select' do
-	did = params['device']
-	if did and RadioServer.find(did.to_i)
-		session[:playback_device] = did.to_i
+	did = params['device'].to_i
+	if RadioServer.exists?(id: did)
+		session[:playback_device] = did
+		(user = current_user).last_device = did
+		user.save!
+
 		redirect (session[:return_to] || '/')
 	else
 		slim :'device/select'

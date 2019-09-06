@@ -17,6 +17,10 @@ class MediaPlayer
 		@stream = "http://#{ServerInfo.ip}:#{ServerInfo.http + device.remote_idx}/"
 	end
 
+	def id
+		@device.id
+	end
+
 	def loopback?
 		@device.url.nil?
 	end
@@ -93,9 +97,15 @@ class MediaPlayer
 		end
 	end
 
-	def self.by_device(device)
+	def self.by_device(user, device)
 		@@players ||= {}
-		@@players[device.id] ||= new(device)
+		@@loopbacks ||= {}
+
+		if device.loopback?
+			@@loopbacks[user.id] ||= new(device)
+		else
+			@@players[device.id] ||= new(device)
+		end
 	end
 
 	private_class_method :new

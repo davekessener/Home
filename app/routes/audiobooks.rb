@@ -22,7 +22,7 @@ get '/audiobooks/index' do
 end
 
 get '/audiobooks/franchise/:id' do |id|
-	if (f = Franchise.find(id.to_i))
+	if (f = Franchise.find_by(id: id.to_i))
 		if f.audiobooks.length > 1
 			slim :'audiobooks/franchise', locals: { franchise: f }
 		else
@@ -34,7 +34,7 @@ get '/audiobooks/franchise/:id' do |id|
 end
 
 get '/audiobooks/chapters/:id' do |id|
-	if (book = Audiobook.find(id.to_i))
+	if (book = Audiobook.find_by(id: id.to_i))
 		slim :'audiobooks/chapters', locals: { book: book }
 	else
 		status 404
@@ -42,7 +42,7 @@ get '/audiobooks/chapters/:id' do |id|
 end
 
 get '/audiobooks/play/:id' do |id|
-	if (device = current_device) and (book = Audiobook.find(id.to_i))
+	if (device = current_device) and (book = Audiobook.find_by(id: id.to_i))
 		slim :'audiobooks/play', locals: { device: device, book: book }
 	else
 		status 404
@@ -54,6 +54,6 @@ end
 post '/audiobooks/play' do
 	content_type :json
 
-	Audiobooks::execute(params, current_device, current_user).to_json
+	Audiobooks.execute(params, current_device, current_user).to_json
 end
 

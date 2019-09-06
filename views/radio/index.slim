@@ -1,2 +1,11 @@
+script src="/js/player.js"
+
+- if current_device.loopback?
+	#player.hidden
+	- RadioStation.all.to_a.each do |s|
+		.hidden id="station_#{s.id}" data-url="#{s.url}" data-name="#{s.name}"
+
+#status
+
 == slim :'partials/thumbs', locals: { objects: RadioStation.all.to_a }
 

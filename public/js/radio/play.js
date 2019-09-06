@@ -19,9 +19,11 @@
 		var $state = $('#status');
 		var wait_msg = $('#msg_wait').val();
 		var url = $('#station_url').val();
-		var p = new MediaPlayer(url);
+		var p = new MediaPlayer();
 
 		window.media_player = p;
+
+		p.setURL(url);
 
 		p.onStateChange(function (state) {
 			if (state == MediaPlayer.STATE_PENDING) {

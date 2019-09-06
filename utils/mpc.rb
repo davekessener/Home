@@ -41,6 +41,9 @@ module MPC
 		def get_volume
 			100
 		end
+
+		def update
+		end
 	end
 
 	class Client
@@ -104,6 +107,10 @@ module MPC
 	
 		def get_volume
 			status['volume'].to_i
+		end
+
+		def update
+			execute "update"
 		end
 	end
 end

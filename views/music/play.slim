@@ -1,4 +1,20 @@
+script src="/js/player.js"
+script src="/js/async-queue.js"
+
+- if device.loopback?
+	#player
+	input#station_url type="hidden" value="#{device.stream}"
+
+input#playlist_id type="hidden" value="#{playlist.id}"
+
 .container
 	h1
-		=__FILE__
+		=playlist.name
+
+	#player_ui
+
+	ul.list-group
+		- playlist.songs.to_a.each_with_index do |song, i|
+			li.list-group-item data-song-id="#{song.id}"
+				=song.pretty
 

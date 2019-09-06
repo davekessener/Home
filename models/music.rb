@@ -11,9 +11,17 @@ module Music
 
 		validates :name, presence: true
 		validates :user_id, presence: true
+		validates :length, presence: true
 
 		def filename
 			"song_#{'%03d' % id}.mp3"
+		end
+
+		def pretty
+			s = name
+			s = "#{interpret} - #{s}" if (interpret and not interpret.empty?)
+			s = "#{s} (#{release})" if release
+			s
 		end
 	end
 
@@ -23,6 +31,50 @@ module Music
 
 		validates :name, presence: true
 		validates :user_id, presence: true
+	end
+
+	class Play
+		attr_reader :files, :id, :progress
+
+		def initialize(pl)
+			@playlist = pl
+			@id = generate_id
+
+			reset
+		end
+
+		def song(i)
+			@base[i]
+		end
+
+		def on_stop(user, progress)
+			@progress = progress
+		end
+
+		def shuffle
+			@base.shuffle!
+
+			update
+		end
+
+		def reset
+			@base = @playlist.songs.to_a
+
+			update
+		end
+
+		private
+
+		def update
+			@files = @base.map { |s| Storage.path('songs', s.filename) }
+		end
+
+		def generate_id
+			v = rand
+			v = 1 - v * v
+			d = Time.now.to_i
+			(d * v).to_i
+		end
 	end
 end
 

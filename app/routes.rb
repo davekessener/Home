@@ -1,7 +1,13 @@
 before do
 	unless request.path_info.start_with? '/login' or logged_in?
-		session[:return_to] = request.path_info
-		redirect '/login' 
+		ip = request.ip.to_s
+
+		if (user = User.all.to_a.find { |u| u.last_ip == ip })
+			session[:user_id] = user.id
+		else
+			session[:return_to] = request.path_info
+			redirect '/login' 
+		end
 	end
 end
 
@@ -18,6 +24,8 @@ get '/login/:id' do |id|
 
 	if (user = User.find(id))
 		session[:user_id] = id
+		user.last_ip = request.ip.to_s
+		user.save!
 
 		redirect (session[:return_to] || '/')
 	else

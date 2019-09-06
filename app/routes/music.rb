@@ -1,13 +1,25 @@
+Dir.glob("#{$root_dir}/app/music/**/*.rb").each do |fn|
+	require fn
+end
+
+def probe_song(fn)
+	JSON.parse(`ffprobe -i "#{fn}" -print_format json -show_format 2> /dev/null`)
+end
+
 get '/music' do
 	slim :'music/index'
 end
 
 get '/music/play/:id' do |id|
-	if (playlist = Music::Playlist.find(id.to_i))
-		slim :'music/play', locals: { playlist: playlist }
-	else
-		status 404
-	end
+	playlist = Music::Playlist.find(id.to_i)
+
+	slim :'music/play', locals: { device: current_device, playlist: playlist }
+end
+
+post '/music/control' do
+	content_type :json
+
+	Music.execute(params, current_device, current_user).to_json
 end
 
 get '/music/song/new' do
@@ -115,13 +127,17 @@ post '/music/upload' do
 	io = $storage.request(:music)
 	file = params['file']
 	fn = file[:filename]
-	song = Music::Song.new(name: fn[0...-4], user: current_user)
+	tmpfile = file[:tempfile]
+	info = probe_song tmpfile.path
+	length = info['format']['duration'].to_f.ceil
+	song = Music::Song.new(name: fn[0...-4], user: current_user, length: length)
 
 	if song.save
 		path = Storage.path('songs', song.filename)
-		tmpfile = file[:tempfile]
 
 		io.upload(path, tmpfile.path)
+
+		$media_db.update
 
 		content_type :json
 

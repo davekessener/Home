@@ -88,7 +88,7 @@ var AsyncConnection = (function ($) {
 			}
 		}
 
-		lastSend = 0;
+		lastSend = Date.now();
 		tick();
 
 		return {

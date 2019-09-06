@@ -4,6 +4,8 @@ set :bind, '0.0.0.0'
 
 set :database_file, "#{$root_dir}/config/database.yml"
 
+$media_db = MPC::Client.new(MediaPlayer::ServerInfo.ip, MediaPlayer::ServerInfo.service)
+
 $storage = Storage::Manager.new
 
 $storage.register(:music, Storage::Local.new(Storage.path($root_dir, '/music')))

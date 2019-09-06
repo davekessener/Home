@@ -9,7 +9,7 @@ class RadioStation < ActiveRecord::Base
 	end
 
 	def target_path
-		@target_path ||= "/radio/play/#{id}"
+		nil
 	end
 
 	def thumb_path
