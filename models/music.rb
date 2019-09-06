@@ -43,6 +43,10 @@ module Music
 			reset
 		end
 
+		def random?
+			@random
+		end
+
 		def song(i)
 			@base[i]
 		end
@@ -52,21 +56,35 @@ module Music
 		end
 
 		def shuffle
+			idx = @base[@progress[:song]][1] if @progress
+
 			@base.shuffle!
+			@random = true
+
+			@progress[:song] = translate(idx) if @progress
 
 			update
 		end
 
 		def reset
-			@base = @playlist.songs.to_a
+			idx = @base[@progress[:song]][1] if @progress
+
+			@base = @playlist.songs.to_a.each_with_index.map { |e, i| [e, i] }
+			@random = false
+
+			@progress[:song] = idx if @progress
 
 			update
+		end
+
+		def translate(i)
+			@base.index { |e, j| i == j }
 		end
 
 		private
 
 		def update
-			@files = @base.map { |s| Storage.path('songs', s.filename) }
+			@files = @base.map { |s, i| Storage.path('songs', s.filename) }
 		end
 
 		def generate_id

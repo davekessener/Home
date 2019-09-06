@@ -9,6 +9,7 @@ class MediaPlayer
 	}.to_o
 
 	attr_reader :playing, :user, :stream
+	attr_reader :server, :client
 
 	def initialize(device)
 		@device = device

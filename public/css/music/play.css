@@ -1,0 +1,18 @@
+.song-container {
+	position: relative;
+	z-index: 1;
+}
+
+.song-item {
+	cursor: pointer;
+}
+
+.full-progress-bar {
+	opacity: 0.65;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+

@@ -40,6 +40,7 @@ var MediaPlayer = (function ($) {
 		var self = this;
 
 		self.setState(MediaPlayer.STATE_PENDING);
+		self._audio.load();
 		self._audio.play();
 
 		var count = 10;
@@ -59,7 +60,7 @@ var MediaPlayer = (function ($) {
 			}
 		}
 		
-		setTimeout(checkAudio, 500);
+//		setTimeout(checkAudio, 500);
 	};
 
 	MediaPlayer.prototype.stop = function () {

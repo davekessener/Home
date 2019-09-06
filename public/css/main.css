@@ -6,6 +6,10 @@
 	background-color: #404040;
 }
 
+.white-text {
+	color : #FFFFFF;
+}
+
 #gallery {
 	max-width: 960px;
 	margin: 0 auto;

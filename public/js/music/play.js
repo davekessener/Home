@@ -1,59 +1,188 @@
 (function ($, Server) {
+	var AudioProxy = (function () {
+		function AudioProxy(f) {
+			var self = this;
+
+			self._callback = f;
+		}
+
+		AudioProxy.prototype.play = function () {
+			var self = this;
+
+			if (self._callback) {
+				self._player = self._callback();
+				self._player.play();
+			}
+		};
+
+		AudioProxy.prototype.stop = function () {
+			var self = this;
+
+			if (self._player) {
+				self._player.stop();
+				self._player = undefined;
+			}
+		};
+
+		return AudioProxy;
+	})();
+
 	const CMD_REGISTER = 1;
 	const CMD_PAUSE = 2;
 	const CMD_RESUME = 3;
 	const CMD_STATUS = 4;
+	const CMD_SEEK = 5;
+	const CMD_NEXT = 6;
+	const CMD_PREV = 7;
+	const CMD_MODE = 8;
 
-	var PlayPauseButton = (function () {
-		function PlayPauseButton() {
+	const ACTIONE_MOVED = 1;
+	const ACTION_STOPPED = 2;
+
+	const MODE_NORMAL = 0;
+	const MODE_REPEAT_ONE = 1;
+	const MODE_REPEAT_ALL = 2;
+	const MODE_SHUFFLE = 3;
+
+	var MultiIconButton = (function () {
+		function MultiIconButton() {
 			var self = this;
 
 			self.$_base = $('<div></div>');
-
-			self.$_play = $('<button class="btn btn-default"></button>');
-			self.$_pause = $('<button class="btn btn-default"></button>');
-			
-			self.$_play.append($('<span class="glyphicon glyphicon-play"></span>'));
-			self.$_pause.append($('<span class="glyphicon glyphicon-pause"></span>'));
-
-			self.$_base.append(self.$_play);
-			self.$_base.append(self.$_pause);
-
-			self.setState(PlayPauseButton.STATE_PAUSED);
+			self._buttons = [];
+			self._listeners = [];
 		}
 
-		PlayPauseButton.STATE_PLAYING = 0;
-		PlayPauseButton.STATE_PAUSED = 1;
-
-		PlayPauseButton.prototype.setState = function (s) {
+		MultiIconButton.prototype.listen = function (f) {
 			var self = this;
 
-			if (s == PlayPauseButton.STATE_PLAYING) {
-				self.$_play.addClass('hidden');
-				self.$_pause.removeClass('hidden');
-			} else if (s == PlayPauseButton.STATE_PAUSED) {
-				self.$_play.removeClass('hidden');
-				self.$_pause.addClass('hidden');
-			} else {
-				throw "Invalid state: " + s + "!";
+			self._listeners.push(f);
+		};
+
+		MultiIconButton.prototype.setState = function (s) {
+			var self = this;
+
+			if (self._state !== undefined) {
+				self._buttons[self._state].detach();
 			}
 
 			self._state = s;
+			self.$_base.append(self._buttons[s]);
+
+			self._listeners.forEach(function (f) {
+				f(s);
+			});
 		};
 
-		PlayPauseButton.prototype.onPlay = function (f) {
+		MultiIconButton.prototype.add = function (icon, cb) {
 			var self = this;
 
-			self.$_play.click(f);
+			var $btn = $('<button class="btn btn-default"></button>');
+
+			$btn.append($('<span class="glyphicon glyphicon-' + icon + '"></span>'));
+
+			$btn.click(function () {
+				if (! $btn.hasClass('disabled')) {
+					cb();
+				}
+			});
+
+			self._buttons[icon] = $btn;
+
+			if (self._state === undefined) {
+				self.setState(icon);
+			}
 		};
 
-		PlayPauseButton.prototype.onPause = function (f) {
+		MultiIconButton.prototype.disable = function (icon) {
 			var self = this;
 
-			self.$_pause.click(f);
+			self._buttons[icon].addClass('disabled');
 		};
 
-		return PlayPauseButton;
+		MultiIconButton.prototype.enable = function (icon) {
+			var self = this;
+
+			self._buttons[icon].removeClass('disabled');
+		};
+
+		return MultiIconButton;
+	})();
+
+	var ButtonPanel = (function () {
+		function attachCallback(self, id) {
+			return function () {
+				var f = self[id];
+
+				if (typeof f === 'function') {
+					f();
+				}
+			};
+		}
+
+		function ButtonPanel() {
+			var self = this;
+
+			self.$_base = $('<div style="display: flex; align-items: center;"></div>');
+
+			self._pp_btn = new MultiIconButton();
+
+			self._pp_btn.add('play', attachCallback(self, 'onPlay'));
+			self._pp_btn.add('pause', attachCallback(self, 'onPause'));
+
+			self._back_btn = new MultiIconButton();
+
+			self._back_btn.add('fast-backward', attachCallback(self, 'onPrevious'));
+
+			self._reset_btn = new MultiIconButton();
+
+			self._reset_btn.add('step-backward', attachCallback(self, 'onReplay'));
+
+			self._next_btn = new MultiIconButton();
+
+			self._next_btn.add('fast-forward', attachCallback(self, 'onNext'));
+
+			self._mode_btn = new MultiIconButton();
+
+			self._mode_btn.add('arrow-right', attachCallback(self, 'onNormal'));
+			self._mode_btn.add('repeat', attachCallback(self, 'onSingleRepeat'));
+			self._mode_btn.add('refresh', attachCallback(self, 'onAllRepeat'));
+			self._mode_btn.add('random', attachCallback(self, 'onShuffle'));
+
+			self.$_base.append(self._back_btn.$_base);
+			self.$_base.append(self._reset_btn.$_base);
+			self.$_base.append(self._pp_btn.$_base);
+			self.$_base.append(self._next_btn.$_base);
+			self.$_base.append(self._mode_btn.$_base);
+
+			self.play_button = self._pp_btn;
+			self.previous_button = self._back_btn;
+			self.replay_button = self._reset_btn;
+			self.next_button = self._next_btn;
+			self.mode_button = self._mode_btn;
+		}
+
+		return ButtonPanel;
+	})();
+
+	var InfoPane = (function () {
+		function InfoPane() {
+			var self = this;
+
+			self.$_base = $('<div style="padding-bottom: 16px;"></div>');
+
+			self.$_info = $('<h3 class="cropped">---</h3>');
+
+			self.$_base.append(self.$_info);
+		}
+
+		InfoPane.prototype.set = function (v) {
+			var self = this;
+
+			self.$_info.text(v);
+		};
+
+		return InfoPane;
 	})();
 
 	var PlayerUI = (function () {
@@ -61,22 +190,68 @@
 			var self = this;
 
 			self.$_base = $('<div class="well wide"></div>');
-			self._ppbtn = new PlayPauseButton();
-			self._info = $('<h3 class="cropped" style="padding-left: 6px;"></h3>');
+			self._buttons = new ButtonPanel();
+			self._bar = new ProgressBar();
+			self._info = new InfoPane();
 
-			self.$_base.css('display', 'flex');
-			self.$_base.css('align-items', 'center');
+			self.$_base.append(self._info.$_base);
+			self.$_base.append(self._buttons.$_base);
 
-			self.$_base.append(self._ppbtn.$_base);
-			self.$_base.append(self._info);
+			self._bar.showText(false);
+			self._bar.$_base.addClass('full-progress-bar');
 
-			self._ppbtn.onPlay(function () {
-				self.play();
+			$('.song-item').each(function (i, e) {
+				$(e).click(function (x) {
+					self.onSongClick(i, x);
+				});
 			});
 
-			self._ppbtn.onPause(function () {
-				self.pause();
-			});
+			self._buttons.onPlay = function () {
+				self._con.send(CMD_RESUME);
+			};
+
+			self._buttons.onPause = function () { 
+				self._con.send(CMD_PAUSE);
+				window.media_player.stop();
+			};
+
+			self._buttons.onNext = function () {
+				self._con.send(CMD_NEXT);
+				window.media_player.stop();
+				self._running = false;
+			};
+
+			self._buttons.onPrevious = function () {
+				self._con.send(CMD_PREV);
+				window.media_player.stop();
+				self._running = false;
+			};
+
+			self._buttons.onReplay = function () {
+				self._con.send(CMD_SEEK, 0);
+				window.media_player.stop();
+				self._running = false;
+			};
+
+			self._buttons.onNormal = function () {
+				self._con.send(CMD_MODE, MODE_REPEAT_ONE);
+				self._buttons.mode_button.setState('repeat');
+			};
+
+			self._buttons.onSingleRepeat = function () {
+				self._con.send(CMD_MODE, MODE_REPEAT_ALL);
+				self._buttons.mode_button.setState('refresh');
+			};
+
+			self._buttons.onAllRepeat = function () {
+				self._con.send(CMD_MODE, MODE_SHUFFLE);
+				self._buttons.mode_button.setState('random');
+			};
+
+			self._buttons.onShuffle = function () {
+				self._con.send(CMD_MODE, MODE_NORMAL);
+				self._buttons.mode_button.setState('arrow-right');
+			};
 
 			self._con = Server.open({
 				path: '/music/control',
@@ -108,12 +283,53 @@
 			var self = this;
 
 			if (msg.status !== undefined) {
-				self._info.text(msg.status.song + ' ' + time_to_s(msg.status.elapsed) + ' / ' + time_to_s(msg.status.total));
+				if (msg.status.index !== self._index) {
+					var $song = $('#song_' + msg.status.index);
+
+					self.reset();
+
+					$song.prepend(self._bar.$_base);
+
+					self._index = msg.status.index;
+				}
+
+				self._info.set(msg.status.song + ' ' + time_to_s(msg.status.elapsed) + ' / ' + time_to_s(msg.status.total));
+				self._bar.update(msg.status.elapsed / (msg.status.total - 1));
+
+				if (msg.status.running != self._running) {
+					if (msg.status.running) {
+						self._buttons.play_button.setState('pause');
+						window.media_player.play();
+					} else {
+						self._buttons.play_button.setState('play');
+						window.media_player.stop();
+					}
+				}
+
+				self._running = msg.status.running;
+				self._length = msg.status.total;
 			}
 
 			if (msg.error !== undefined) {
 				self.onError(msg.error);
 			}
+
+			if (msg.action !== undefined) {
+				if (msg.action == ACTION_STOPPED) {
+					self.reset();
+				} else if (msg.action == ACTION_MOVED) {
+				} else {
+					console.log('ERROR', msg);
+					alert('unknown action: ' + msg.action);
+				}
+			}
+		};
+
+		PlayerUI.prototype.reset = function () {
+			var self = this;
+
+			self._bar.$_base.detach();
+			self._info.set('-----');
 		};
 
 		PlayerUI.prototype.onError = function (e) {
@@ -122,37 +338,55 @@
 			console.log(e);
 		};
 
-		PlayerUI.prototype.play = function () {
+		PlayerUI.prototype.onSongClick = function (i, e) {
 			var self = this;
 
-			self._con.send(CMD_RESUME);
-			self._ppbtn.setState(PlayPauseButton.STATE_PLAYING);
+			var progress = {
+				song: i,
+				elapsed: 0
+			};
 
-			if (window.media_player) {
-				window.media_player.play();
+			if (i == self._index) {
+				progress = Math.floor(self._length * e.originalEvent.layerX / e.currentTarget.clientWidth);
 			}
-		};
 
-		PlayerUI.prototype.pause = function () {
-			var self = this;
-			
-			self._con.send(CMD_PAUSE);
-			self._ppbtn.setState(PlayPauseButton.STATE_PAUSED);
-
-			if (window.media_player) {
-				window.media_player.stop();
-			}
+			window.media_player.stop();
+			self._running = false;
+			self._con.send(CMD_SEEK, progress);
 		};
 
 		return PlayerUI;
 	})();
 
-	function createMediaPlayer() {
-		var p = new MediaPlayer();
+	function handleLoopback() {
+		var is_loopback = (document.getElementById('player') !== null);
+		var i = 0;
 
-		window.media_player = p;
+		function createMediaPlayer() {
+			var p = new MediaPlayer();
 
-		p.setURL($('#station_url').val());
+			p.setURL($('#station_url').val() + 'stream_' + i + '_' + Math.floor(Math.random() * 1000000) + '.mp3');
+
+			i += 1;
+
+			return p;
+		}
+
+		function createHowlClient() {
+			var howl = new Howl({
+				src: [ $('#station_url').val() ],
+				html5: true,
+				format: [ 'mp3' ]
+			});
+
+			if (howl.stop === undefined) {
+				howl.stop = howl.unload;
+			}
+
+			return howl;
+		}
+
+		window.media_player = new AudioProxy(is_loopback ? createMediaPlayer : undefined);
 	}
 
 	function createPlayerInterface() {
@@ -166,12 +400,7 @@
 	}
 
 	$(function () {
-		var is_loopback = (document.getElementById('player') !== undefined);
-
-		if (is_loopback) {
-			createMediaPlayer();
-		}
-
+		handleLoopback();
 		createPlayerInterface();
 	});
 })(jQuery, AsyncConnection);

@@ -5,8 +5,16 @@ var ProgressBar = (function () {
 		self.$_base = $('<div class="progress"></div>');
 		self.$_bar = $('<div class="progress-bar progress-bar-success" role="progressbar"></div>');
 
+		self._show_text = true;
+
 		self.$_base.append(self.$_bar);
 	}
+
+	ProgressBar.prototype.showText = function (b) {
+		var self = this;
+
+		self._show_text = b;
+	};
 
 	ProgressBar.prototype.update = function (p) {
 		var self = this;
@@ -14,7 +22,10 @@ var ProgressBar = (function () {
 		p = 100 * clamp(p);
 
 		self.$_bar.css('width', p + '%');
-		self.$_bar.html(p.toFixed(0) + '%');
+
+		if (self._show_text) {
+			self.$_bar.html(p.toFixed(0) + '%');
+		}
 	};
 
 	return ProgressBar;

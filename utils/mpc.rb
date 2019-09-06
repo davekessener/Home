@@ -66,10 +66,6 @@ module MPC
 		end
 	
 		def play(files, **opts)
-			opts = {
-				random: 0,
-				repeat: 0
-			}.merge(opts)
 			Connection.open(@ip, @port) do |c|
 				c.execute do |list|
 					list << 'clear'

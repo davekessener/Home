@@ -1,3 +1,5 @@
+script src="/js/lib/howler.core.min.js"
+script src="/js/upload.js"
 script src="/js/player.js"
 script src="/js/async-queue.js"
 
@@ -15,6 +17,7 @@ input#playlist_id type="hidden" value="#{playlist.id}"
 
 	ul.list-group
 		- playlist.songs.to_a.each_with_index do |song, i|
-			li.list-group-item data-song-id="#{song.id}"
-				=song.pretty
+			li.list-group-item.song-item id="song_#{i}" data-song-id="#{song.id}"
+				.song-container
+					=song.pretty
 

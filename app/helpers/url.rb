@@ -13,6 +13,7 @@ helpers do
 			url = 'main'
 		else
 			t.pop while t.last =~ /^[0-9]+$/
+			t.push 'index' if t.length == 1
 			url = t.join('/')
 		end
 		"/#{type}/#{url}.#{type}"
