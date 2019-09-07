@@ -122,7 +122,7 @@
 			self.$_base.addClass('selected');
 
 			if (m) {
-				m.setURL(self.url);
+				m.url(self.url);
 				m.play();
 			} else {
 				$.post('/radio/play', { id: self.id });

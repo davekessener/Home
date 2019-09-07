@@ -34,6 +34,10 @@
 
 	function updateState(s) {
 		if(typeof s.running !== 'undefined') {
+			if (s.running && ! window.media_player.playing()) {
+				window.media_player.play();
+			}
+
 			state.set(s.running);
 		}
 		if(typeof s.display !== 'undefined') {
@@ -84,15 +88,9 @@
 		if(state.get()) {
 			connection.send(CMD_STOP);
 
-			if (window.media_player) {
-				window.media_player.stop();
-			}
+			window.media_player.stop();
 		} else {
 			connection.send(CMD_PLAY, id);
-
-			if (window.media_player) {
-				window.media_player.play();
-			}
 		}
 
 		connection.send(CMD_STATUS, id)
@@ -105,6 +103,8 @@
 		} else {
 			onMoved();
 		}
+
+		window.media_player.stop();
 	}
 
 	function seek(d) {
@@ -112,10 +112,15 @@
 			book_id: $('#MyBookID').val(),
 			seek: d
 		});
+
+		window.media_player.stop();
 	}
 
 	function volume(v) {
 		connection.send(CMD_VOLUME, v);
+
+		window.volume = (+(v) - 1) / 99;
+		window.media_player.volume(window.volume);
 	}
 
 	function getDefaultMsg() {
@@ -131,11 +136,19 @@
 
 	function createMediaPlayer() {
 		var url = $('#station_url').val();
-		var p = new MediaPlayer(url);
+		var idx = 0;
 
-		window.media_player = p;
+		window.volume = 1;
+		window.media_player = new AudioProxy(function () {
+			var p = new MediaPlayer();
 
-		$('#player').append(p.$_base);
+			p.url(url + 'stream_' + idx + '_' + Math.floor(Math.random() * 1000000) + '.mp3');
+			p.volume(window.volume);
+
+			idx += 1;
+
+			return p;
+		});
 	}
 
 	$(function () {

@@ -98,6 +98,10 @@ class MediaPlayer
 		end
 	end
 
+	def volume=(v)
+		volume(v)
+	end
+
 	def self.by_device(user, device)
 		@@players ||= {}
 		@@loopbacks ||= {}

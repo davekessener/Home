@@ -1,3 +1,49 @@
+var AudioProxy = (function () {
+	function AudioProxy(f) {
+		var self = this;
+
+		self._callback = f;
+	}
+
+	AudioProxy.prototype.play = function () {
+		var self = this;
+
+		if (self._callback) {
+			self._player = self._callback();
+			self._player.play();
+		}
+	};
+
+	AudioProxy.prototype.stop = function () {
+		var self = this;
+
+		if (self._player) {
+			self._player.stop();
+			self._player = undefined;
+		}
+	};
+
+	AudioProxy.prototype.volume = function (v) {
+		var self = this;
+
+		if (self._player) {
+			return self._player.volume(v);
+		}
+	};
+
+	AudioProxy.prototype.playing = function () {
+		var self = this;
+
+		if (self._player) {
+			return self._player.playing();
+		} else {
+			return false;
+		}
+	};
+
+	return AudioProxy;
+})();
+
 var MediaPlayer = (function ($) {
 	function MediaPlayer() {
 		var self = this;
@@ -29,11 +75,32 @@ var MediaPlayer = (function ($) {
 		});
 	};
 
-	MediaPlayer.prototype.setURL = function (url) {
+	MediaPlayer.prototype.playing = function () {
 		var self = this;
 
-		self._url = url;
-		self.$_base.attr('src', url);
+		return (self._state == MediaPlayer.STATE_PLAYING || self._state == MediaPlayer.STATE_PENDING);
+	};
+
+	MediaPlayer.prototype.url = function (url) {
+		var self = this;
+
+		if (url) {
+			self._url = url;
+			self.$_base.attr('src', url);
+		} else {
+			return self._url;
+		}
+	};
+
+	MediaPlayer.prototype.volume = function (v) {
+		var self = this;
+
+		if (v) {
+			self._volume = v;
+			self._audio.volume = v;
+		} else {
+			return self._volume;
+		}
 	};
 
 	MediaPlayer.prototype.play = function () {

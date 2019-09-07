@@ -1,3 +1,7 @@
+#volume_input .slider-selection {
+	background: #33DD33;
+}
+
 .song-container {
 	position: relative;
 	z-index: 1;

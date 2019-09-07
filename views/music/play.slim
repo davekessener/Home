@@ -1,4 +1,9 @@
+link rel="stylesheet" href="/css/lib/bootstrap-slider.min.css"
+
+script src="/js/lib/bootstrap-toolkit.js"
+script src="/js/lib/bootstrap-slider.min.js"
 script src="/js/lib/howler.core.min.js"
+
 script src="/js/upload.js"
 script src="/js/player.js"
 script src="/js/async-queue.js"
@@ -8,6 +13,8 @@ script src="/js/async-queue.js"
 	input#station_url type="hidden" value="#{device.stream}"
 
 input#playlist_id type="hidden" value="#{playlist.id}"
+
+input#volume_slider.hidden type="text" data-provide="slider" data-slider-id="volume_input" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="100" data-slider-tooltip="hide"
 
 .container
 	h1

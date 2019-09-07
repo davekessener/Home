@@ -8,7 +8,8 @@ module Music
 		:seek,
 		:next,
 		:prev,
-		:mode
+		:mode,
+		:volume
 	]
 
 	ACTION_MOVED = 1
@@ -69,7 +70,8 @@ module Music
 						index: i,
 						song: s.pretty,
 						elapsed: p[:elapsed],
-						total: s.length
+						total: s.length,
+						volume: @device.volume
 					}
 				}
 			}
@@ -140,10 +142,17 @@ module Music
 					@device.server.execute 'repeat 1'
 
 				when MODE_SHUFFLE
+					@device.server.execute 'repeat 1'
 					pl.shuffle
 			end
 
 			resume(args) if is_playing
+
+			status
+		end
+		
+		def volume(args)
+			@device.volume = args[:message].to_i
 
 			status
 		end

@@ -1,32 +1,4 @@
 (function ($, Server) {
-	var AudioProxy = (function () {
-		function AudioProxy(f) {
-			var self = this;
-
-			self._callback = f;
-		}
-
-		AudioProxy.prototype.play = function () {
-			var self = this;
-
-			if (self._callback) {
-				self._player = self._callback();
-				self._player.play();
-			}
-		};
-
-		AudioProxy.prototype.stop = function () {
-			var self = this;
-
-			if (self._player) {
-				self._player.stop();
-				self._player = undefined;
-			}
-		};
-
-		return AudioProxy;
-	})();
-
 	const CMD_REGISTER = 1;
 	const CMD_PAUSE = 2;
 	const CMD_RESUME = 3;
@@ -35,6 +7,7 @@
 	const CMD_NEXT = 6;
 	const CMD_PREV = 7;
 	const CMD_MODE = 8;
+	const CMD_VOLUME = 9;
 
 	const ACTIONE_MOVED = 1;
 	const ACTION_STOPPED = 2;
@@ -185,16 +158,44 @@
 		return InfoPane;
 	})();
 
+	var VolumeSlider = (function () {
+		function VolumeSlider($e) {
+			var self = this;
+
+			self.$_base = $('<div style="padding-bottom: 10px;"></div>');
+			self.$_slider = $('#' + $e.data('slider-id'));
+			self.$_proxy = $e;
+
+			self.$_proxy.slider('on', 'slideStop', function (v) {
+				var f = self.onChange;
+
+				if (f) {
+					f(+(v) / 100);
+				}
+			});
+
+			self.$_slider.detach();
+			self.$_proxy.detach();
+
+			self.$_base.append(self.$_slider);
+			self.$_base.append(self.$_proxy);
+		}
+
+		return VolumeSlider;
+	})();
+
 	var PlayerUI = (function () {
 		function PlayerUI() {
 			var self = this;
 
 			self.$_base = $('<div class="well wide"></div>');
-			self._buttons = new ButtonPanel();
 			self._bar = new ProgressBar();
+			self._buttons = new ButtonPanel();
 			self._info = new InfoPane();
+			self._volume = new VolumeSlider($('#volume_slider'));
 
 			self.$_base.append(self._info.$_base);
+			self.$_base.append(self._volume.$_base);
 			self.$_base.append(self._buttons.$_base);
 
 			self._bar.showText(false);
@@ -251,6 +252,12 @@
 			self._buttons.onShuffle = function () {
 				self._con.send(CMD_MODE, MODE_NORMAL);
 				self._buttons.mode_button.setState('arrow-right');
+			};
+
+			self._volume.onChange = function (v) {
+				window.volume = v;
+				window.media_player.volume(v);
+				self._con.send(CMD_VOLUME, v);
 			};
 
 			self._con = Server.open({
@@ -362,10 +369,13 @@
 		var is_loopback = (document.getElementById('player') !== null);
 		var i = 0;
 
+		window.volume = 1;
+
 		function createMediaPlayer() {
 			var p = new MediaPlayer();
 
-			p.setURL($('#station_url').val() + 'stream_' + i + '_' + Math.floor(Math.random() * 1000000) + '.mp3');
+			p.url($('#station_url').val() + 'stream_' + i + '_' + Math.floor(Math.random() * 1000000) + '.mp3');
+			p.volume(window.volume);
 
 			i += 1;
 
