@@ -1,7 +1,7 @@
 require 'json'
 
 get '/recipes' do
-	slim :'recipes'
+	slim :'recipes/index'
 end
 
 get '/recipes/dish/:id' do |id|
