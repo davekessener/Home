@@ -144,7 +144,7 @@
 
 			self.$_base = $('<div style="padding-bottom: 16px;"></div>');
 
-			self.$_info = $('<h3 class="cropped">---</h3>');
+			self.$_info = $('<h3 class="cropped">-----</h3>');
 
 			self.$_base.append(self.$_info);
 		}
@@ -156,32 +156,6 @@
 		};
 
 		return InfoPane;
-	})();
-
-	var VolumeSlider = (function () {
-		function VolumeSlider($e) {
-			var self = this;
-
-			self.$_base = $('<div style="padding-bottom: 10px;"></div>');
-			self.$_slider = $('#' + $e.data('slider-id'));
-			self.$_proxy = $e;
-
-			self.$_proxy.slider('on', 'slideStop', function (v) {
-				var f = self.onChange;
-
-				if (f) {
-					f(+(v) / 100);
-				}
-			});
-
-			self.$_slider.detach();
-			self.$_proxy.detach();
-
-			self.$_base.append(self.$_slider);
-			self.$_base.append(self.$_proxy);
-		}
-
-		return VolumeSlider;
 	})();
 
 	var PlayerUI = (function () {

@@ -73,7 +73,7 @@ module MPC
 					c
 				end
 			rescue
-				nil
+				return nil
 			end
 		end
 	

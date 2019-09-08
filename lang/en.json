@@ -91,6 +91,34 @@
 			"title" : "File Upload",
 			"back" : "Return to"
 		}
+	},
+	"music" : {
+		"title" : "Music",
+		"import" : {
+			"desc" : "Songs",
+			"yt" : "from Youtube",
+			"nas" : "from NAS",
+			"up" : "Upload"
+		},
+		"song" : {
+			"all" : "All songs",
+			"name" : "Name",
+			"length" : "Duration",
+			"interpret" : "Artist",
+			"release" : "Released",
+			"user" : "User",
+			"new" : "Create Songs",
+			"songs" : "Songs",
+			"import-yt" : "Import from Youtube",
+			"import-nas" : "Import from NAS",
+			"upload" : "Upload local file"
+		},
+		"playlist" : {
+			"all" : "All playlists",
+			"name" : "Name",
+			"content" : "Content",
+			"songs" : "Songs"
+		}
 	}
 }
 

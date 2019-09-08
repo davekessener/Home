@@ -91,6 +91,34 @@
 			"title" : "Datei hochladen",
 			"back" : "Zurück zu"
 		}
+	},
+	"music" : {
+		"title" : "Musik",
+		"import" : {
+			"desc" : "Songs",
+			"yt" : "aus Youtube",
+			"nas" : "aus NAS",
+			"up" : "Upload"
+		},
+		"song" : {
+			"all" : "Alle Songs",
+			"name" : "Name",
+			"length" : "Länge",
+			"interpret" : "Interpret",
+			"release" : "Erschienen",
+			"user" : "Besitzer",
+			"new" : "Neue Songs",
+			"songs" : "Songs",
+			"import-yt" : "Importiere aus Youtube",
+			"import-nas" : "Importiere aus NAS",
+			"upload" : "Upload lokale Datei"
+		},
+		"playlist" : {
+			"all" : "Alle Playlisten",
+			"name" : "Name",
+			"content" : "Inhalt",
+			"songs" : "Songs"
+		}
 	}
 }
 

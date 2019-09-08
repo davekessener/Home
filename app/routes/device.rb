@@ -6,7 +6,7 @@ before do
 
 	if (device = current_device).nil?
 		user = current_user
-		if (device = RadioServer.all.to_a.find { |d| d.id == user.last_device })
+		if (device = RadioServer.all.to_a.find { |d| d.id == user.last_device }) and MediaPlayer.by_device(user, device).reachable?
 			session[:playback_device] = device.id
 		else
 			session[:return_to] = request.path_info

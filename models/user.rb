@@ -9,10 +9,18 @@ end
 class User < ActiveRecord::Base
 	has_and_belongs_to_many :activities
 	has_many :bookmarks, dependent: :destroy
+	has_many :known_hosts, dependent: :destroy
 
 	validates :name, presence: true
 	validates :name, uniqueness: true
 	validates :lang, presence: true
 	validates_with LanguageValidator
+end
+
+class KnownHost < ActiveRecord::Base
+	belongs_to :user
+
+	validates :ip, presence: true
+	validates :user_id, presence: true
 end
 

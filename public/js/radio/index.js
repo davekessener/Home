@@ -50,22 +50,40 @@
 			self.$_base = $('<div></div>');
 			self._stop = new StopButton();
 			self._name = new Label();
+			self._volume = new VolumeSlider($('#volume_slider'));
 
 			var $well = $('<div class="well row"></div>');
+			var $right = $('<div></div>');
 
 			$well.css('display', 'flex');
 			$well.css('align-items', 'center');
 
+			self._volume.$_base.css('padding-left', '15px');
+
+			$right.append(self._name.$_base);
+			$right.append(self._volume.$_base);
 			$well.append(self._stop.$_base);
-			$well.append(self._name.$_base);
+			$well.append($right);
 
 			self.$_base.append($well);
-
-			self.$_base.addClass('hidden');
 
 			self._stop.click(function () {
 				self.stop();
 			});
+
+			self._volume.onChange = function (v) {
+				window.volume = v;
+
+				if (window.media_player) {
+					window.media_player.volume(v);
+				} else {
+					$.post('/radio/volume', { volume: Math.floor(v * 100) })
+				}
+			};
+
+			self._name.setText('-----');
+
+			window.volume = self._volume.get();
 		}
 
 		ControlPanel.prototype.play = function (i) {
@@ -85,7 +103,7 @@
 
 			var m = window.media_player;
 
-			self.$_base.addClass('hidden');
+			self._name.setText('-----');
 
 			window.radio_stations.forEach(function (s) {
 				s.$_base.removeClass('selected');
@@ -123,9 +141,10 @@
 
 			if (m) {
 				m.url(self.url);
+				m.volume(window.volume);
 				m.play();
 			} else {
-				$.post('/radio/play', { id: self.id });
+				$.post('/radio/play', { id: self.id, volume: window.volume });
 			}
 		};
 
@@ -147,6 +166,7 @@
 	function createControls() {
 		var p = new ControlPanel();
 
+		window.volume = 1;
 		window.media_controls = p;
 
 		$('#gallery').prepend(p.$_base);

@@ -14,7 +14,7 @@ class MediaPlayer
 	def initialize(device)
 		@device = device
 		@server = MPC::Client.new(ServerInfo.ip, ServerInfo.service + device.remote_idx)
-		@client = device.url ? MPC::Client.new(device.url, ServerInfo.service) : MPC::Dummy.new
+		@client = device.loopback? ? MPC::Dummy.new : MPC::Client.new(device.url, ServerInfo.service)
 		@stream = "http://#{ServerInfo.ip}:#{ServerInfo.http + device.remote_idx}/"
 	end
 
@@ -41,9 +41,9 @@ class MediaPlayer
 	def reachable?
 		if @check.nil? or (t = Time.current) - @check > 2
 			@check = t
-			(@client.reachable? and @server.reachable?)
+			@reachable = (@client.reachable? and @server.reachable?)
 		end
-		true
+		@reachable
 	end
 
 	def play(obj, user = nil)

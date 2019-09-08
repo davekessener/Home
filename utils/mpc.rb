@@ -54,7 +54,7 @@ module MPC
 		end
 	
 		def reachable?
-			Connection.open(@ip, @port) { |c| }
+			(Helper.is_server_reachable?(@ip) and Connection.open(@ip, @port) { |c| })
 		end
 
 		def execute(cmd)
@@ -88,7 +88,7 @@ module MPC
 			@status = {}
 			Connection.open(@ip, @port) do |c|
 				@status = c.execute('status')
-			end while @status.empty?
+			end
 			puts "mpc status is #{@status}"
 			@status
 		end

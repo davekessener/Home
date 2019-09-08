@@ -6,7 +6,7 @@
 					tr
 						td.wide
 							h2.cropped
-								=s('songs:all')
+								=s('song:all')
 						td
 							a href="/music/song/new"
 								button.btn.btn-primary
@@ -33,7 +33,7 @@
 									a href="/music/song/edit/#{s.id}"
 										=s.name
 								td
-									=s.length
+									=Helper.to_s s.length
 								td
 									=s.interpret
 								td

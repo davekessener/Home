@@ -1,9 +1,23 @@
+link rel="stylesheet" href="/css/lib/bootstrap-slider.min.css"
+
+script src="/js/lib/bootstrap-toolkit.js"
+script src="/js/lib/bootstrap-slider.min.js"
+
 script src="/js/player.js"
 
 - if current_device.loopback?
 	#player.hidden
+.station-list
 	- RadioStation.all.to_a.each do |s|
 		.hidden id="station_#{s.id}" data-url="#{s.url}" data-name="#{s.name}"
+
+- if device.playing.is_a? RadioStation
+	- if device.loopback?
+		- device.stop
+	- else
+		input#start_station type="hidden" value="#{device.playing.id}"
+
+input#volume_slider.hidden type="text" data-provide="slider" data-slider-id="volume_input" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="#{device.reachable? ? device.volume : 100}" data-slider-tooltip="hide"
 
 #status
 

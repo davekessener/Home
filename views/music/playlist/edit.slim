@@ -31,6 +31,10 @@ input#playlist_content type="hidden" value="[#{playlist.songs.map { |s| s.id.to_
 						=s('playlist:songs')
 					ul.list-group
 						- Music::Song.all.to_a.each do |s|
-							li.list-group-item.song-entry id="song_#{s.id}" data-id="#{s.id}" data-name="#{s.name}" onclick="window.playlist_manager.add(#{s.id})"
-								=s.name
+							li.list-group-item.song-entry id="song_#{s.id}" data-id="#{s.id}" data-name="#{s.pretty}" onclick="window.playlist_manager.add(#{s.id})"
+								div style="display: flex; align-items: center;"
+									div
+										=Helper.to_s s.length
+									div style="padding-left: 8px;"
+										=s.pretty
 

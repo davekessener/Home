@@ -1,3 +1,35 @@
+var VolumeSlider = (function () {
+	function VolumeSlider($e) {
+		var self = this;
+
+		self.$_base = $('<div style="padding-bottom: 10px;"></div>');
+		self.$_slider = $('#' + $e.data('slider-id'));
+		self.$_proxy = $e;
+
+		self.$_proxy.slider('on', 'slideStop', function (v) {
+			var f = self.onChange;
+
+			if (f) {
+				f(+(v) / 100);
+			}
+		});
+
+		self.$_slider.detach();
+		self.$_proxy.detach();
+
+		self.$_base.append(self.$_slider);
+		self.$_base.append(self.$_proxy);
+	}
+
+	VolumeSlider.prototype.get = function () {
+		var self = this;
+
+		return +(self.$_proxy.data('slider-value')) / 100;
+	};
+
+	return VolumeSlider;
+})();
+
 function range(from, to, step) {
 	step = (step || (from > to ? -1 : 1));
 

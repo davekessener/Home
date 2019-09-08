@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190904131934) do
+ActiveRecord::Schema.define(version: 20190908074131) do
 
   create_table "activities", force: :cascade do |t|
     t.string "content"
@@ -130,6 +130,12 @@ ActiveRecord::Schema.define(version: 20190904131934) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "known_hosts", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "ip"
+    t.index ["user_id"], name: "index_known_hosts_on_user_id"
+  end
+
   create_table "playlists", force: :cascade do |t|
     t.string "name"
     t.integer "user_id"
@@ -183,7 +189,6 @@ ActiveRecord::Schema.define(version: 20190904131934) do
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "lang", default: "de"
-    t.string "last_ip"
     t.integer "last_device"
   end
 

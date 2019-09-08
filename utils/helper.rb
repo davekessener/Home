@@ -69,9 +69,13 @@ module Helper
 	end
 
 	def self.to_s(d)
+		d = d.to_i
 		s, d = d % 60, d / 60
 		m, d = d % 60, d / 60
-		[d, m, s].map { |e| '%02d' % e }.join(':')
+		t = [m, s]
+		t.unshift d if d > 0
+		
+		t.map { |e| '%02d' % e }.join(':')
 	end
 
 	def self.is_server_reachable?(url)
